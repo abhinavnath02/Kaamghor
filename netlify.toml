@@ -1,0 +1,3 @@
+# Netlify: publish the web/ folder as it is. No build step.
+[build]
+  publish = "web"

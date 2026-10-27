@@ -1,0 +1,1673 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kaamghor</title>
+<meta name="description" content="Trusted daily-wage help for homes in Tinsukia, Assam.">
+<meta name="theme-color" content="#f2f2f6" id="themeColor">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+/* ---------- Tokens. Neutral graphite UI; glass sits over soft blue, peach and lavender light. ---------- */
+:root {
+  color-scheme: light;
+  --bg: #f2f2f6; --solid: #fbfbfd; --text: #1c1c1e; --muted: #6c6c74; --line: rgba(0,0,0,.09);
+  --brand: #1c1c1e; --brand-2: #48484a; --brand-ink: #ffffff; --brand-soft: rgba(28,28,30,.07); --brand-glow: rgba(0,0,0,.28);
+  --accent: #c25e00; --accent-soft: rgba(255,149,0,.15); --danger: #d70015; --danger-soft: rgba(255,59,48,.12);
+  --ok: #248a3d; --ok-soft: rgba(52,199,89,.14); --info: #0a6cff; --star: #f5a300;
+  --glass: rgba(255,255,255,.55); --glass-strong: rgba(255,255,255,.80); --glass-input: rgba(255,255,255,.7);
+  --hi: inset 0 1px 0 rgba(255,255,255,.95), inset 0 0 0 1px rgba(255,255,255,.45);
+  --shadow: 0 1px 2px rgba(0,0,0,.05), 0 10px 26px -12px rgba(0,0,0,.18);
+  --shadow-lg: 0 22px 50px -14px rgba(0,0,0,.28);
+  --blur: saturate(180%) blur(22px);
+  --blob1: rgba(110,140,255,.34); --blob2: rgba(255,160,120,.32); --blob3: rgba(180,130,255,.28);
+  --sk-l: 42%; --sk-a: .14;
+  --r: 22px; --ease: cubic-bezier(.22,1,.36,1); --spring: cubic-bezier(.32,.72,0,1);
+}
+/* Dark: chosen with the header switch, or following the phone when no choice was made. */
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0a0a0c; --solid: #1a1a1e; --text: #f2f2f7; --muted: #98989f; --line: rgba(255,255,255,.10);
+    --brand: #f2f2f7; --brand-2: #ffffff; --brand-ink: #0a0a0c; --brand-soft: rgba(255,255,255,.10); --brand-glow: rgba(255,255,255,.14);
+    --accent: #ff9f0a; --accent-soft: rgba(255,159,10,.16); --danger: #ff6961; --danger-soft: rgba(255,69,58,.16);
+    --ok: #30d158; --ok-soft: rgba(48,209,88,.15); --info: #4c9dff; --star: #ffd60a;
+    --glass: rgba(44,44,50,.50); --glass-strong: rgba(40,40,46,.82); --glass-input: rgba(255,255,255,.06);
+    --hi: inset 0 1px 0 rgba(255,255,255,.12), inset 0 0 0 1px rgba(255,255,255,.06);
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 30px -12px rgba(0,0,0,.65);
+    --shadow-lg: 0 26px 60px -14px rgba(0,0,0,.8);
+    --blob1: rgba(70,100,255,.30); --blob2: rgba(255,120,80,.16); --blob3: rgba(150,90,255,.24);
+    --sk-l: 72%; --sk-a: .18;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0a0a0c; --solid: #1a1a1e; --text: #f2f2f7; --muted: #98989f; --line: rgba(255,255,255,.10);
+    --brand: #f2f2f7; --brand-2: #ffffff; --brand-ink: #0a0a0c; --brand-soft: rgba(255,255,255,.10); --brand-glow: rgba(255,255,255,.14);
+    --accent: #ff9f0a; --accent-soft: rgba(255,159,10,.16); --danger: #ff6961; --danger-soft: rgba(255,69,58,.16);
+    --ok: #30d158; --ok-soft: rgba(48,209,88,.15); --info: #4c9dff; --star: #ffd60a;
+    --glass: rgba(44,44,50,.50); --glass-strong: rgba(40,40,46,.82); --glass-input: rgba(255,255,255,.06);
+    --hi: inset 0 1px 0 rgba(255,255,255,.12), inset 0 0 0 1px rgba(255,255,255,.06);
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 30px -12px rgba(0,0,0,.65);
+    --shadow-lg: 0 26px 60px -14px rgba(0,0,0,.8);
+    --blob1: rgba(70,100,255,.30); --blob2: rgba(255,120,80,.16); --blob3: rgba(150,90,255,.24);
+    --sk-l: 72%; --sk-a: .18;
+  }
+}
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; background: var(--bg); }
+/* Never let the page scroll sideways: on phones that makes the header and dock drift. "clip" keeps sticky working. */
+html, body { overflow-x: clip; }
+body {
+  margin: 0; min-height: 100dvh; color: var(--text); /* no background here: the blobs below must show through */
+  font: 17px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Sans Bengali", "Noto Sans Devanagari", sans-serif;
+  padding-bottom: calc(108px + env(safe-area-inset-bottom)); -webkit-tap-highlight-color: transparent;
+}
+/* The light behind the glass: three soft, still colour blobs. */
+body::before {
+  content: ""; position: fixed; inset: -10vmax; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(36vmax 30vmax at 18% 20%, var(--blob1), transparent 65%),
+    radial-gradient(30vmax 28vmax at 88% 45%, var(--blob2), transparent 65%),
+    radial-gradient(40vmax 32vmax at 35% 92%, var(--blob3), transparent 65%);
+}
+a { color: var(--brand); }
+button, input, select, textarea { font: inherit; color: inherit; }
+.ic { flex: none; display: block; }
+
+/* ---------- Header ---------- */
+.top {
+  position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 10px;
+  padding: calc(10px + env(safe-area-inset-top)) 16px 10px;
+  background: var(--glass); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+  border-bottom: 1px solid transparent; transition: border-color .3s, box-shadow .3s;
+}
+.top.scrolled { border-bottom-color: var(--line); box-shadow: 0 8px 24px -16px rgba(0,0,0,.25); }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; letter-spacing: -.01em; flex: 1; min-width: 0; }
+#brandName { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.brand .logo { flex: none; }
+.top > :not(.brand) { flex: none; }
+@media (max-width: 350px) { #brandName { display: none; } .top { gap: 8px; padding-left: 12px; padding-right: 12px; } }
+.brand .logo { width: 34px; height: 24px; color: var(--text); }
+.lang { display: flex; align-items: center; gap: 6px; height: 38px; padding: 0 12px; border-radius: 999px; background: var(--glass-strong); box-shadow: var(--hi), var(--shadow); color: var(--muted); }
+.lang select { appearance: none; -webkit-appearance: none; border: 0; background: transparent; color: var(--text); font-size: 15px; font-weight: 700; cursor: pointer; outline: none; }
+#offline { position: sticky; top: calc(58px + env(safe-area-inset-top)); z-index: 9; margin: 8px auto 0; width: fit-content; max-width: calc(100% - 32px); padding: 6px 14px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; box-shadow: var(--shadow); }
+
+/* ---------- Layout and text ---------- */
+main { max-width: 640px; margin: 0 auto; padding: 16px; }
+h1 { font-size: 28px; line-height: 1.15; letter-spacing: -.02em; margin: 6px 0 14px; }
+h2 { font-size: 19px; letter-spacing: -.01em; margin: 26px 0 10px; }
+.muted { color: var(--muted); }
+.small { font-size: 15px; }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.between { justify-content: space-between; }
+.nowrap { flex-wrap: nowrap; }
+.nowrap > .btn { flex: none; }
+.stack > * + * { margin-top: 12px; }
+.mono { font-family: ui-monospace, monospace; font-size: 14px; word-break: break-all; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 18px 0; }
+.center { text-align: center; padding: 40px 0; }
+
+/* ---------- Glass cards ---------- */
+.card { position: relative; background: var(--glass); border-radius: var(--r); padding: 16px; margin: 12px 0; box-shadow: var(--hi), var(--shadow); }
+.card.tap { display: block; text-decoration: none; color: inherit; transition: transform .3s var(--ease), box-shadow .3s var(--ease); }
+.card.tap:active { transform: scale(.98); }
+@media (hover: hover) { .card.tap:hover { box-shadow: var(--hi), var(--shadow-lg); } }
+.card.job, .job-head { display: flex; gap: 14px; align-items: flex-start; }
+.job-ic { flex: none; width: 50px; height: 50px; border-radius: 16px; display: grid; place-items: center; font-size: 26px; background: var(--brand-soft); box-shadow: var(--hi); }
+.job-body { flex: 1; min-width: 0; }
+.jobtitle { font-weight: 750; font-size: 18px; display: flex; gap: 8px; align-items: center; }
+.meta { color: var(--muted); font-size: 14.5px; display: flex; gap: 4px 14px; flex-wrap: wrap; margin-top: 4px; }
+.meta span { display: inline-flex; align-items: center; gap: 5px; }
+.pay { font-weight: 800; font-size: 19px; letter-spacing: -.01em; white-space: nowrap; }
+.title-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.title-row h1 { margin-bottom: 10px; }
+
+/* ---------- Buttons ---------- */
+.btn {
+  position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 50px; padding: 12px 20px; border: 0; border-radius: 16px; cursor: pointer; text-decoration: none;
+  font-weight: 700; color: var(--brand-ink); background: linear-gradient(180deg, var(--brand-2), var(--brand));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 8px 20px -8px var(--brand-glow);
+  transition: transform .15s var(--ease), box-shadow .2s var(--ease), opacity .2s, filter .2s;
+}
+.btn:active { transform: scale(.97); }
+@media (hover: hover) { .btn:hover { filter: brightness(1.05); } }
+.btn.block { width: 100%; }
+.btn.ghost { background: var(--glass-strong); color: var(--brand); box-shadow: var(--hi), var(--shadow); }
+.btn.soft { background: var(--brand-soft); color: var(--brand); box-shadow: inset 0 0 0 1px var(--brand-soft); }
+.btn.accent { background: linear-gradient(180deg, #e38c33, var(--accent)); color: #fff; }
+.btn.danger { background: var(--danger-soft); color: var(--danger); box-shadow: none; }
+.btn.google { background: #fff; color: #1f1f1f; gap: 10px; box-shadow: inset 0 0 0 1px #dadce0, var(--shadow); }
+.btn.sm { min-height: 40px; padding: 8px 14px; font-size: 15px; border-radius: 13px; }
+.btn[disabled] { opacity: .7; cursor: progress; }
+.btn[disabled]::after { content: ""; width: 16px; height: 16px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: s .7s linear infinite; }
+.iconbtn { display: grid; place-items: center; width: 42px; height: 42px; flex: none; border: 0; border-radius: 50%; cursor: pointer; color: var(--brand); background: var(--glass-strong); box-shadow: var(--hi), var(--shadow); transition: transform .2s var(--ease); }
+.iconbtn:active { transform: scale(.92); }
+.back { display: inline-flex; align-items: center; gap: 4px; margin: 0 0 4px -6px; padding: 6px 12px 6px 6px; border-radius: 999px; color: var(--brand); text-decoration: none; font-weight: 700; min-height: 40px; transition: background .2s; }
+.back:active { background: var(--brand-soft); }
+.or { display: flex; align-items: center; gap: 10px; margin: 18px 0; color: var(--muted); font-size: 14px; }
+.or::before, .or::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
+:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+
+/* ---------- Inputs ---------- */
+label.f { display: block; font-weight: 650; font-size: 15px; margin: 18px 0 8px; }
+input[type=text], input[type=tel], input[type=email], input[type=number], input[type=date], select.in, textarea {
+  width: 100%; min-height: 52px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 16px; outline: none;
+  background: var(--glass-input); box-shadow: inset 0 1px 2px rgba(0,0,0,.04);
+  transition: border-color .2s, box-shadow .25s, background .2s;
+}
+input:focus, select.in:focus, textarea:focus { border-color: var(--brand); background: var(--glass-strong); box-shadow: 0 0 0 4px var(--brand-soft); }
+select.in { appearance: none; -webkit-appearance: none; padding-right: 42px; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238a8a90' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 16px center; }
+textarea { min-height: 88px; resize: vertical; }
+.phone { display: flex; align-items: stretch; }
+.phone span { display: flex; align-items: center; padding: 0 14px; border-radius: 16px 0 0 16px; background: var(--brand-soft); color: var(--brand); font-weight: 750; border: 1px solid var(--line); border-right: 0; }
+.phone input { border-radius: 0 16px 16px 0; font-size: 19px; letter-spacing: .5px; }
+.otp { font-size: 28px !important; letter-spacing: 10px; text-align: center; font-weight: 700; }
+.check { display: flex; gap: 12px; align-items: flex-start; margin: 20px 0; }
+.check input { width: 22px; height: 22px; margin-top: 1px; accent-color: var(--brand); flex: none; }
+/* iOS-style switch */
+.toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 0; cursor: pointer; }
+.toggle input { appearance: none; -webkit-appearance: none; flex: none; position: relative; width: 52px; height: 32px; margin: 0; border-radius: 999px; cursor: pointer; background: rgba(120,120,128,.35); transition: background .3s var(--ease); }
+.toggle input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.25); transition: transform .28s var(--spring), width .2s var(--ease); }
+.toggle input:active::after { width: 32px; }
+.toggle input:checked { background: var(--brand); }
+.toggle input:checked::after { transform: translateX(20px); }
+.toggle input:checked:active::after { transform: translateX(14px); }
+
+/* ---------- Choice tiles and pills ---------- */
+.choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(98px, 1fr)); gap: 10px; }
+.choice { position: relative; display: block; }
+.choice input { position: absolute; opacity: 0; pointer-events: none; }
+.choice > span {
+  position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  min-height: 72px; padding: 12px 8px; text-align: center; border-radius: 18px; cursor: pointer; font-weight: 650; font-size: 15px;
+  background: var(--glass); box-shadow: var(--hi), var(--shadow);
+  transition: transform .18s var(--ease), background .2s, box-shadow .2s, color .2s;
+}
+.choice:active > span { transform: scale(.97); }
+.choice input:checked + span { background: var(--brand-soft); color: var(--brand); box-shadow: inset 0 0 0 2px var(--brand), 0 10px 24px -12px var(--brand-glow); }
+.choice:not(.pill) input:checked + span::after {
+  content: ""; position: absolute; top: 7px; right: 7px; width: 18px; height: 18px; border-radius: 50%; animation: pop .18s var(--ease);
+  background: var(--brand) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 11px no-repeat;
+}
+.choice input:focus-visible + span { outline: 3px solid var(--brand); outline-offset: 2px; }
+@keyframes pop { from { transform: scale(.85); opacity: 0; } }
+.seg { display: flex; flex-wrap: wrap; gap: 8px; }
+.choice.pill > span, .pillbtn { min-height: 44px; padding: 8px 16px; flex-direction: row; border-radius: 999px; font-size: 15px; gap: 6px; }
+.seg.even { display: grid; grid-template-columns: repeat(5, 1fr); }
+.seg.even .pillbtn { padding: 8px 2px; }
+.pillbtn { border: 0; cursor: pointer; font-weight: 700; color: var(--text); background: var(--glass); box-shadow: var(--hi), var(--shadow); transition: transform .15s var(--ease), background .2s, color .2s, box-shadow .2s; }
+.pillbtn:active { transform: scale(.97); }
+.pillbtn.on { background: var(--brand-soft); color: var(--brand); box-shadow: inset 0 0 0 2px var(--brand); }
+.numstep { display: flex; align-items: center; height: 52px; border-radius: 16px; background: var(--glass-input); border: 1px solid var(--line); overflow: hidden; }
+.numstep button { width: 56px; height: 100%; border: 0; background: transparent; color: var(--brand); font-size: 26px; font-weight: 600; cursor: pointer; transition: background .2s; }
+.numstep button:active { background: var(--brand-soft); }
+.numstep output { flex: 1; text-align: center; font-weight: 750; font-size: 18px; }
+.langs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 5px; margin: 14px 0 18px; border-radius: 18px; background: var(--glass); box-shadow: var(--hi), var(--shadow); }
+.langs button { min-height: 46px; border: 0; border-radius: 14px; background: transparent; font-weight: 700; cursor: pointer; color: var(--muted); transition: background .3s var(--ease), color .2s, box-shadow .3s; }
+.langs button.on { background: var(--glass-strong); color: var(--brand); box-shadow: var(--hi), 0 4px 12px -4px rgba(0,0,0,.18); }
+
+/* ---------- Login hero ---------- */
+.hero { text-align: center; padding: 22px 0 4px; }
+/* Same as the app icon: the mark on a solid tile that flips with light/dark. */
+.hero-mark { display: grid; place-items: center; width: 88px; height: 88px; margin: 0 auto; border-radius: 24px; color: var(--brand-ink);
+  background: linear-gradient(180deg, var(--brand-2), var(--brand)); box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 18px 40px -12px var(--brand-glow); }
+.hero-mark .logo { width: 52px; height: 37px; }
+.hero h1 { margin: 14px 0 4px; font-size: 32px; }
+
+/* ---------- Badges, people, ratings ---------- */
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 999px; font-size: 13px; font-weight: 700; background: var(--brand-soft); color: var(--brand); white-space: nowrap; }
+.badge .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.badge.open { background: var(--accent-soft); color: var(--accent); }
+.badge.open .dot { animation: breathe 2.4s ease-in-out infinite; }
+.badge.done, .badge.ok { background: var(--ok-soft); color: var(--ok); }
+.badge.cancelled, .badge.warn { background: var(--danger-soft); color: var(--danger); }
+.badge.gray { background: rgba(120,120,128,.14); color: var(--muted); }
+@keyframes breathe { 50% { opacity: .4; } }
+.who { display: flex; gap: 12px; align-items: center; min-width: 0; }
+.avatar { flex: none; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 18px; color: #fff;
+  background: linear-gradient(140deg, hsl(var(--h) 62% 58%), hsl(calc(var(--h) + 40) 58% 40%)); box-shadow: var(--hi), 0 6px 14px -6px hsl(var(--h) 60% 40% / .6); }
+.vcheck { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--brand); color: var(--brand-ink); vertical-align: -3px; margin-left: 4px; }
+.stars { color: var(--star); letter-spacing: 1px; }
+/* Stars are in reverse order so hovering one also lights the ones before it. */
+.rate { display: inline-flex; flex-direction: row-reverse; gap: 2px; }
+.rate button { font-size: 42px; line-height: 1; background: none; border: 0; cursor: pointer; padding: 2px 4px; color: var(--muted); opacity: .3; transition: transform .2s var(--ease), color .15s, opacity .15s; }
+.rate button:hover, .rate button:hover ~ button, .rate button:focus-visible, .rate button:focus-visible ~ button, .rate button.on, .rate button.on ~ button { color: var(--star); opacity: 1; }
+.rate button:active, .rate button.on { transform: scale(1.1); }
+
+/* ---------- Job progress tracker ---------- */
+.progress { display: flex; margin: 16px -4px 2px; }
+.progress .st { flex: 1; position: relative; text-align: center; font-size: 12.5px; font-weight: 650; color: var(--muted); }
+.progress .st i { position: relative; z-index: 1; display: grid; place-items: center; width: 28px; height: 28px; margin: 0 auto 6px; border-radius: 50%; font-style: normal; font-size: 13px; font-weight: 800;
+  background: var(--glass-strong); box-shadow: inset 0 0 0 2px var(--line); transition: background .3s, box-shadow .3s; }
+.progress .st::before { content: ""; position: absolute; top: 13px; right: 50%; width: 100%; height: 2px; border-radius: 2px; background: var(--line); }
+.progress .st::after { content: ""; position: absolute; top: 13px; right: 50%; width: 100%; height: 2px; border-radius: 2px; background: var(--brand); transform: scaleX(0); transform-origin: left; }
+.progress .st:first-child::before, .progress .st:first-child::after { display: none; }
+.progress .st.done, .progress .st.now { color: var(--text); }
+.progress .st.done i { background: var(--brand); color: var(--brand-ink); box-shadow: 0 4px 12px -4px var(--brand-glow); }
+.enter .progress .st.done i { animation: pop .25s var(--ease) both; animation-delay: var(--d); }
+.progress .st.done::after { transform: scaleX(1); }
+.enter .progress .st.done::after { animation: fill .35s var(--ease) both; animation-delay: calc(var(--d) - 90ms); }
+.progress .st.now i { color: var(--brand); box-shadow: inset 0 0 0 2px var(--brand), 0 0 0 5px var(--brand-soft); }
+@keyframes fill { from { transform: scaleX(0); } }
+
+/* ---------- Notes, empty states, stats ---------- */
+.note { display: flex; gap: 10px; align-items: flex-start; border-radius: 18px; padding: 13px 15px; margin: 12px 0; background: var(--brand-soft); box-shadow: inset 0 0 0 1px var(--brand-soft); }
+.note.warn { background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent-soft); }
+.note.err { background: var(--danger-soft); color: var(--danger); box-shadow: none; }
+a.note { color: inherit; text-decoration: none; }
+.empty { text-align: center; color: var(--muted); padding: 40px 16px; }
+.empty b { display: grid; place-items: center; width: 92px; height: 92px; margin: 0 auto 16px; border-radius: 50%; font-size: 42px; background: var(--glass); box-shadow: var(--hi), var(--shadow); }
+.stat { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.stat div { background: var(--glass); border-radius: 18px; padding: 14px; box-shadow: var(--hi), var(--shadow); }
+.stat b { display: block; font-size: 26px; letter-spacing: -.02em; }
+.stat span { color: var(--muted); font-size: 13.5px; }
+
+/* ---------- Floating tab bar with a sliding glass "lens" ---------- */
+#tabs {
+  position: fixed; z-index: 10; left: 50%; bottom: calc(12px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+  width: min(calc(100% - 24px), 460px); display: flex; padding: 6px; border-radius: 28px;
+  background: var(--glass); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); box-shadow: var(--hi), var(--shadow-lg);
+  animation: barIn .3s var(--ease) both;
+}
+#tabs::before {
+  content: ""; position: absolute; top: 6px; bottom: 6px; left: 6px; width: calc((100% - 12px) / var(--n, 3)); border-radius: 22px;
+  background: var(--glass-strong); box-shadow: var(--hi), 0 6px 16px -6px rgba(0,0,0,.22);
+  transform: translateX(calc(var(--i, 0) * 100%)); transition: transform .38s var(--spring);
+}
+#tabs a { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 56px; padding: 6px 4px; text-decoration: none; color: var(--muted); font-size: 12.5px; font-weight: 700; transition: color .3s; }
+#tabs a.on { color: var(--brand); }
+@keyframes barIn { from { opacity: 0; transform: translate(-50%, 10px); } }
+
+/* ---------- Toast ---------- */
+#toast { position: fixed; left: 0; right: 0; bottom: calc(96px + env(safe-area-inset-bottom)); z-index: 30; display: flex; justify-content: center; padding: 0 16px; pointer-events: none; }
+#tabs[hidden] ~ #toast { bottom: calc(24px + env(safe-area-inset-bottom)); }
+#toast div { display: flex; gap: 10px; align-items: center; max-width: 560px; padding: 12px 18px; border-radius: 20px; font-size: 15.5px; font-weight: 650;
+  color: var(--text); background: var(--glass-strong); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); box-shadow: var(--hi), var(--shadow-lg);
+  animation: toastIn .26s var(--ease) both; }
+#toast div .ic { color: var(--brand); }
+#toast div.err { background: rgba(179,38,30,.94); color: #fff; }
+#toast div.err .ic { color: #fff; }
+#toast div.out { animation: toastOut .25s var(--ease) both; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+@keyframes toastOut { to { opacity: 0; transform: translateY(10px) scale(.96); } }
+
+/* ---------- Confirm: a bottom sheet on phones ---------- */
+dialog {
+  width: 100%; max-width: 520px; margin: auto auto 0; padding: 14px 20px calc(20px + env(safe-area-inset-bottom)); border: 0; border-radius: 28px 28px 0 0;
+  color: var(--text); background: var(--glass-strong); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); box-shadow: var(--hi), var(--shadow-lg);
+}
+dialog::before { content: ""; display: block; width: 40px; height: 5px; margin: 0 auto 18px; border-radius: 3px; background: rgba(120,120,128,.35); }
+dialog[open] { animation: sheetUp .36s var(--spring) both; }
+dialog.closing { animation: sheetDown .22s var(--ease) both; }
+dialog::backdrop { background: rgba(0,0,0,.38); animation: fade .25s var(--ease) both; }
+dialog p { margin: 0 0 20px; font-size: 19px; font-weight: 650; text-align: center; }
+dialog .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@keyframes sheetUp { from { transform: translateY(100%); } }
+@keyframes sheetDown { to { transform: translateY(100%); } }
+@keyframes fade { from { opacity: 0; } }
+@media (min-width: 600px) {
+  dialog { margin: auto; border-radius: 28px; padding-bottom: 20px; }
+  dialog::before { display: none; }
+  @keyframes sheetUp { from { opacity: 0; transform: scale(.94); } }
+  @keyframes sheetDown { to { opacity: 0; transform: scale(.96); } }
+}
+
+/* ---------- Loading and page transitions ---------- */
+.spin { display: inline-block; width: 22px; height: 22px; border: 3px solid var(--line); border-top-color: var(--brand); border-radius: 50%; animation: s .8s linear infinite; }
+@keyframes s { to { transform: rotate(360deg); } }
+.skel { height: 104px; margin: 12px 0; border-radius: var(--r); box-shadow: var(--hi);
+  background: linear-gradient(100deg, var(--glass) 30%, var(--glass-strong) 50%, var(--glass) 70%) 0 0 / 300% 100%; animation: shimmer 1.3s linear infinite; }
+.skel.h { height: 34px; width: 55%; border-radius: 12px; margin: 8px 0 18px; }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
+.enter { animation: settle .24s var(--ease) both; }
+@keyframes settle { from { opacity: .4; transform: translateY(6px); } }
+
+/* ---------- Icons for kinds of work, stars, theme switch ---------- */
+.sk { display: inline-grid; place-items: center; color: hsl(var(--h) 70% var(--sk-l)); }
+.job-ic.sk { background: hsl(var(--h) 85% 60% / var(--sk-a)); }
+.stars { display: inline-flex; gap: 2px; color: var(--star); vertical-align: -2px; }
+.stars .off { opacity: .22; }
+.empty b { color: var(--muted); }
+.vcheck { background: var(--info); color: #fff; }
+.top .iconbtn { width: 38px; height: 38px; color: var(--text); }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .28s; animation-timing-function: ease; }
+
+/* ---------- Install card and update bar ---------- */
+.card.install { display: flex; align-items: center; gap: 14px; margin-top: 16px; }
+.card.install .logo { flex: none; width: 40px; height: 28px; color: var(--text); }
+#updateBar { position: fixed; z-index: 25; left: 50%; top: calc(66px + env(safe-area-inset-top)); transform: translateX(-50%);
+  display: flex; align-items: center; gap: 12px; max-width: calc(100% - 24px); padding: 6px 6px 6px 16px; border-radius: 999px; font-size: 15px; font-weight: 650; white-space: nowrap;
+  background: var(--glass-strong); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); box-shadow: var(--hi), var(--shadow-lg); animation: toastIn .26s var(--ease) both; }
+html.lite #updateBar { background: var(--solid); -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+/* ---------- Comfort settings ---------- */
+/* Low-memory phones, data saver, or "reduce transparency": solid surfaces, no blur. */
+html.lite .top, html.lite #tabs, html.lite #toast div:not(.err), html.lite dialog { background: var(--solid); -webkit-backdrop-filter: none; backdrop-filter: none; }
+html.lite dialog::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .top, #tabs, #toast div:not(.err), dialog { background: var(--solid); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .top, #tabs, #toast div:not(.err), dialog, .card { background: var(--solid); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+</style>
+<script>
+// Decide before first paint: saved light/dark choice, and whether this phone gets blur.
+try {
+  var th = localStorage.getItem('theme');
+  if (th === 'light' || th === 'dark') document.documentElement.setAttribute('data-theme', th);
+} catch (e) { /* storage blocked: follow the phone */ }
+try {
+  var m = navigator.deviceMemory, c = navigator.connection;
+  if ((m && m <= 2) || (c && c.saveData)) document.documentElement.classList.add('lite');
+  else if (!m || m >= 4) document.documentElement.classList.add('rich');
+} catch (e) { /* older browsers: default look */ }
+</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="kg-mark" viewBox="0 0 849 599"><path fill="currentColor" fill-rule="evenodd" d="M340 0 135 279 105 325 101 324 101 18 0 18 0 598 101 598 101 452 215 301 219 302 222 309 340 597 454 598 292 210 294 204 379 87 553 123 741 596 849 596 633 59Z M395 119 333 202 329 212 487 595 711 596 525 150Z"/></symbol></svg>
+<header class="top">
+  <div class="brand"><svg class="logo" aria-hidden="true"><use href="#kg-mark"/></svg><span id="brandName">Kaamghor</span></div>
+  <button type="button" class="iconbtn" id="themeBtn" data-act="theme"></button>
+  <label class="lang">
+    <svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></svg>
+    <select id="langSel" aria-label="Language">
+      <option value="en">English</option>
+      <option value="as">অসমীয়া</option>
+      <option value="hi">हिन्दी</option>
+    </select>
+  </label>
+</header>
+<div id="offline" hidden></div>
+<main id="main"><div class="skel h"></div><div class="skel"></div><div class="skel"></div></main>
+<nav id="tabs" hidden></nav>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="updateBar" role="status" hidden><span id="updateMsg"></span><button class="btn sm" id="updateBtn" data-act="applyUpdate"></button></div>
+<dialog id="dlg"><p id="dlgMsg"></p><div class="row"><button class="btn ghost" id="dlgNo"></button><button class="btn" id="dlgYes"></button></div></dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="api.js"></script>
+<script>
+'use strict';
+
+// ===================== Text in three languages =====================
+// Assamese and Hindi should be reviewed by a native speaker. Admin screens are English only
+// (missing keys fall back to English).
+const T = {
+  en: {
+    appName: 'Kaamghor', tagline: 'Trusted help for homes in Tinsukia',
+    google: 'Continue with Google', or: 'or', emailLabel: 'Email', sendCode: 'Email me a code',
+    codeLabel: 'Enter the code we emailed to {email}', checkSpam: 'Can’t find it? Check your spam folder.',
+    verify: 'Verify', resendIn: 'Resend in {s}s', resend: 'Send code again', changeEmail: 'Change email',
+    badEmail: 'Enter a valid email address', badCode: 'Enter the code from the email',
+    phoneLabel: 'Mobile number', phoneHint: 'Shown to the other person only after a hire.',
+    badPhone: 'Enter a 10-digit mobile number', email: 'Email',
+    step_posted: 'Posted', step_hired: 'Hired', step_done: 'Done', step_paid: 'Paid',
+    today: 'Today', tomorrow: 'Tomorrow', otherDate: 'Other day', lightMode: 'Light mode', darkMode: 'Dark mode',
+    installTitle: 'Install Kaamghor', installBody: 'Opens like an app and works on weak internet.', installBtn: 'Install',
+    iosInstall: 'Tap Share, then “Add to Home Screen”.', installed: 'Kaamghor is installed', updateReady: 'A new version is ready', updateBtn: 'Update',
+    whatDo: 'What do you want to do?', roleHousehold: 'Hire help for my home', roleWorker: 'Find work',
+    fullName: 'Your name', area: 'Area', skills: 'What work can you do?', upiId: 'UPI ID (to receive payments)',
+    agreeTerms: 'I agree to the {link}', termsLink: 'Terms and Privacy Policy', continue: 'Continue',
+    fillAll: 'Please fill all fields', pickSkill: 'Choose at least one kind of work', mustAgree: 'Please accept the terms',
+    badUpi: 'UPI ID looks wrong. It should look like name@bank',
+    tabPost: 'Post job', tabMyJobs: 'My jobs', tabProfile: 'Profile', tabFind: 'Find jobs', tabMyWork: 'My work',
+    service: 'Work needed', date: 'Date', hours: 'Hours', pay: 'Pay (₹)', payHint: 'Minimum ₹100',
+    notes: 'Details (optional)', notesPh: 'e.g. 2 rooms, bring your own broom', postBtn: 'Post job',
+    matchCount: '{n} workers available for this in your area', posted: 'Job posted. Workers nearby can see it now.',
+    noJobs: 'You have not posted any jobs yet', postFirst: 'Post a job',
+    status_open: 'Looking for worker', status_assigned: 'Worker hired', status_done: 'Done', status_cancelled: 'Cancelled',
+    applicants: 'Applied ({n})', noApplicants: 'No one has applied yet. Matching workers see your job live.',
+    otherMatching: 'Other workers for this job', otherMatchingHint: 'They can see your job and apply.',
+    verified: 'Verified', notVerified: 'Not verified', jobsN: '{n} jobs', newWorker: 'New',
+    hire: 'Hire', confirmHire: 'Hire {name} for this job?', hired: 'Hired! You can now call each other.',
+    yourWorker: 'Your worker', call: 'Call', waitDone: 'The worker will mark the job done when finished.',
+    payment: 'Payment', amountDue: 'Amount to pay: ₹{n}', payOnline: 'Pay online (UPI / card)',
+    payDirect: "Pay to worker's UPI", payCash: 'Pay cash',
+    directInfo: 'Pay ₹{n} to {name} at {upi}. The worker will confirm when they receive it.', openUpi: 'Open UPI app',
+    noUpi: 'This worker has not added a UPI ID. Please pay online or in cash.',
+    cashInfo: 'Give ₹{n} in cash to the worker. They will confirm in the app.',
+    paidVia: 'Paid ₹{n} · {method}',
+    method_cash: 'Cash', method_upi: 'UPI (online)', method_upi_direct: 'Direct UPI', method_card: 'Card',
+    method_netbanking: 'Net banking', method_wallet: 'Wallet', method_other: 'Online',
+    confirming: 'Payment made. Confirming…', stillConfirming: 'Still confirming. Tap refresh in a minute.', paidOk: 'Payment confirmed',
+    rateWorker: 'Rate the worker', thanksRating: 'Thanks for rating!', yourRating: 'Your rating', refresh: 'Refresh', back: 'Back',
+    getVerified: 'Upload your ID to get verified. Households choose verified workers first.',
+    underReview: 'Your ID is being checked.', onlyMyArea: 'Only my area',
+    noOpenJobs: 'No jobs right now. New jobs appear here live.', apply: 'Apply', applied: 'Applied', withdraw: 'Withdraw',
+    appliedToast: 'Applied. The household will see you.', newJobToast: 'New job: {service} in {area}',
+    unavailableNote: 'You are marked as not available. Turn it on in Profile.',
+    household: 'Household', markDone: 'Mark job done', confirmDone: 'Is the job finished?', markedDone: 'Marked done. Now collect payment.',
+    gotPaidHow: 'How were you paid?', gotCash: 'I received cash', gotUpi: 'I received UPI directly',
+    confirmGot: 'Confirm you received ₹{n}?', onlineAuto: 'If the household pays online, it shows here automatically.',
+    feeOwed: 'Platform fee to pay Kaamghor: ₹{n}', feeSettled: 'Platform fee paid',
+    payoutPending: 'Kaamghor will send you ₹{n} soon', payoutSent: '₹{n} sent to you · Ref {ref}',
+    waitingPayment: 'Waiting for payment', householdRating: 'Household rating', noWork: 'No work yet. Apply to jobs in Find jobs.',
+    save: 'Save', saved: 'Saved', available: 'Available for work', idDoc: 'ID document (Aadhaar, voter ID…)',
+    uploadId: 'Upload photo of ID', replaceId: 'Upload again', idPrivate: 'Only Kaamghor staff can see your ID.',
+    uploaded: 'Uploaded. We will check it soon.', idNone: 'Not uploaded', myRating: 'Rating', jobsDone: 'Jobs done',
+    logout: 'Log out', terms: 'Terms & privacy', phone: 'Phone', offline: 'You are offline. Showing saved screens.',
+    error: 'Something went wrong', yes: 'Yes', no: 'No', hoursN: '{n} hrs', fileTooBig: 'File is too large (max 5 MB)',
+    skill_clean: 'Cleaning', skill_cook: 'Cooking', skill_garden: 'Gardening', skill_paint: 'Painting',
+    skill_helper: 'Helper', skill_plumb: 'Plumbing', skill_elec: 'Electrical',
+    area_town: 'Tinsukia Town', area_hijuguri: 'Hijuguri', area_borguri: 'Borguri', area_rangagora: 'Rangagora Road',
+    area_bordoloi: 'Bordoloi Nagar', area_chandmari: 'Chandmari',
+    // admin (English only)
+    tabOverview: 'Overview', tabVerify: 'Verify', tabPayouts: 'Payouts', tabFees: 'Fees',
+    st_households: 'Households', st_workers: 'Workers', st_workers_verified: 'Verified workers', st_awaiting_verify: 'Awaiting ID check',
+    st_jobs_open: 'Open jobs', st_jobs_assigned: 'In progress', st_jobs_done: 'Jobs done', st_jobs_cancelled: 'Cancelled',
+    st_jobs_last_7d: 'Jobs posted (7 days)', st_paid_total: 'Paid total (₹)', st_unpaid_jobs: 'Done, unpaid',
+    st_fees_online: 'Fees kept online (₹)', st_fees_owed: 'Fees owed (₹)', st_fees_settled: 'Fees settled (₹)',
+    st_payouts_pending: 'Payouts to send (₹)', st_avg_rating: 'Average rating',
+    waiting: 'Waiting', all: 'All', viewId: 'View ID', verifyBtn: 'Mark verified', unverify: 'Remove verified',
+    noIdYet: 'No ID uploaded', nothingHere: 'Nothing here', toSend: 'To send', sentList: 'Sent',
+    netToWorker: 'Send ₹{n} (₹{a} − ₹{f} fee)', upiRef: 'UPI reference', markSent: 'Mark sent', payUpi: 'Pay by UPI',
+    noUpiId: 'No UPI ID', owes: 'Owes ₹{n} on {j} jobs', settle: 'Mark settled', refRequired: 'Enter the reference',
+  },
+  as: {
+    appName: 'কামঘৰ', tagline: 'তিনিচুকীয়াৰ ঘৰৰ বাবে বিশ্বাসী সহায়',
+    google: 'Google-ৰে আগবাঢ়ক', or: 'নতুবা', emailLabel: 'ইমেইল', sendCode: 'ইমেইলত ক’ড পঠিয়াওক',
+    codeLabel: '{email}লৈ পঠোৱা ক’ডটো দিয়ক', checkSpam: 'পোৱা নাই নেকি? স্পাম ফ’ল্ডাৰ চাওক।',
+    verify: 'নিশ্চিত কৰক', resendIn: '{s} ছেকেণ্ডত পুনৰ পঠিয়াব পাৰিব', resend: 'ক’ড পুনৰ পঠিয়াওক', changeEmail: 'ইমেইল সলনি কৰক',
+    badEmail: 'শুদ্ধ ইমেইল ঠিকনা দিয়ক', badCode: 'ইমেইলৰ ক’ডটো দিয়ক',
+    phoneLabel: 'মবাইল নম্বৰ', phoneHint: 'কামত লোৱাৰ পিছতহে আনজনে দেখা পাব।',
+    badPhone: '১০-অংকৰ মবাইল নম্বৰ দিয়ক', email: 'ইমেইল',
+    step_posted: 'দিয়া হ’ল', step_hired: 'লোৱা হ’ল', step_done: 'সম্পূৰ্ণ', step_paid: 'পইচা দিয়া',
+    today: 'আজি', tomorrow: 'কাইলৈ', otherDate: 'আন দিন', lightMode: 'পোহৰ মোড', darkMode: 'আন্ধাৰ মোড',
+    installTitle: 'কামঘৰ ইনষ্টল কৰক', installBody: 'এপৰ দৰে খোল খায় আৰু দুৰ্বল ইণ্টাৰনেটতো চলে।', installBtn: 'ইনষ্টল',
+    iosInstall: 'Share টিপক, তাৰপিছত “Add to Home Screen”।', installed: 'কামঘৰ ইনষ্টল হ’ল', updateReady: 'নতুন সংস্কৰণ সাজু', updateBtn: 'আপডেট',
+    whatDo: 'আপুনি কি কৰিব বিচাৰে?', roleHousehold: 'মোৰ ঘৰৰ বাবে সহায়কাৰী লাগে', roleWorker: 'মোক কাম লাগে',
+    fullName: 'আপোনাৰ নাম', area: 'অঞ্চল', skills: 'আপুনি কি কাম কৰিব পাৰে?', upiId: 'UPI ID (পইচা পাবলৈ)',
+    agreeTerms: 'মই {link}ত সন্মত', termsLink: 'চৰ্তাৱলী আৰু গোপনীয়তা নীতি', continue: 'আগবাঢ়ক',
+    fillAll: 'অনুগ্ৰহ কৰি সকলো তথ্য পূৰণ কৰক', pickSkill: 'অন্ততঃ এবিধ কাম বাছনি কৰক', mustAgree: 'অনুগ্ৰহ কৰি চৰ্তাৱলী মানি লওক',
+    badUpi: 'UPI ID শুদ্ধ যেন লগা নাই। ই name@bank ৰ দৰে হ’ব লাগে',
+    tabPost: 'কাম দিয়ক', tabMyJobs: 'মোৰ কাম', tabProfile: 'প্ৰফাইল', tabFind: 'কাম বিচাৰক', tabMyWork: 'মোৰ কাম',
+    service: 'কি কাম লাগে', date: 'তাৰিখ', hours: 'ঘণ্টা', pay: 'মজুৰি (₹)', payHint: 'কমেও ₹100',
+    notes: 'বিৱৰণ (ইচ্ছা অনুসৰি)', notesPh: 'যেনে: ২টা কোঠা, নিজৰ ঝাড়ু আনিব', postBtn: 'কামটো দিয়ক',
+    matchCount: 'আপোনাৰ অঞ্চলত এই কামৰ বাবে {n} জন কৰ্মী উপলব্ধ', posted: 'কামটো দিয়া হ’ল। ওচৰৰ কৰ্মীসকলে এতিয়া দেখা পাব।',
+    noJobs: 'আপুনি এতিয়ালৈ কোনো কাম দিয়া নাই', postFirst: 'কাম দিয়ক',
+    status_open: 'কৰ্মী বিচৰা হৈছে', status_assigned: 'কৰ্মী লোৱা হ’ল', status_done: 'সম্পূৰ্ণ', status_cancelled: 'বাতিল',
+    applicants: 'আবেদন কৰিছে ({n})', noApplicants: 'এতিয়ালৈ কোনেও আবেদন কৰা নাই। মিল থকা কৰ্মীসকলে আপোনাৰ কামটো লগে লগে দেখা পায়।',
+    otherMatching: 'এই কামৰ বাবে আন কৰ্মী', otherMatchingHint: 'তেওঁলোকে আপোনাৰ কামটো দেখি আবেদন কৰিব পাৰে।',
+    verified: 'পৰীক্ষিত', notVerified: 'পৰীক্ষিত নহয়', jobsN: '{n}টা কাম', newWorker: 'নতুন',
+    hire: 'কামত লওক', confirmHire: 'এই কামৰ বাবে {name}ক ল’ব নেকি?', hired: 'লোৱা হ’ল! এতিয়া আপোনালোকে ইজনে সিজনক ফোন কৰিব পাৰে।',
+    yourWorker: 'আপোনাৰ কৰ্মী', call: 'ফোন কৰক', waitDone: 'কাম শেষ হ’লে কৰ্মীয়ে “সম্পূৰ্ণ” বুলি দিব।',
+    payment: 'পইচা আদায়', amountDue: 'দিবলগীয়া: ₹{n}', payOnline: 'অনলাইনত দিয়ক (UPI / কাৰ্ড)',
+    payDirect: 'কৰ্মীৰ UPIলৈ দিয়ক', payCash: 'নগদ দিয়ক',
+    directInfo: '{name}ক {upi}ত ₹{n} দিয়ক। পালে কৰ্মীয়ে নিশ্চিত কৰিব।', openUpi: 'UPI এপ খোলক',
+    noUpi: 'এই কৰ্মীৰ UPI ID নাই। অনুগ্ৰহ কৰি অনলাইনত বা নগদ দিয়ক।',
+    cashInfo: 'কৰ্মীক নগদ ₹{n} দিয়ক। তেওঁ এপত নিশ্চিত কৰিব।',
+    paidVia: '₹{n} দিয়া হ’ল · {method}',
+    method_cash: 'নগদ', method_upi: 'UPI (অনলাইন)', method_upi_direct: 'পোনপটীয়া UPI', method_card: 'কাৰ্ড',
+    method_netbanking: 'নেট বেংকিং', method_wallet: 'ৱালেট', method_other: 'অনলাইন',
+    confirming: 'পইচা দিয়া হ’ল। নিশ্চিত কৰি থকা হৈছে…', stillConfirming: 'এতিয়াও নিশ্চিত হোৱা নাই। এক মিনিট পিছত ৰিফ্ৰেশ টিপক।', paidOk: 'পইচা পোৱা নিশ্চিত হ’ল',
+    rateWorker: 'কৰ্মীক ৰেটিং দিয়ক', thanksRating: 'ৰেটিঙৰ বাবে ধন্যবাদ!', yourRating: 'আপোনাৰ ৰেটিং', refresh: 'ৰিফ্ৰেশ', back: 'উভতি যাওক',
+    getVerified: 'পৰীক্ষিত হ’বলৈ আপোনাৰ পৰিচয়পত্ৰ আপলোড কৰক। ঘৰৰ মানুহে প্ৰথমে পৰীক্ষিত কৰ্মী বাছে।',
+    underReview: 'আপোনাৰ পৰিচয়পত্ৰ পৰীক্ষা কৰি থকা হৈছে।', onlyMyArea: 'কেৱল মোৰ অঞ্চল',
+    noOpenJobs: 'এতিয়া কোনো কাম নাই। নতুন কাম ইয়াতে লগে লগে ওলাব।', apply: 'আবেদন কৰক', applied: 'আবেদন কৰা হ’ল', withdraw: 'উঠাই লওক',
+    appliedToast: 'আবেদন কৰা হ’ল। ঘৰৰ মানুহে আপোনাক দেখা পাব।', newJobToast: 'নতুন কাম: {area}ত {service}',
+    unavailableNote: 'আপুনি “উপলব্ধ নহয়” বুলি দিয়া আছে। প্ৰফাইলত সলনি কৰক।',
+    household: 'ঘৰ', markDone: 'কাম সম্পূৰ্ণ বুলি দিয়ক', confirmDone: 'কামটো শেষ হ’লনে?', markedDone: 'সম্পূৰ্ণ বুলি দিয়া হ’ল। এতিয়া পইচা লওক।',
+    gotPaidHow: 'আপুনি কেনেকৈ পইচা পালে?', gotCash: 'মই নগদ পালোঁ', gotUpi: 'মই পোনপটীয়া UPI পালোঁ',
+    confirmGot: 'আপুনি ₹{n} পালে বুলি নিশ্চিত কৰিবনে?', onlineAuto: 'ঘৰৰ মানুহে অনলাইনত দিলে ইয়াত নিজে নিজে দেখা যাব।',
+    feeOwed: 'কামঘৰক দিবলগীয়া মাচুল: ₹{n}', feeSettled: 'মাচুল দিয়া হ’ল',
+    payoutPending: 'কামঘৰে আপোনাক সোনকালে ₹{n} পঠিয়াব', payoutSent: 'আপোনালৈ ₹{n} পঠোৱা হ’ল · Ref {ref}',
+    waitingPayment: 'পইচাৰ বাবে অপেক্ষা', householdRating: 'ঘৰৰ ৰেটিং', noWork: 'এতিয়ালৈ কোনো কাম নাই। “কাম বিচাৰক”ত আবেদন কৰক।',
+    save: 'সাঁচি ৰাখক', saved: 'সাঁচি ৰখা হ’ল', available: 'কামৰ বাবে উপলব্ধ', idDoc: 'পৰিচয়পত্ৰ (আধাৰ, ভোটাৰ কাৰ্ড…)',
+    uploadId: 'পৰিচয়পত্ৰৰ ফটো আপলোড কৰক', replaceId: 'পুনৰ আপলোড কৰক', idPrivate: 'আপোনাৰ পৰিচয়পত্ৰ কেৱল কামঘৰৰ কৰ্মীয়েহে দেখিব।',
+    uploaded: 'আপলোড হ’ল। আমি সোনকালে পৰীক্ষা কৰিম।', idNone: 'আপলোড কৰা নাই', myRating: 'ৰেটিং', jobsDone: 'কৰা কাম',
+    logout: 'লগ আউট', terms: 'চৰ্তাৱলী আৰু গোপনীয়তা', phone: 'ফোন', offline: 'আপুনি অফলাইন। সাঁচি ৰখা পৃষ্ঠা দেখুওৱা হৈছে।',
+    error: 'কিবা ভুল হ’ল', yes: 'হয়', no: 'নহয়', hoursN: '{n} ঘণ্টা', fileTooBig: 'ফাইলটো বেছি ডাঙৰ (সৰ্বাধিক 5 MB)',
+    skill_clean: 'ঘৰ চাফা', skill_cook: 'ৰন্ধা-বঢ়া', skill_garden: 'বাগিচাৰ কাম', skill_paint: 'ৰং কৰা',
+    skill_helper: 'সহায়কাৰী', skill_plumb: 'প্লাম্বিং', skill_elec: 'বিজুলীৰ কাম',
+    area_town: 'তিনিচুকীয়া চহৰ', area_hijuguri: 'হিজুগুৰি', area_borguri: 'বৰগুৰি', area_rangagora: 'ৰঙাগড়া ৰোড',
+    area_bordoloi: 'বৰদলৈ নগৰ', area_chandmari: 'চান্দমাৰী',
+  },
+  hi: {
+    appName: 'कामघर', tagline: 'तिनसुकिया में घरों के लिए भरोसेमंद मदद',
+    google: 'Google से जारी रखें', or: 'या', emailLabel: 'ईमेल', sendCode: 'ईमेल पर कोड भेजें',
+    codeLabel: '{email} पर भेजा गया कोड डालें', checkSpam: 'नहीं मिला? स्पैम फ़ोल्डर देखें।',
+    verify: 'पुष्टि करें', resendIn: '{s} सेकंड में दोबारा भेज सकेंगे', resend: 'कोड दोबारा भेजें', changeEmail: 'ईमेल बदलें',
+    badEmail: 'सही ईमेल पता डालें', badCode: 'ईमेल वाला कोड डालें',
+    phoneLabel: 'मोबाइल नंबर', phoneHint: 'काम पर रखने के बाद ही दूसरे व्यक्ति को दिखेगा।',
+    badPhone: '10 अंकों का मोबाइल नंबर डालें', email: 'ईमेल',
+    step_posted: 'डाला गया', step_hired: 'रखा गया', step_done: 'पूरा', step_paid: 'भुगतान',
+    today: 'आज', tomorrow: 'कल', otherDate: 'दूसरा दिन', lightMode: 'लाइट मोड', darkMode: 'डार्क मोड',
+    installTitle: 'कामघर इंस्टॉल करें', installBody: 'ऐप की तरह खुलता है और कमज़ोर इंटरनेट पर भी चलता है।', installBtn: 'इंस्टॉल',
+    iosInstall: 'Share दबाएँ, फिर “Add to Home Screen”।', installed: 'कामघर इंस्टॉल हो गया', updateReady: 'नया संस्करण तैयार है', updateBtn: 'अपडेट',
+    whatDo: 'आप क्या करना चाहते हैं?', roleHousehold: 'घर के लिए मदद चाहिए', roleWorker: 'मुझे काम चाहिए',
+    fullName: 'आपका नाम', area: 'इलाका', skills: 'आप कौन-सा काम कर सकते हैं?', upiId: 'UPI ID (भुगतान पाने के लिए)',
+    agreeTerms: 'मैं {link} से सहमत हूँ', termsLink: 'नियम और गोपनीयता नीति', continue: 'आगे बढ़ें',
+    fillAll: 'कृपया सभी जानकारी भरें', pickSkill: 'कम से कम एक काम चुनें', mustAgree: 'कृपया नियम स्वीकार करें',
+    badUpi: 'UPI ID सही नहीं लग रहा। यह name@bank जैसा होना चाहिए',
+    tabPost: 'काम डालें', tabMyJobs: 'मेरे काम', tabProfile: 'प्रोफ़ाइल', tabFind: 'काम खोजें', tabMyWork: 'मेरा काम',
+    service: 'कौन-सा काम', date: 'तारीख़', hours: 'घंटे', pay: 'मज़दूरी (₹)', payHint: 'कम से कम ₹100',
+    notes: 'विवरण (वैकल्पिक)', notesPh: 'जैसे: 2 कमरे, अपनी झाड़ू लाएँ', postBtn: 'काम डालें',
+    matchCount: 'आपके इलाके में इस काम के लिए {n} कामगार उपलब्ध हैं', posted: 'काम डाल दिया गया। आसपास के कामगार इसे अभी देख सकते हैं।',
+    noJobs: 'आपने अभी तक कोई काम नहीं डाला', postFirst: 'काम डालें',
+    status_open: 'कामगार की तलाश', status_assigned: 'कामगार रखा गया', status_done: 'पूरा', status_cancelled: 'रद्द',
+    applicants: 'आवेदन ({n})', noApplicants: 'अभी किसी ने आवेदन नहीं किया। मेल खाते कामगार आपका काम तुरंत देखते हैं।',
+    otherMatching: 'इस काम के लिए अन्य कामगार', otherMatchingHint: 'वे आपका काम देखकर आवेदन कर सकते हैं।',
+    verified: 'सत्यापित', notVerified: 'असत्यापित', jobsN: '{n} काम', newWorker: 'नया',
+    hire: 'रखें', confirmHire: '{name} को इस काम के लिए रखें?', hired: 'रख लिया! अब आप एक-दूसरे को कॉल कर सकते हैं।',
+    yourWorker: 'आपका कामगार', call: 'कॉल करें', waitDone: 'काम पूरा होने पर कामगार उसे “पूरा” मार्क करेगा।',
+    payment: 'भुगतान', amountDue: 'देय राशि: ₹{n}', payOnline: 'ऑनलाइन भुगतान (UPI / कार्ड)',
+    payDirect: 'कामगार के UPI पर भेजें', payCash: 'नकद दें',
+    directInfo: '{name} को {upi} पर ₹{n} भेजें। मिलने पर कामगार पुष्टि करेगा।', openUpi: 'UPI ऐप खोलें',
+    noUpi: 'इस कामगार ने UPI ID नहीं जोड़ा है। कृपया ऑनलाइन या नकद भुगतान करें।',
+    cashInfo: 'कामगार को ₹{n} नकद दें। वे ऐप में पुष्टि करेंगे।',
+    paidVia: '₹{n} का भुगतान हुआ · {method}',
+    method_cash: 'नकद', method_upi: 'UPI (ऑनलाइन)', method_upi_direct: 'सीधा UPI', method_card: 'कार्ड',
+    method_netbanking: 'नेट बैंकिंग', method_wallet: 'वॉलेट', method_other: 'ऑनलाइन',
+    confirming: 'भुगतान हो गया। पुष्टि हो रही है…', stillConfirming: 'अभी पुष्टि बाकी है। एक मिनट बाद रिफ्रेश दबाएँ।', paidOk: 'भुगतान की पुष्टि हो गई',
+    rateWorker: 'कामगार को रेटिंग दें', thanksRating: 'रेटिंग के लिए धन्यवाद!', yourRating: 'आपकी रेटिंग', refresh: 'रिफ्रेश', back: 'वापस',
+    getVerified: 'सत्यापन के लिए अपना ID अपलोड करें। घर वाले पहले सत्यापित कामगार चुनते हैं।',
+    underReview: 'आपका ID जाँचा जा रहा है।', onlyMyArea: 'सिर्फ़ मेरा इलाका',
+    noOpenJobs: 'अभी कोई काम नहीं। नए काम यहाँ तुरंत दिखेंगे।', apply: 'आवेदन करें', applied: 'आवेदन किया', withdraw: 'वापस लें',
+    appliedToast: 'आवेदन हो गया। घर वाले आपको देखेंगे।', newJobToast: 'नया काम: {area} में {service}',
+    unavailableNote: 'आप “उपलब्ध नहीं” हैं। प्रोफ़ाइल में बदलें।',
+    household: 'घर', markDone: 'काम पूरा मार्क करें', confirmDone: 'क्या काम पूरा हो गया?', markedDone: 'पूरा मार्क हो गया। अब भुगतान लें।',
+    gotPaidHow: 'आपको भुगतान कैसे मिला?', gotCash: 'मुझे नकद मिला', gotUpi: 'मुझे सीधे UPI मिला',
+    confirmGot: 'पुष्टि करें कि आपको ₹{n} मिले?', onlineAuto: 'अगर घर वाले ऑनलाइन भुगतान करते हैं, तो यह यहाँ अपने आप दिखेगा।',
+    feeOwed: 'कामघर को देय शुल्क: ₹{n}', feeSettled: 'शुल्क चुका दिया',
+    payoutPending: 'कामघर आपको जल्द ₹{n} भेजेगा', payoutSent: 'आपको ₹{n} भेजे गए · Ref {ref}',
+    waitingPayment: 'भुगतान का इंतज़ार', householdRating: 'घर वालों की रेटिंग', noWork: 'अभी कोई काम नहीं। “काम खोजें” में आवेदन करें।',
+    save: 'सेव करें', saved: 'सेव हो गया', available: 'काम के लिए उपलब्ध', idDoc: 'पहचान पत्र (आधार, वोटर ID…)',
+    uploadId: 'ID की फ़ोटो अपलोड करें', replaceId: 'फिर से अपलोड करें', idPrivate: 'आपका ID सिर्फ़ कामघर का स्टाफ़ देख सकता है।',
+    uploaded: 'अपलोड हो गया। हम जल्द जाँचेंगे।', idNone: 'अपलोड नहीं किया', myRating: 'रेटिंग', jobsDone: 'किए गए काम',
+    logout: 'लॉग आउट', terms: 'नियम और गोपनीयता', phone: 'फ़ोन', offline: 'आप ऑफ़लाइन हैं। सेव की गई स्क्रीन दिख रही है।',
+    error: 'कुछ गड़बड़ हो गई', yes: 'हाँ', no: 'नहीं', hoursN: '{n} घंटे', fileTooBig: 'फ़ाइल बहुत बड़ी है (अधिकतम 5 MB)',
+    skill_clean: 'सफ़ाई', skill_cook: 'खाना बनाना', skill_garden: 'बागवानी', skill_paint: 'पेंटिंग',
+    skill_helper: 'हेल्पर', skill_plumb: 'प्लंबिंग', skill_elec: 'बिजली का काम',
+    area_town: 'तिनसुकिया टाउन', area_hijuguri: 'हिजुगुड़ी', area_borguri: 'बोरगुड़ी', area_rangagora: 'रंगागोड़ा रोड',
+    area_bordoloi: 'बोरदोलोई नगर', area_chandmari: 'चांदमारी',
+  },
+};
+
+// Must match valid_skill() and valid_area() in sql/01_schema.sql.
+const SKILLS = ['clean', 'cook', 'garden', 'paint', 'helper', 'plumb', 'elec'];
+// Line icon and tile hue for each kind of work.
+const SKILL_ICON = { clean: ['sparkles', 205], cook: ['pot', 22], garden: ['sprout', 135], paint: ['roller', 330], helper: ['package', 255], plumb: ['wrench', 190], elec: ['zap', 42] };
+function skillIcon(s, size = 24, cls = '') {
+  const [name, hue] = SKILL_ICON[s];
+  return `<span class="sk ${cls}" style="--h:${hue}">${icon(name, size)}</span>`;
+}
+const AREAS = ['town', 'hijuguri', 'borguri', 'rangagora', 'bordoloi', 'chandmari'];
+const LOCALE = { en: 'en-IN', as: 'as-IN', hi: 'hi-IN' };
+
+// Line icons (24x24, drawn with currentColor).
+const ICONS = {
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  list: '<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  briefcase: '<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8 7V5.5A2.5 2.5 0 0 1 10.5 3h3A2.5 2.5 0 0 1 16 5.5V7M3 13h18"/>',
+  chart: '<path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/>',
+  id: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2"/><path d="M14 10h4M14 14h3M6 16a3 3 0 0 1 6 0"/>',
+  send: '<path d="m22 2-11 11M22 2l-7 20-4-9-9-4z"/>',
+  receipt: '<path d="M6 2h12v20l-3-2-3 2-3-2-3 2z"/><path d="M9 7h6M9 11h6M9 15h4"/>',
+  refresh: '<path d="M20 12a8 8 0 1 1-2.3-5.7L20 8.5"/><path d="M20 3.5v5h-5"/>',
+  back: '<path d="m15 18-6-6 6-6"/>',
+  phone: '<path d="M21 16.5v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 1.1 3.7 2 2 0 0 1 3.1 1.5h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L7 9.4a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.8 2.2z"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  alert: '<circle cx="12" cy="12" r="10"/><path d="M12 7.5v5M12 16.5h.01"/>',
+  calendar: '<rect x="3" y="4.5" width="18" height="17" rx="2.5"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  pin: '<path d="M12 22s7-6.1 7-12a7 7 0 0 0-14 0c0 5.9 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/>',
+  logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+  shield: '<path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
+  lock: '<rect x="4" y="10.5" width="16" height="11" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/>',
+  home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v12h14V9"/><path d="M10 21v-6h4v6"/>',
+  users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6.5 6.5 0 0 1 3.5 6"/>',
+  card: '<rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="M2 10h20M6 15h4"/>',
+  mobile: '<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/>',
+  cash: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/>',
+  camera: '<path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.7-2.5h6L16.7 6h1.8A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.5"/>',
+  star: '<path fill="currentColor" stroke-width="1.5" d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9z"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  moon: '<path d="M20.5 13.5A8.5 8.5 0 1 1 10.5 3.5a6.6 6.6 0 0 0 10 10z"/>',
+  // kinds of work
+  sparkles: '<path d="M10 3.5 11.7 8l4.5 1.7-4.5 1.7L10 16l-1.7-4.6L3.8 9.7 8.3 8z"/><path d="m18 14 .9 2.1 2.1.9-2.1.9L18 20l-.9-2.1L15 17l2.1-.9z"/><path d="M18 3v3M16.5 4.5h3"/>',
+  pot: '<path d="M4 11h16v5.5a3.5 3.5 0 0 1-3.5 3.5h-9A3.5 3.5 0 0 1 4 16.5z"/><path d="M2 11h20M9 3.5c-.8.9-.8 1.8 0 2.7s.8 1.8 0 2.7M14.5 3.5c-.8.9-.8 1.8 0 2.7s.8 1.8 0 2.7"/>',
+  sprout: '<path d="M7 21h10M12 21v-9"/><path d="M12 12C12 8 9.5 5.5 5 5.5 5 9.5 7.5 12 12 12z"/><path d="M12 10c0-3.3 2.2-5.5 6.5-5.5 0 3.3-2.2 5.5-6.5 5.5z"/>',
+  roller: '<rect x="3" y="3" width="15" height="6" rx="2"/><path d="M18 6h2a1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1h-8v2.5"/><rect x="10" y="14" width="4" height="7.5" rx="1.2"/>',
+  package: '<path d="m21 7.5-9-4.5-9 4.5 9 4.5z"/><path d="M3 7.5v9l9 4.5 9-4.5v-9M12 12v9M7.5 5.2l9 4.5"/>',
+  wrench: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/>',
+  zap: '<path d="M13 2 3.5 13.5H12L11 22l9.5-11.5H12z"/>',
+};
+function icon(name, size = 22) {
+  return `<svg class="ic" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
+}
+
+// ===================== Helpers =====================
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (_) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (_) { /* private mode */ } },
+};
+const $ = (sel) => document.querySelector(sel);
+const main = $('#main');
+
+const S = {
+  lang: store.get('lang') || ({ as: 'as', hi: 'hi' }[(navigator.language || '').slice(0, 2)] || 'en'),
+  user: null, profile: null, worker: null,
+  onlyMyArea: store.get('onlyMyArea') !== '0',
+  login: { email: '', step: 'start', until: 0 },
+  routeId: 0,
+};
+
+function t(k, vars) {
+  let s = (T[S.lang] && T[S.lang][k]) ?? T.en[k] ?? k;
+  if (vars) s = s.replace(/\{(\w+)\}/g, (_, v) => vars[v] ?? '');
+  return s;
+}
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+// Translated text as safe HTML; variables are escaped.
+function te(k, vars) {
+  const s = esc(t(k));
+  return vars ? s.replace(/\{(\w+)\}/g, (_, v) => esc(vars[v] ?? '')) : s;
+}
+const skillName = (s) => t('skill_' + s);
+const areaName = (a) => t('area_' + a);
+const rupee = (n) => '₹' + Number(n || 0).toLocaleString('en-IN');
+const stars = (n, size = 18) => `<span class="stars" role="img" aria-label="${n}/5">${[1, 2, 3, 4, 5].map((k) => `<span class="${k <= n ? '' : 'off'}">${icon('star', size)}</span>`).join('')}</span>`;
+const telLink = (phone) => 'tel:+' + String(phone || '').replace(/\D/g, '');
+function fmtDate(d) {
+  try { return new Date(d + 'T00:00:00').toLocaleDateString(LOCALE[S.lang], { weekday: 'short', day: 'numeric', month: 'short' }); }
+  catch (_) { return d; }
+}
+function todayIST() { return new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10); }
+function addDays(d, n) { const x = new Date(d + 'T00:00:00Z'); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); }
+function upiLink(pa, pn, amount) {
+  return `upi://pay?pa=${encodeURIComponent(pa)}&pn=${encodeURIComponent(pn)}&am=${Number(amount).toFixed(2)}&cu=INR&tn=${encodeURIComponent('Kaamghor job')}`;
+}
+
+let toastTimer;
+function toast(msg, kind) {
+  const box = $('#toast');
+  const err = kind === 'err';
+  box.innerHTML = `<div class="${err ? 'err' : ''}">${icon(err ? 'alert' : 'check', 20)}<span>${esc(msg)}</span></div>`;
+  if (err && navigator.vibrate) navigator.vibrate([25, 40, 25]);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    const el = box.firstElementChild;
+    if (!el) return;
+    el.classList.add('out');
+    setTimeout(() => { if (box.firstElementChild === el) box.innerHTML = ''; }, 250);
+  }, err ? 6000 : 3500);
+}
+function showErr(e) {
+  console.error(e);
+  toast(t('error') + (e && e.message ? ': ' + e.message : ''), 'err');
+}
+
+function ask(msg) {
+  const dlg = $('#dlg');
+  $('#dlgMsg').textContent = msg;
+  $('#dlgYes').textContent = t('yes');
+  $('#dlgNo').textContent = t('no');
+  return new Promise((resolve) => {
+    // Slide the sheet away, then close it.
+    const done = (v) => {
+      $('#dlgYes').onclick = $('#dlgNo').onclick = dlg.oncancel = dlg.onclick = null;
+      dlg.classList.add('closing');
+      setTimeout(() => { dlg.classList.remove('closing'); dlg.close(); }, 200);
+      resolve(v);
+    };
+    $('#dlgYes').onclick = () => done(true);
+    $('#dlgNo').onclick = () => done(false);
+    dlg.oncancel = (e) => { e.preventDefault(); done(false); };
+    // Tapping the dimmed area outside the sheet means "no".
+    dlg.onclick = (e) => {
+      const r = dlg.getBoundingClientRect();
+      if (e.clientY < r.top || e.clientY > r.bottom || e.clientX < r.left || e.clientX > r.right) done(false);
+    };
+    dlg.showModal();
+    $('#dlgYes').focus();
+  });
+}
+
+// Disables the button while the action runs, so a slow network cannot cause double taps.
+async function busy(btn, fn) {
+  if (btn) btn.disabled = true;
+  try { return await fn(); } catch (e) { showErr(e); } finally { if (btn) btn.disabled = false; }
+}
+
+// Placeholder shapes while a page loads, so the layout does not jump.
+function loading() { main.classList.remove('enter'); main.innerHTML = '<div class="skel h"></div><div class="skel"></div><div class="skel"></div>'; }
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) return resolve();
+    const s = document.createElement('script');
+    s.src = src; s.onload = resolve; s.onerror = () => reject(new Error('Could not load ' + src));
+    document.head.appendChild(s);
+  });
+}
+
+function applyChrome() {
+  document.documentElement.lang = S.lang;
+  $('#langSel').value = S.lang;
+  $('#brandName').textContent = t('appName');
+  $('#offline').textContent = t('offline');
+  paintThemeChrome();
+}
+
+// ---------- Light / dark ----------
+// No saved choice means "follow the phone". The switch saves an explicit choice.
+const darkQuery = matchMedia('(prefers-color-scheme: dark)');
+function isDark() {
+  const th = document.documentElement.getAttribute('data-theme');
+  return th ? th === 'dark' : darkQuery.matches;
+}
+function paintThemeChrome() {
+  const dark = isDark();
+  $('#themeColor').content = dark ? '#0a0a0c' : '#f2f2f6';
+  const b = $('#themeBtn');
+  const label = t(dark ? 'lightMode' : 'darkMode');
+  b.innerHTML = icon(dark ? 'sun' : 'moon', 20);
+  b.setAttribute('aria-label', label);
+  b.title = label;
+}
+function toggleTheme() {
+  const next = isDark() ? 'light' : 'dark';
+  store.set('theme', next); // save first: the fade below may run late or be skipped
+  let applied = false;
+  const apply = () => {
+    if (applied) return;
+    applied = true;
+    document.documentElement.setAttribute('data-theme', next);
+    paintThemeChrome();
+  };
+  // Cross-fade the whole page where the browser supports it; switch anyway if the fade doesn't start.
+  if (document.startViewTransition && document.visibilityState === 'visible' && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.startViewTransition(apply);
+    setTimeout(apply, 400);
+  } else apply();
+}
+darkQuery.addEventListener('change', paintThemeChrome);
+
+// ===================== Shared bits of UI =====================
+function statusBadge(status) { return `<span class="badge ${status}"><i class="dot"></i>${te('status_' + status)}</span>`; }
+
+function jobMeta(j) {
+  return `<div class="meta"><span>${icon('calendar', 15)}${esc(fmtDate(j.job_date))}</span><span>${icon('clock', 15)}${te('hoursN', { n: j.hours })}</span><span>${icon('pin', 15)}${esc(areaName(j.area))}</span></div>`;
+}
+function jobCard(j, href, extra = '') {
+  return `<a class="card tap job" href="#${href}">
+    ${skillIcon(j.service, 26, 'job-ic')}
+    <div class="job-body">
+      <div class="title-row"><div class="jobtitle">${te('skill_' + j.service)}</div><div class="pay">${rupee(j.pay)}</div></div>
+      ${jobMeta(j)}
+      <div class="row between" style="margin-top:10px">${statusBadge(j.status)}${extra}</div>
+    </div>
+  </a>`;
+}
+
+// Initial in a coloured circle; the colour comes from the name so it stays the same for each person.
+function avatar(name) {
+  const s = String(name || '?').trim();
+  let h = 0;
+  for (const ch of s) h = (h * 31 + ch.codePointAt(0)) % 210;
+  h = (h + 200) % 360; // blues, purples, pinks and warm tones; never green
+  return `<div class="avatar" style="--h:${h}" aria-hidden="true">${esc([...s][0] || '?').toUpperCase()}</div>`;
+}
+function workerLine(w) {
+  const rating = w.rating_avg ? `<span><span class="stars">${icon('star', 14)}</span>${Number(w.rating_avg).toFixed(1)}</span>` : `<span class="badge gray">${te('newWorker')}</span>`;
+  return `<div class="who">${avatar(w.full_name)}<div style="min-width:0">
+      <b>${esc(w.full_name)}</b>${w.verified ? `<span class="vcheck" title="${te('verified')}">${icon('check', 12)}</span>` : ''}
+      <div class="meta">${rating}<span>${te('jobsN', { n: w.jobs_done })}</span>${w.verified ? '' : `<span>${te('notVerified')}</span>`}</div>
+    </div></div>`;
+}
+
+// Posted → Hired → Done → Paid, with the next step highlighted.
+function progress(j, pm) {
+  if (j.status === 'cancelled') return '';
+  const reached = j.status === 'open' ? 0 : j.status === 'assigned' ? 1 : pm && pm.status === 'paid' ? 3 : 2;
+  return `<div class="progress">${['posted', 'hired', 'done', 'paid'].map((s, k) =>
+    `<div class="st ${k <= reached ? 'done' : k === reached + 1 ? 'now' : ''}" style="--d:${k * 90}ms"><i>${k <= reached ? icon('check', 14) : k + 1}</i>${te('step_' + s)}</div>`).join('')}</div>`;
+}
+function refreshBtn() { return `<button class="iconbtn" data-act="reload" aria-label="${te('refresh')}" title="${te('refresh')}">${icon('refresh', 20)}</button>`; }
+function titleRow(title) { return `<div class="title-row"><h1>${title}</h1>${refreshBtn()}</div>`; }
+
+function areaOptions(selected) {
+  return AREAS.map((a) => `<option value="${a}" ${a === selected ? 'selected' : ''}>${esc(areaName(a))}</option>`).join('');
+}
+function skillChips(name, type, selected) {
+  return `<div class="chips">${SKILLS.map((s) => `<label class="choice"><input type="${type}" name="${name}" value="${s}" ${selected.includes(s) ? 'checked' : ''}><span>${skillIcon(s, 28)}${te('skill_' + s)}</span></label>`).join('')}</div>`;
+}
+function backLink(href) { return `<a class="back" href="#${href}">${icon('back', 20)}${te('back')}</a>`; }
+function empty(ic, text, action = '') { return `<div class="empty"><b>${icon(ic, 38)}</b>${esc(text)}${action}</div>`; }
+
+// ===================== Login =====================
+function showLogin() {
+  $('#tabs').hidden = true;
+  const L = S.login;
+  const langs = `<div class="langs">${['en', 'as', 'hi'].map((l) => `<button type="button" data-act="lang" data-lang="${l}" class="${S.lang === l ? 'on' : ''}">${{ en: 'English', as: 'অসমীয়া', hi: 'हिन्दी' }[l]}</button>`).join('')}</div>`;
+  const hero = `<div class="hero"><div class="hero-mark"><svg class="logo" aria-hidden="true"><use href="#kg-mark"/></svg></div><h1>${te('appName')}</h1><div class="muted">${te('tagline')}</div></div>`;
+  if (L.step === 'start') {
+    main.innerHTML = `${hero}${langs}
+      <div class="card">
+        <button type="button" class="btn google block" data-act="google">${GOOGLE_G}${te('google')}</button>
+        <div class="or"><span>${te('or')}</span></div>
+        <form data-form="sendCode">
+          <label class="f" for="em" style="margin-top:0">${te('emailLabel')}</label>
+          <input id="em" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" value="${esc(L.email)}" required>
+          <div style="margin-top:14px"><button class="btn block">${te('sendCode')}</button></div>
+        </form>
+      </div>
+      <div id="installSlot"></div>`;
+    updateInstallSlot();
+  } else {
+    main.innerHTML = `${hero}
+      <form data-form="verifyCode" class="card">
+        <label class="f" for="code">${te('codeLabel', { email: L.email })}</label>
+        <input id="code" class="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" required>
+        <div class="muted small" style="margin-top:6px">${te('checkSpam')}</div>
+        <div style="margin-top:14px"><button class="btn block">${te('verify')}</button></div>
+        <div class="row between" style="margin-top:12px">
+          <button type="button" class="btn ghost sm" data-act="changeEmail">${te('changeEmail')}</button>
+          <button type="button" class="btn soft sm" data-act="resend" id="resendBtn"></button>
+        </div>
+      </form>`;
+    $('#code').focus();
+    tickResend();
+  }
+}
+const GOOGLE_G = '<svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.6c0-1.6-.1-3.1-.4-4.6H24v9h12.4c-.5 2.9-2.2 5.3-4.6 7l7.4 5.7c4.3-4 6.9-9.9 6.9-17.1z"/><path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.4-5.7c-2.1 1.4-4.8 2.3-8.5 2.3-6.2 0-11.5-4.1-13.4-9.9l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg>';
+// Accepts 98xxxxxxxx, +91 98xxx xxxxx, 098xxxxxxxx; returns 91XXXXXXXXXX or null.
+function cleanPhone(v) {
+  const d = String(v || '').replace(/\D/g, '').replace(/^(91|0)(?=\d{10}$)/, '');
+  return /^[6-9]\d{9}$/.test(d) ? '91' + d : null;
+}
+function phoneInput(id, value) {
+  return `<div class="phone"><span>+91</span><input id="${id}" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="10" value="${esc(value)}" required></div>
+    <div class="muted small row" style="margin-top:8px;gap:6px;flex-wrap:nowrap">${icon('lock', 15)}<span>${te('phoneHint')}</span></div>`;
+}
+function tickResend() {
+  const b = $('#resendBtn');
+  if (!b) return;
+  const left = Math.ceil((S.login.until - Date.now()) / 1000);
+  b.disabled = left > 0;
+  b.textContent = left > 0 ? t('resendIn', { s: left }) : t('resend');
+  if (left > 0) setTimeout(tickResend, 1000);
+}
+
+// ===================== Sign-up (first login) =====================
+function showOnboard() {
+  $('#tabs').hidden = true;
+  main.innerHTML = `<h1>${te('whatDo')}</h1>
+    <form data-form="onboard">
+      <div class="choices">
+        <label class="choice"><input type="radio" name="role" value="household" required><span>${icon('home', 30)}${te('roleHousehold')}</span></label>
+        <label class="choice"><input type="radio" name="role" value="worker"><span>${icon('briefcase', 30)}${te('roleWorker')}</span></label>
+      </div>
+      <label class="f" for="nm">${te('fullName')}</label>
+      <input id="nm" name="full_name" type="text" maxlength="80" autocomplete="name" value="${esc(S.user?.user_metadata?.full_name || '')}" required>
+      <label class="f" for="obPh">${te('phoneLabel')}</label>
+      ${phoneInput('obPh', '')}
+      <label class="f" for="ar">${te('area')}</label>
+      <select id="ar" name="area" class="in" required><option value=""></option>${areaOptions('')}</select>
+      <div id="workerFields" hidden>
+        <label class="f">${te('skills')}</label>
+        ${skillChips('skills', 'checkbox', [])}
+        <label class="f" for="upi">${te('upiId')}</label>
+        <input id="upi" name="upi_id" type="text" autocomplete="off" autocapitalize="off" placeholder="name@okaxis">
+      </div>
+      <label class="check"><input type="checkbox" name="agree" required><span>${te('agreeTerms').replace('{link}', `<a href="terms.html" target="_blank">${te('termsLink')}</a>`)}</span></label>
+      <button class="btn block">${te('continue')}</button>
+    </form>`;
+  main.querySelectorAll('input[name=role]').forEach((r) => r.addEventListener('change', () => {
+    $('#workerFields').hidden = r.value !== 'worker';
+  }));
+}
+const UPI_RE = /^[A-Za-z0-9._-]{2,128}@[A-Za-z]{2,64}$/;
+
+// ===================== Start-up and routing =====================
+const TABS = {
+  household: [['post', 'plus', 'tabPost'], ['jobs', 'list', 'tabMyJobs'], ['profile', 'user', 'tabProfile']],
+  worker: [['find', 'search', 'tabFind'], ['work', 'briefcase', 'tabMyWork'], ['profile', 'user', 'tabProfile']],
+  admin: [['overview', 'chart', 'tabOverview'], ['verify', 'id', 'tabVerify'], ['payouts', 'send', 'tabPayouts'], ['fees', 'receipt', 'tabFees']],
+};
+
+// The tab bar is built once per role and language, so the glass lens can slide between tabs.
+function renderTabs(active) {
+  const nav = $('#tabs');
+  const tabs = TABS[S.profile.role];
+  const sig = S.profile.role + '/' + S.lang;
+  if (nav.dataset.sig !== sig) {
+    nav.innerHTML = tabs.map(([h, ic, k]) => `<a href="#${h}">${icon(ic, 24)}<span>${te(k)}</span></a>`).join('');
+    nav.dataset.sig = sig;
+  }
+  const i = Math.max(0, tabs.findIndex(([h]) => h === active));
+  nav.style.setProperty('--n', tabs.length);
+  nav.style.setProperty('--i', i);
+  nav.querySelectorAll('a').forEach((a, k) => {
+    a.classList.toggle('on', k === i);
+    if (k === i) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+  });
+  nav.hidden = false;
+}
+
+async function loadMe(user) {
+  S.user = user;
+  S.profile = await api.myProfile(user.id);
+  if (!S.profile) return showOnboard();
+  S.worker = S.profile.role === 'worker' ? await api.myWorker(user.id) : null;
+  if (S.profile.role === 'worker' && !S.worker) {
+    await api.createWorker({ user_id: user.id, skills: [] });
+    S.worker = await api.myWorker(user.id);
+  }
+  subscribeLive();
+  route();
+}
+
+const VIEWS = {
+  household: { post: viewPost, jobs: viewJobs, job: viewJobHousehold, profile: viewProfile },
+  worker: { find: viewFind, work: viewWork, wjob: viewJobWorker, profile: viewProfile },
+  admin: { overview: viewOverview, verify: viewVerify, payouts: viewPayouts, fees: viewFees },
+};
+// Which tab a detail page belongs to.
+const PARENT = { job: 'jobs', wjob: 'work' };
+
+// opts.soft: same page again (after an action or a live update). Keeps the current content and
+// scroll position on screen until the new data arrives, and skips the entrance animation.
+async function route(opts) {
+  if (!S.profile) return;
+  const views = VIEWS[S.profile.role];
+  let [name, id] = location.hash.slice(1).split('/');
+  if (!views[name]) {
+    name = TABS[S.profile.role][S.profile.role === 'household' ? 1 : 0][0];
+    history.replaceState(null, '', '#' + name);
+  }
+  const soft = !!(opts && opts.soft) && S.view && S.view.name === name && S.view.id === id;
+  renderTabs(PARENT[name] || name);
+  const my = ++S.routeId;
+  S.view = { name, id };
+  // Keep the current page on screen while loading; show placeholders only if it is slow,
+  // so fast loads swap straight to the new page without a flash.
+  clearTimeout(S.skelTimer);
+  if (!soft) S.skelTimer = setTimeout(() => { if (my === S.routeId) loading(); }, 200);
+  try {
+    const html = await views[name](id);
+    if (my !== S.routeId || typeof html !== 'string') return;
+    clearTimeout(S.skelTimer);
+    // Entrance motion only for a new page; refreshed content just updates in place.
+    main.classList.remove('enter');
+    main.innerHTML = html;
+    if (!soft) {
+      void main.offsetWidth; // restart the animation
+      main.classList.add('enter');
+      window.scrollTo(0, 0);
+    }
+    afterRender(name);
+  } catch (e) {
+    clearTimeout(S.skelTimer);
+    if (my === S.routeId) main.innerHTML = `<div class="note err">${icon('alert', 20)}<span>${te('error')}: ${esc(e.message)}</span></div><button class="btn soft" data-act="reload">${icon('refresh', 18)}${te('refresh')}</button>`;
+    console.error(e);
+  }
+}
+function refresh() { route({ soft: true }); }
+
+function go(hash) {
+  if (location.hash === '#' + hash) route(); else location.hash = hash;
+}
+
+// ===================== Household =====================
+async function viewPost() {
+  const p = S.profile;
+  const today = todayIST();
+  return `<h1>${te('tabPost')}</h1>
+    <form data-form="postJob">
+      <label class="f">${te('service')}</label>
+      ${skillChips('service', 'radio', ['clean'])}
+      <label class="f" for="jArea">${te('area')}</label>
+      <select id="jArea" name="area" class="in">${areaOptions(p.area)}</select>
+      <div class="note small" id="matchCount" hidden></div>
+      <label class="f">${te('date')}</label>
+      <div class="seg">
+        <label class="choice pill"><input type="radio" name="when" value="${today}" checked><span>${te('today')}</span></label>
+        <label class="choice pill"><input type="radio" name="when" value="${addDays(today, 1)}"><span>${te('tomorrow')}</span></label>
+        <label class="choice pill"><input type="radio" name="when" value="other"><span>${icon('calendar', 16)}${te('otherDate')}</span></label>
+      </div>
+      <input id="jDate" name="job_date" type="date" min="${today}" value="${today}" aria-label="${te('date')}" style="margin-top:10px" hidden required>
+      <label class="f">${te('hours')}</label>
+      <div class="numstep">
+        <button type="button" data-act="hours" data-d="-1" aria-label="−">−</button>
+        <output id="hoursOut">${te('hoursN', { n: 4 })}</output>
+        <button type="button" data-act="hours" data-d="1" aria-label="+">+</button>
+      </div>
+      <input type="hidden" name="hours" value="4">
+      <label class="f" for="jPay">${te('pay')}</label>
+      <div class="seg even" style="margin-bottom:10px">${[300, 400, 500, 700, 1000].map((v) => `<button type="button" class="pillbtn" data-act="payPick" data-v="${v}">₹${v}</button>`).join('')}</div>
+      <input id="jPay" name="pay" type="number" inputmode="numeric" min="100" step="10" placeholder="${te('payHint')}" required>
+      <label class="f" for="jNotes">${te('notes')}</label>
+      <textarea id="jNotes" name="notes" maxlength="500" placeholder="${te('notesPh')}"></textarea>
+      <div style="margin-top:16px"><button class="btn block">${te('postBtn')}</button></div>
+    </form>`;
+}
+
+async function updateMatchCount() {
+  const form = main.querySelector('form[data-form=postJob]');
+  if (!form) return;
+  const service = form.service.value, area = form.area.value;
+  try {
+    const n = await api.countMatching(service, area);
+    const box = $('#matchCount');
+    if (box && form.service.value === service && form.area.value === area) { box.innerHTML = icon('users', 20) + '<span>' + esc(t('matchCount', { n })) + '</span>'; box.hidden = false; }
+  } catch (_) { /* informational only */ }
+}
+
+async function viewJobs() {
+  const jobs = await api.myPostedJobs(S.user.id);
+  if (!jobs.length) return `<h1>${te('tabMyJobs')}</h1>${empty('list', t('noJobs'), `<div style="margin-top:14px"><a class="btn" href="#post">${te('postFirst')}</a></div>`)}`;
+  return `${titleRow(te('tabMyJobs'))}
+    ${jobs.map((j) => jobCard(j, 'job/' + j.id, j.rating ? `${stars(j.rating, 16)}` : '')).join('')}`;
+}
+
+function jobHeader(j, backTo, pm) {
+  return `<div class="title-row">${backLink(backTo)}${refreshBtn()}</div>
+    <div class="card">
+      <div class="job-head">
+        ${skillIcon(j.service, 26, 'job-ic')}
+        <div class="job-body">
+          <div class="title-row"><div class="jobtitle">${te('skill_' + j.service)}</div><div class="pay">${rupee(j.pay)}</div></div>
+          ${jobMeta(j)}
+        </div>
+      </div>
+      ${j.notes ? `<p style="margin:12px 0 0">${esc(j.notes)}</p>` : ''}
+      ${progress(j, pm)}
+    </div>`;
+}
+
+async function viewJobHousehold(id) {
+  const j = await api.job(id);
+  if (!j || j.household_id !== S.user.id) return empty('alert', t('error'));
+  const pm = j.status === 'done' ? await api.payment(id) : null;
+  let html = jobHeader(j, 'jobs', pm);
+
+  if (j.status === 'open') {
+    const [applicants, matching] = await Promise.all([api.applicants(id), api.matchingWorkers(j.service, j.area)]);
+    const appliedIds = new Set(applicants.map((w) => w.id));
+    html += `<h2>${te('applicants', { n: applicants.length })}</h2>`;
+    html += applicants.length
+      ? applicants.map((w) => `<div class="card"><div class="row between nowrap"><div style="min-width:0">${workerLine(w)}</div>
+          <button class="btn" data-act="hire" data-job="${j.id}" data-worker="${w.id}" data-name="${esc(w.full_name)}">${te('hire')}</button></div></div>`).join('')
+      : `<div class="note">${icon('clock', 20)}<span>${te('noApplicants')}</span></div>`;
+    const others = matching.filter((w) => !appliedIds.has(w.id));
+    if (others.length) {
+      html += `<h2>${te('otherMatching')}</h2><p class="muted small">${te('otherMatchingHint')}</p>`;
+      html += others.map((w) => `<div class="card">${workerLine(w)}</div>`).join('');
+    }
+    return html;
+  }
+
+  if (j.status === 'assigned' || j.status === 'done') {
+    const [w, pw] = await Promise.all([api.profileById(j.worker_id), api.publicWorker(j.worker_id)]);
+    html += `<h2>${te('yourWorker')}</h2><div class="card"><div class="row between nowrap"><div style="min-width:0">${pw ? workerLine(pw) : `<b>${esc(w?.full_name)}</b>`}</div>
+      ${w?.phone ? `<a class="btn soft" href="${telLink(w.phone)}">${icon('phone', 18)}${te('call')}</a>` : ''}</div></div>`;
+  }
+  if (j.status === 'assigned') html += `<div class="note">${icon('clock', 20)}<span>${te('waitDone')}</span></div>`;
+
+  if (j.status === 'done') {
+    html += `<h2>${te('payment')}</h2>`;
+    if (pm && pm.status === 'paid') {
+      html += `<div class="note">${icon('check', 20)}<span>${te('paidVia', { n: pm.amount.toLocaleString('en-IN'), method: t('method_' + pm.method) })}</span></div>`;
+    } else if (pm) {
+      html += `<div class="card stack">
+        <div class="pay">${te('amountDue', { n: pm.amount })}</div>
+        <button class="btn block" data-act="payOnline" data-job="${j.id}">${icon('card', 20)}${te('payOnline')}</button>
+        <button class="btn soft block" data-act="payDirect" data-job="${j.id}">${icon('mobile', 20)}${te('payDirect')}</button>
+        <button class="btn soft block" data-act="payCash" data-amount="${pm.amount}">${icon('cash', 20)}${te('payCash')}</button>
+        <div id="payInfo"></div>
+      </div>`;
+    }
+    html += `<h2>${j.rating ? te('yourRating') : te('rateWorker')}</h2>`;
+    html += j.rating
+      ? `<div class="card" style="text-align:center">${stars(j.rating, 32)}</div>`
+      : `<div class="card" style="text-align:center"><div class="rate">${[5, 4, 3, 2, 1].map((n) => `<button data-act="rate" data-job="${j.id}" data-n="${n}" aria-label="${n} / 5">${icon('star', 40)}</button>`).join('')}</div></div>`;
+  }
+  return html;
+}
+
+// Opens Razorpay. The webhook marks the payment paid; here we only wait and re-check.
+async function payOnline(jobId) {
+  const order = await api.createOrder(jobId);
+  await loadScript('https://checkout.razorpay.com/v1/checkout.js');
+  const rz = new Razorpay({
+    key: order.key_id, amount: order.amount, currency: order.currency, order_id: order.order_id,
+    name: 'Kaamghor', description: 'Job payment',
+    prefill: { contact: '+' + (S.profile.phone || ''), email: S.user.email || '' },
+    theme: { color: '#1c1c1e' },
+    handler: () => waitForPaid(jobId),
+  });
+  rz.on('payment.failed', (r) => toast(r.error && r.error.description ? r.error.description : t('error'), 'err'));
+  rz.open();
+}
+async function waitForPaid(jobId) {
+  toast(t('confirming'));
+  for (let i = 0; i < 10; i++) {
+    await new Promise((r) => setTimeout(r, 3000));
+    const pm = await api.payment(jobId).catch(() => null);
+    if (pm && pm.status === 'paid') { toast(t('paidOk')); return refresh(); }
+  }
+  toast(t('stillConfirming'));
+}
+
+// ===================== Worker =====================
+function verifyBanner() {
+  const w = S.worker;
+  if (!w || w.verified) return '';
+  return w.id_doc_path
+    ? `<div class="note">${icon('clock', 20)}<span>${te('underReview')}</span></div>`
+    : `<a class="note warn" href="#profile">${icon('shield', 20)}<span>${te('getVerified')} →</span></a>`;
+}
+
+async function viewFind() {
+  S.worker = await api.myWorker(S.user.id);
+  const w = S.worker;
+  let html = `${titleRow(te('tabFind'))}${verifyBanner()}`;
+  if (!w.available) html += `<a class="note warn" href="#profile">${icon('alert', 20)}<span>${te('unavailableNote')}</span></a>`;
+  if (!w.skills.length) return html + `<a class="note warn" href="#profile">${icon('alert', 20)}<span>${te('pickSkill')} →</span></a>`;
+  html += `<label class="toggle card"><span class="row" style="gap:8px">${icon('pin', 18)}${te('onlyMyArea')} · ${esc(areaName(S.profile.area))}</span><input type="checkbox" data-act="onlyMyArea" ${S.onlyMyArea ? 'checked' : ''}></label>`;
+  const [jobs, applied] = await Promise.all([api.openJobs(w.skills, S.onlyMyArea ? S.profile.area : null), api.myApplications(S.user.id)]);
+  const mine = new Set(applied);
+  if (!jobs.length) return html + empty('search', t('noOpenJobs'));
+  return html + jobs.map((j) => `<div class="card job">
+      ${skillIcon(j.service, 26, 'job-ic')}
+      <div class="job-body">
+        <div class="title-row"><div class="jobtitle">${te('skill_' + j.service)}</div><div class="pay">${rupee(j.pay)}</div></div>
+        ${jobMeta(j)}
+        ${j.notes ? `<p style="margin:8px 0 0">${esc(j.notes)}</p>` : ''}
+        <div class="row" style="margin-top:12px">
+          ${mine.has(j.id)
+            ? `<span class="badge ok">${icon('check', 14)}${te('applied')}</span><button class="btn ghost sm" data-act="withdraw" data-job="${j.id}">${te('withdraw')}</button>`
+            : `<button class="btn" data-act="apply" data-job="${j.id}">${te('apply')}</button>`}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function viewWork() {
+  const jobs = await api.myWork(S.user.id);
+  const head = `${titleRow(te('tabMyWork'))}`;
+  if (!jobs.length) return head + empty('briefcase', t('noWork'), `<div style="margin-top:14px"><a class="btn" href="#find">${te('tabFind')}</a></div>`);
+  return head + jobs.map((j) => jobCard(j, 'wjob/' + j.id)).join('');
+}
+
+async function viewJobWorker(id) {
+  const j = await api.job(id);
+  if (!j || j.worker_id !== S.user.id) return empty('alert', t('error'));
+  const [h, pm] = await Promise.all([api.profileById(j.household_id), j.status === 'done' ? api.payment(id) : null]);
+  let html = jobHeader(j, 'work', pm);
+  html += `<h2>${te('household')}</h2><div class="card"><div class="row between nowrap"><div class="who">${avatar(h?.full_name)}<div><b>${esc(h?.full_name)}</b><div class="meta"><span>${icon('pin', 15)}${esc(areaName(h?.area))}</span></div></div></div>
+    ${h?.phone ? `<a class="btn soft" href="${telLink(h.phone)}">${icon('phone', 18)}${te('call')}</a>` : ''}</div></div>`;
+
+  if (j.status === 'assigned') {
+    html += `<button class="btn block" data-act="complete" data-job="${j.id}" style="margin-top:8px">${icon('check', 20)}${te('markDone')}</button>`;
+  }
+  if (j.status === 'done') {
+    html += `<h2>${te('payment')}</h2>`;
+    if (pm && pm.status === 'pending') {
+      html += `<div class="card stack"><div class="pay">${te('waitingPayment')} · ${rupee(pm.amount)}</div>
+        <div class="muted small">${te('onlineAuto')}</div>
+        <div><b>${te('gotPaidHow')}</b></div>
+        <button class="btn soft block" data-act="gotCash" data-job="${j.id}" data-amount="${pm.amount}">${icon('cash', 20)}${te('gotCash')}</button>
+        <button class="btn soft block" data-act="gotUpi" data-job="${j.id}" data-amount="${pm.amount}">${icon('mobile', 20)}${te('gotUpi')}</button></div>`;
+    } else if (pm) {
+      html += `<div class="note">${icon('check', 20)}<span>${te('paidVia', { n: pm.amount.toLocaleString('en-IN'), method: t('method_' + pm.method) })}</span></div>`;
+      if (pm.payout_status === 'na') {
+        html += pm.fee_settled_at
+          ? `<div class="note">${icon('check', 20)}<span>${te('feeSettled')}</span></div>`
+          : `<div class="note warn">${icon('receipt', 20)}<span>${te('feeOwed', { n: pm.fee })}</span></div>`;
+      } else if (pm.payout_status === 'pending') {
+        html += `<div class="note warn">${icon('clock', 20)}<span>${te('payoutPending', { n: pm.amount - pm.fee })}</span></div>`;
+      } else if (pm.payout_status === 'sent') {
+        html += `<div class="note">${icon('send', 20)}<span>${te('payoutSent', { n: pm.amount - pm.fee, ref: pm.payout_ref })}</span></div>`;
+      }
+    }
+    if (j.rating) html += `<h2>${te('householdRating')}</h2><div class="card" style="text-align:center">${stars(j.rating, 32)}</div>`;
+  }
+  return html;
+}
+
+// ===================== Profile (household and worker) =====================
+async function viewProfile() {
+  const p = S.profile;
+  const isWorker = p.role === 'worker';
+  if (isWorker) S.worker = await api.myWorker(S.user.id);
+  const w = S.worker;
+  let html = `<h1>${te('tabProfile')}</h1>`;
+  if (isWorker) {
+    html += `<div class="stat"><div><b>${w.rating_avg ? Number(w.rating_avg).toFixed(1) : '—'}</b><span>${te('myRating')}</span></div>
+      <div><b>${w.jobs_done}</b><span>${te('jobsDone')}</span></div>
+      <div><b>${w.verified ? icon('check', 28) : '—'}</b><span>${w.verified ? te('verified') : te('notVerified')}</span></div></div>`;
+  }
+  html += `<form data-form="profile">
+    <label class="f" for="pNm">${te('fullName')}</label>
+    <input id="pNm" name="full_name" type="text" maxlength="80" value="${esc(p.full_name)}" required>
+    <label class="f" for="pAr">${te('area')}</label>
+    <select id="pAr" name="area" class="in">${areaOptions(p.area)}</select>
+    <label class="f" for="pPh">${te('phoneLabel')}</label>
+    ${phoneInput('pPh', p.phone.slice(2))}
+    <div class="muted small" style="margin-top:10px">${te('email')}: ${esc(S.user.email)}</div>`;
+  if (isWorker) {
+    html += `<label class="f">${te('skills')}</label>${skillChips('skills', 'checkbox', w.skills)}
+      <label class="f" for="pUpi">${te('upiId')}</label>
+      <input id="pUpi" name="upi_id" type="text" autocapitalize="off" autocomplete="off" placeholder="name@okaxis" value="${esc(w.upi_id || '')}">
+      <label class="toggle"><span>${te('available')}</span><input type="checkbox" name="available" ${w.available ? 'checked' : ''}></label>`;
+  }
+  html += `<div style="margin-top:16px"><button class="btn block">${te('save')}</button></div></form>`;
+  if (isWorker) {
+    html += `<h2>${te('idDoc')}</h2><div class="card stack">
+      <div>${w.verified ? `<span class="badge ok">${icon('check', 14)}${te('verified')}</span>` : w.id_doc_path ? `<span class="badge open"><i class="dot"></i>${te('underReview')}</span>` : `<span class="badge gray">${te('idNone')}</span>`}</div>
+      <div class="muted small row" style="gap:6px;flex-wrap:nowrap">${icon('shield', 16)}<span>${te('idPrivate')}</span></div>
+      <label class="btn soft block">${icon('camera', 20)}${w.id_doc_path ? te('replaceId') : te('uploadId')}
+        <input type="file" accept="image/*,application/pdf" data-act="idFile" hidden></label>
+    </div>`;
+  }
+  html += `<div id="installSlot"></div><hr><div class="row between"><a href="terms.html" target="_blank">${te('terms')}</a><button class="btn danger sm" data-act="logout">${icon('logout', 18)}${te('logout')}</button></div>`;
+  return html;
+}
+
+// Shrinks photos to keep uploads small on slow networks (about 200-400 KB).
+async function shrinkImage(file) {
+  if (!file.type.startsWith('image/')) return { blob: file, ext: 'pdf' };
+  try {
+    const bmp = await createImageBitmap(file);
+    const scale = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+    const c = document.createElement('canvas');
+    c.width = Math.round(bmp.width * scale); c.height = Math.round(bmp.height * scale);
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    const blob = await new Promise((r) => c.toBlob(r, 'image/jpeg', 0.75));
+    return { blob, ext: 'jpg' };
+  } catch (_) {
+    return { blob: file, ext: (file.type.split('/')[1] || 'jpg').replace('jpeg', 'jpg') };
+  }
+}
+
+// ===================== Admin =====================
+async function viewOverview() {
+  const s = await api.admin.stats();
+  const keys = ['jobs_open', 'jobs_assigned', 'jobs_done', 'unpaid_jobs', 'jobs_last_7d', 'jobs_cancelled',
+    'households', 'workers', 'workers_verified', 'awaiting_verify',
+    'paid_total', 'fees_online', 'fees_owed', 'fees_settled', 'payouts_pending', 'avg_rating'];
+  return `${titleRow(te('tabOverview'))}
+    <div class="stat">${keys.map((k) => `<div><b>${s[k] ?? '—'}</b><span>${te('st_' + k)}</span></div>`).join('')}</div>
+    <hr><div class="row between"><span class="muted small">${esc(S.user.email)}</span><button class="btn danger sm" data-act="logout">${icon('logout', 18)}${te('logout')}</button></div>`;
+}
+
+async function viewVerify(filter) {
+  const all = await api.admin.workers();
+  const waiting = all.filter((w) => w.id_doc_path && !w.verified);
+  const list = filter === 'all' ? all : waiting;
+  list.sort((a, b) => (a.profiles?.created_at < b.profiles?.created_at ? 1 : -1));
+  let html = `<h1>${te('tabVerify')}</h1>
+    <div class="row"><a class="btn sm ${filter === 'all' ? 'ghost' : ''}" href="#verify">${te('waiting')} (${waiting.length})</a>
+    <a class="btn sm ${filter === 'all' ? '' : 'ghost'}" href="#verify/all">${te('all')} (${all.length})</a></div>`;
+  if (!list.length) return html + empty('check', t('nothingHere'));
+  return html + list.map((w) => `<div class="card">
+      <div class="row between"><b>${esc(w.profiles?.full_name)}</b>${w.verified ? `<span class="badge ok">${icon('check', 14)}${te('verified')}</span>` : `<span class="badge gray">${te('notVerified')}</span>`}</div>
+      <div class="meta"><a href="${telLink(w.profiles?.phone)}">+${esc(w.profiles?.phone)}</a><span>${icon('pin', 15)}${esc(areaName(w.profiles?.area))}</span>
+        <span><span class="row" style="gap:4px">${w.skills.map((s) => skillIcon(s, 18)).join('')}</span></span><span>${te('jobsN', { n: w.jobs_done })}</span>
+        ${w.rating_avg ? `<span><span class="stars">${icon('star', 14)}</span>${Number(w.rating_avg).toFixed(1)}</span>` : ''}</div>
+      <div class="row" style="margin-top:10px">
+        ${w.id_doc_path ? `<button class="btn soft sm" data-act="viewId" data-path="${esc(w.id_doc_path)}">${icon('id', 18)}${te('viewId')}</button>` : `<span class="muted small">${te('noIdYet')}</span>`}
+        ${w.verified
+          ? `<button class="btn danger sm" data-act="verify" data-worker="${w.user_id}" data-v="0">${te('unverify')}</button>`
+          : `<button class="btn sm" data-act="verify" data-worker="${w.user_id}" data-v="1">${icon('check', 18)}${te('verifyBtn')}</button>`}
+      </div></div>`).join('');
+}
+
+async function viewPayouts() {
+  const rows = await api.admin.payouts();
+  const pending = rows.filter((r) => r.payout_status === 'pending');
+  const sent = rows.filter((r) => r.payout_status === 'sent');
+  let html = `${titleRow(te('tabPayouts'))}<h2>${te('toSend')} (${pending.length})</h2>`;
+  html += pending.length ? pending.map((r) => `<div class="card stack">
+      <div class="row between"><b>${esc(r.worker_name)}</b><span class="pay">${rupee(r.net)}</span></div>
+      <div class="meta"><a href="${telLink(r.worker_phone)}">+${esc(r.worker_phone)}</a><span>${esc(new Date(r.paid_at).toLocaleString('en-IN'))}</span><span>${te('method_' + r.method)}</span></div>
+      <div class="small">${te('netToWorker', { n: r.net, a: r.amount, f: r.fee })}</div>
+      <div class="mono">${r.upi_id ? esc(r.upi_id) : te('noUpiId')}</div>
+      ${r.upi_id ? `<a class="btn soft sm" href="${esc(upiLink(r.upi_id, r.worker_name, r.net))}">${icon('mobile', 18)}${te('payUpi')}</a>` : ''}
+      <div class="row"><input type="text" id="ref-${r.payment_id}" placeholder="${te('upiRef')}" style="flex:1 1 160px">
+        <button class="btn sm" data-act="payoutSent" data-id="${r.payment_id}">${te('markSent')}</button></div>
+    </div>`).join('') : empty('check', t('nothingHere'));
+  if (sent.length) {
+    html += `<h2>${te('sentList')}</h2>` + sent.map((r) => `<div class="card"><div class="row between"><b>${esc(r.worker_name)}</b><span>${rupee(r.net)}</span></div>
+      <div class="meta"><span class="mono">${esc(r.payout_ref)}</span><span>${esc(new Date(r.payout_at).toLocaleString('en-IN'))}</span></div></div>`).join('');
+  }
+  return html;
+}
+
+async function viewFees() {
+  const rows = await api.admin.feesOwed();
+  let html = `${titleRow(te('tabFees'))}`;
+  if (!rows.length) return html + empty('check', t('nothingHere'));
+  return html + rows.map((r) => `<div class="card stack">
+      <div class="row between"><b>${esc(r.worker_name)}</b><span class="pay">${rupee(r.fees_owed)}</span></div>
+      <div class="meta"><a href="${telLink(r.worker_phone)}">+${esc(r.worker_phone)}</a><span>${te('owes', { n: r.fees_owed, j: r.jobs })}</span>
+        <span>since ${esc(new Date(r.oldest).toLocaleDateString('en-IN'))}</span></div>
+      <div class="row"><input type="text" id="fref-${r.worker_id}" placeholder="${te('upiRef')}" style="flex:1 1 160px">
+        <button class="btn sm" data-act="settle" data-worker="${r.worker_id}">${te('settle')}</button></div>
+    </div>`).join('');
+}
+
+// ===================== Live updates =====================
+let liveTimer;
+function subscribeLive() {
+  api.offAll();
+  api.onJobs((ev) => {
+    const j = ev.new || {};
+    if (S.profile.role === 'worker' && ev.eventType === 'INSERT' && S.worker && S.worker.skills.includes(j.service)
+        && (!S.onlyMyArea || j.area === S.profile.area)) {
+      toast(t('newJobToast', { service: skillName(j.service), area: areaName(j.area) }));
+      if (navigator.vibrate) navigator.vibrate(200);
+    }
+    // Refresh list and detail pages, never forms the user may be typing in.
+    const v = S.view && S.view.name;
+    const live = { find: 1, work: 1, wjob: 1, jobs: 1, job: 1, overview: 1 };
+    if (live[v] && (!S.view.id || S.view.id === j.id)) {
+      clearTimeout(liveTimer);
+      liveTimer = setTimeout(refresh, 600);
+    }
+  });
+}
+
+// ===================== Actions (clicks) =====================
+const ACTIONS = {
+  theme() { toggleTheme(); },
+  async install() {
+    const p = S.installPrompt;
+    if (!p) return;
+    S.installPrompt = null;
+    p.prompt();
+    await p.userChoice.catch(() => {});
+    updateInstallSlot();
+  },
+  applyUpdate() { location.reload(); },
+  lang(el) { setLang(el.dataset.lang); },
+  reload() { refresh(); },
+  changeEmail() { S.login.step = 'start'; showLogin(); },
+  async resend(el) {
+    await busy(el, async () => { await api.sendEmailCode(S.login.email); S.login.until = Date.now() + 60000; tickResend(); });
+  },
+  // Leaves the page for Google; Supabase sends the user back here signed in.
+  async google(el) { await busy(el, () => api.signInGoogle()); },
+  async logout() {
+    api.offAll();
+    await api.signOut();
+    S.user = S.profile = S.worker = null;
+    S.login = { email: '', step: 'start', until: 0 };
+    history.replaceState(null, '', location.pathname);
+    showLogin();
+  },
+  async hire(el) {
+    if (!(await ask(t('confirmHire', { name: el.dataset.name })))) return;
+    await busy(el, async () => { await api.hire(el.dataset.job, el.dataset.worker); toast(t('hired')); refresh(); });
+  },
+  hours(el) {
+    const f = el.form;
+    const n = Math.min(12, Math.max(1, Number(f.hours.value) + Number(el.dataset.d)));
+    f.hours.value = n;
+    const out = $('#hoursOut');
+    out.textContent = t('hoursN', { n });
+  },
+  payPick(el) {
+    const input = $('#jPay');
+    input.value = el.dataset.v;
+    markPayPick();
+  },
+  async rate(el) {
+    el.classList.add('on'); // light up the chosen stars straight away
+    await busy(el, async () => { await api.rate(el.dataset.job, Number(el.dataset.n)); toast(t('thanksRating')); refresh(); });
+  },
+  async payOnline(el) { await busy(el, () => payOnline(el.dataset.job)); },
+  async payDirect(el) {
+    await busy(el, async () => {
+      const tg = await api.payTarget(el.dataset.job);
+      const box = $('#payInfo');
+      box.innerHTML = tg && tg.upi_id
+        ? `<div class="note">${te('directInfo', { n: tg.amount, name: tg.worker_name, upi: tg.upi_id })}</div>
+           <a class="btn block" href="${esc(upiLink(tg.upi_id, tg.worker_name, tg.amount))}">${te('openUpi')}</a>`
+        : `<div class="note warn">${te('noUpi')}</div>`;
+    });
+  },
+  payCash(el) { $('#payInfo').innerHTML = `<div class="note">${te('cashInfo', { n: el.dataset.amount })}</div>`; },
+  async apply(el) {
+    await busy(el, async () => { await api.apply(el.dataset.job, S.user.id); toast(t('appliedToast')); refresh(); });
+  },
+  async withdraw(el) { await busy(el, async () => { await api.withdraw(el.dataset.job, S.user.id); refresh(); }); },
+  async complete(el) {
+    if (!(await ask(t('confirmDone')))) return;
+    await busy(el, async () => { await api.complete(el.dataset.job); toast(t('markedDone')); refresh(); });
+  },
+  async gotCash(el) {
+    if (!(await ask(t('confirmGot', { n: el.dataset.amount })))) return;
+    await busy(el, async () => { await api.confirmCash(el.dataset.job); refresh(); });
+  },
+  async gotUpi(el) {
+    if (!(await ask(t('confirmGot', { n: el.dataset.amount })))) return;
+    await busy(el, async () => { await api.confirmDirect(el.dataset.job); refresh(); });
+  },
+  async viewId(el) {
+    const win = window.open('', '_blank'); // open now, so pop-up blockers allow it
+    await busy(el, async () => {
+      const url = await api.admin.docUrl(el.dataset.path);
+      if (win) win.location = url; else location.href = url;
+    });
+  },
+  async verify(el) {
+    await busy(el, async () => { await api.admin.verify(el.dataset.worker, el.dataset.v === '1'); refresh(); });
+  },
+  async payoutSent(el) {
+    const ref = $('#ref-' + el.dataset.id).value.trim();
+    if (!ref) return toast(t('refRequired'), 'err');
+    await busy(el, async () => { await api.admin.markPayoutSent(el.dataset.id, ref); refresh(); });
+  },
+  async settle(el) {
+    const ref = $('#fref-' + el.dataset.worker).value.trim();
+    if (!ref) return toast(t('refRequired'), 'err');
+    await busy(el, async () => { await api.admin.settleFees(el.dataset.worker, ref); refresh(); });
+  },
+};
+
+// ===================== Forms =====================
+const FORMS = {
+  async sendCode(f, btn) {
+    const email = f.querySelector('#em').value.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast(t('badEmail'), 'err');
+    await busy(btn, async () => {
+      await api.sendEmailCode(email);
+      S.login = { email, step: 'code', until: Date.now() + 60000 };
+      showLogin();
+    });
+  },
+  async verifyCode(f, btn) {
+    const code = f.querySelector('#code').value.replace(/\D/g, '');
+    if (code.length < 6) return toast(t('badCode'), 'err');
+    await busy(btn, async () => {
+      const { user } = await api.verifyEmailCode(S.login.email, code);
+      await loadMe(user);
+    });
+  },
+  async onboard(f, btn) {
+    const role = f.role.value;
+    const full_name = f.full_name.value.trim();
+    const area = f.area.value;
+    if (!role || !full_name || !area) return toast(t('fillAll'), 'err');
+    const phone = cleanPhone(f.phone.value);
+    if (!phone) return toast(t('badPhone'), 'err');
+    const skills = [...f.querySelectorAll('input[name=skills]:checked')].map((i) => i.value);
+    const upi_id = f.upi_id.value.trim() || null;
+    if (role === 'worker' && !skills.length) return toast(t('pickSkill'), 'err');
+    if (role === 'worker' && upi_id && !UPI_RE.test(upi_id)) return toast(t('badUpi'), 'err');
+    if (!f.agree.checked) return toast(t('mustAgree'), 'err');
+    await busy(btn, async () => {
+      await api.createProfile({ id: S.user.id, role, full_name, phone, area });
+      if (role === 'worker') await api.createWorker({ user_id: S.user.id, skills, upi_id });
+      history.replaceState(null, '', location.pathname);
+      await loadMe(S.user);
+    });
+  },
+  async postJob(f, btn) {
+    const pay = parseInt(f.pay.value, 10);
+    if (!(pay >= 100)) return toast(t('payHint'), 'err');
+    await busy(btn, async () => {
+      const row = await api.postJob({
+        household_id: S.user.id, service: f.service.value, area: f.area.value,
+        job_date: f.job_date.value, hours: parseInt(f.hours.value, 10), pay, notes: f.notes.value.trim() || null,
+      });
+      toast(t('posted'));
+      go('job/' + row.id);
+    });
+  },
+  async profile(f, btn) {
+    const full_name = f.full_name.value.trim();
+    if (!full_name) return toast(t('fillAll'), 'err');
+    const phone = cleanPhone(f.phone.value);
+    if (!phone) return toast(t('badPhone'), 'err');
+    const isWorker = S.profile.role === 'worker';
+    let wrow;
+    if (isWorker) {
+      const skills = [...f.querySelectorAll('input[name=skills]:checked')].map((i) => i.value);
+      const upi_id = f.upi_id.value.trim() || null;
+      if (!skills.length) return toast(t('pickSkill'), 'err');
+      if (upi_id && !UPI_RE.test(upi_id)) return toast(t('badUpi'), 'err');
+      wrow = { skills, upi_id, available: f.available.checked };
+    }
+    await busy(btn, async () => {
+      await api.updateProfile(S.user.id, { full_name, phone, area: f.area.value });
+      if (isWorker) await api.updateWorker(S.user.id, wrow);
+      S.profile = await api.myProfile(S.user.id);
+      toast(t('saved'));
+      refresh();
+    });
+  },
+};
+
+function setLang(l) {
+  S.lang = l;
+  store.set('lang', l);
+  applyChrome();
+  if (S.profile) refresh(); else if (S.user) showOnboard(); else showLogin();
+}
+
+function afterRender(name) {
+  if (name === 'post') updateMatchCount();
+  updateInstallSlot();
+}
+
+// ---------- Install as an app, and updates ----------
+// Android/desktop Chrome: keep the browser's install prompt and offer our own button instead.
+// iPhone Safari has no prompt, so we show how to add it from the Share menu.
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); S.installPrompt = e; updateInstallSlot(); });
+window.addEventListener('appinstalled', () => { S.installPrompt = null; updateInstallSlot(); toast(t('installed')); });
+function updateInstallSlot() {
+  const slot = $('#installSlot');
+  if (!slot) return;
+  if (isStandalone() || (!S.installPrompt && !isIOS)) { slot.innerHTML = ''; return; }
+  slot.innerHTML = `<div class="card install">
+      <svg class="logo" aria-hidden="true"><use href="#kg-mark"/></svg>
+      <div style="flex:1;min-width:0"><b>${te('installTitle')}</b><div class="muted small">${te(S.installPrompt ? 'installBody' : 'iosInstall')}</div></div>
+      ${S.installPrompt ? `<button class="btn sm" data-act="install">${te('installBtn')}</button>` : ''}
+    </div>`;
+}
+
+// A new version took over while the app was open: offer a one-tap reload.
+function watchForUpdates(reg) {
+  const hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController) return; // first install, nothing to update
+    $('#updateMsg').textContent = t('updateReady');
+    $('#updateBtn').textContent = t('updateBtn');
+    $('#updateBar').hidden = false;
+  });
+  // Check again whenever the app comes back to the foreground.
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reg.update().catch(() => {}); });
+}
+
+
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-act]');
+  if (!el || el.tagName === 'INPUT') return;
+  const fn = ACTIONS[el.dataset.act];
+  if (fn) { e.preventDefault(); fn(el); }
+});
+document.addEventListener('change', async (e) => {
+  const el = e.target;
+  if (el.dataset.act === 'onlyMyArea') {
+    S.onlyMyArea = el.checked; store.set('onlyMyArea', el.checked ? '1' : '0'); refresh();
+  } else if (el.dataset.act === 'idFile' && el.files[0]) {
+    const file = el.files[0];
+    el.value = '';
+    const { blob, ext } = await shrinkImage(file);
+    if (blob.size > 5 * 1024 * 1024) return toast(t('fileTooBig'), 'err');
+    await busy(null, async () => { await api.uploadIdDoc(S.user.id, blob, ext); toast(t('uploaded')); refresh(); });
+  } else if (el.form && el.form.dataset.form === 'postJob' && (el.name === 'service' || el.name === 'area')) {
+    updateMatchCount();
+  } else if (el.name === 'when') {
+    // Today / Tomorrow fill the date; "Other day" shows the date picker.
+    const date = $('#jDate');
+    const other = el.value === 'other';
+    date.hidden = !other;
+    if (other) { date.focus(); if (date.showPicker) try { date.showPicker(); } catch (_) { /* needs a tap */ } }
+    else date.value = el.value;
+  }
+});
+document.addEventListener('input', (e) => { if (e.target.id === 'jPay') markPayPick(); });
+function markPayPick() {
+  const v = $('#jPay') && $('#jPay').value;
+  main.querySelectorAll('[data-act=payPick]').forEach((b) => b.classList.toggle('on', b.dataset.v === v));
+}
+// Header gets a hairline and shadow once the page scrolls under it.
+window.addEventListener('scroll', () => { $('.top').classList.toggle('scrolled', window.scrollY > 4); }, { passive: true });
+document.addEventListener('submit', (e) => {
+  const f = e.target;
+  const fn = FORMS[f.dataset.form];
+  if (fn) { e.preventDefault(); fn(f, f.querySelector('button:not([type=button])')); }
+});
+$('#langSel').addEventListener('change', (e) => setLang(e.target.value));
+window.addEventListener('hashchange', route);
+
+function updateOnline() { $('#offline').hidden = navigator.onLine; }
+window.addEventListener('online', () => { updateOnline(); if (S.profile) refresh(); });
+window.addEventListener('offline', updateOnline);
+
+(async function boot() {
+  applyChrome();
+  updateOnline();
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').then(watchForUpdates).catch(console.error);
+  try {
+    // Back from Google: supabase-js has read ?code= from the URL; tidy the address bar.
+    const qs = new URLSearchParams(location.search);
+    const session = await api.session();
+    if (qs.has('code') || qs.has('error')) {
+      history.replaceState(null, '', location.pathname + location.hash);
+      if (qs.has('error')) toast(qs.get('error_description') || qs.get('error'), 'err');
+    }
+    if (!session) return showLogin();
+    await loadMe(session.user);
+  } catch (e) {
+    showErr(e);
+    showLogin();
+  }
+})();
+</script>
+</body>
+</html>
