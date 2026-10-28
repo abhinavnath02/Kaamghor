@@ -459,7 +459,7 @@ const T = {
     noOpenJobs: 'No jobs right now. New jobs appear here live.', apply: 'Apply', applied: 'Applied', withdraw: 'Withdraw',
     appliedToast: 'Applied. The household will see you.', newJobToast: 'New job: {service} in {area}',
     unavailableNote: 'You are marked as not available. Turn it on in Profile.',
-    household: 'Household', markDone: 'Mark job done', confirmDone: 'Is the job finished?', markedDone: 'Marked done. Now collect payment.',
+    household: 'Household', markDone: 'Mark job done', confirmDone: 'Is the job finished?', markedDone: 'Sent. Waiting for the household to confirm.',
     gotPaidHow: 'How were you paid?', gotCash: 'I received cash', gotUpi: 'I received UPI directly',
     confirmGot: 'Confirm you received ₹{n}?', onlineAuto: 'If the household pays online, it shows here automatically.',
     feeOwed: 'Platform fee to pay Kaamghor: ₹{n}', feeSettled: 'Platform fee paid',
@@ -473,7 +473,18 @@ const T = {
     rateLabel: 'Daily rate per person (₹)', rateHint: 'Usual rate ₹{s} · minimum ₹{m}', rateLow: 'The minimum rate for this work is ₹{m} a day',
     totalPay: 'Total pay', perDay: '₹{n}/day',
     peopleLabel: 'How many people', peopleN: '{n} people', personOne: '1 person', hiredOf: 'Hired {n} of {m}', hiredSoFar: 'Hired so far',
-    stopHiring: 'Start with {n} hired', confirmStop: 'Stop hiring and start with {n}?', yourWorkers: 'Your workers', astatus_hired: 'Working',
+    stopHiring: 'Start with {n} hired', confirmStop: 'Stop hiring and start with {n}?', yourWorkers: 'Your workers',
+    astatus_hired: 'Hired', astatus_arrived: 'Arrived', astatus_working: 'Working', astatus_done_claimed: 'Finished', astatus_disputed: 'Problem reported', step_arrived: 'Arrived',
+    wHiredNote: 'On the work day, tap “I’ve arrived” when you reach the house.', btnArrived: 'I’ve arrived', confirmArrivedQ: 'Tell the household you have arrived?',
+    wArrivedNote: 'Waiting for the household to confirm you arrived.', btnFinished: 'Work finished',
+    wClaimNote: 'Waiting for the household to confirm. If they don’t respond, it is confirmed automatically on {when}.',
+    wDisputeNote: 'The household reported a problem: “{p}”. Kaamghor will call you.',
+    hNotArrived: 'Not arrived yet', btnConfirmArrival: 'Yes, {name} has arrived',
+    hClaimNote: '{name} says the work is finished. Please check it. It is confirmed automatically on {when}.',
+    btnConfirmDone: 'Confirm work done', confirmDoneQ: 'Confirm {name} finished the work?', btnProblem: 'Report a problem',
+    problemPrompt: 'What went wrong?', problemSend: 'Send', problemSent: 'Problem reported. Kaamghor will contact you both.',
+    hDisputeNote: 'You reported a problem. Kaamghor will contact you.',
+    disputesTitle: 'Problems reported', resolveDone: 'Work was done: pay worker', resolveCancel: 'Cancel this booking', workerLabel: 'Worker', resolved: 'Updated',
     ratesTitle: 'Daily rates (₹ per person per day)', rateStd: 'Usual', rateMin: 'Minimum', rateSaved: 'Rate saved', save2: 'Save', fileTooBig: 'File is too large (max 5 MB)',
     skill_clean: 'Cleaning', skill_cook: 'Cooking', skill_garden: 'Gardening', skill_paint: 'Painting',
     skill_helper: 'Helper', skill_plumb: 'Plumbing', skill_elec: 'Electrical',
@@ -536,7 +547,7 @@ const T = {
     noOpenJobs: 'এতিয়া কোনো কাম নাই। নতুন কাম ইয়াতে লগে লগে ওলাব।', apply: 'আবেদন কৰক', applied: 'আবেদন কৰা হ’ল', withdraw: 'উঠাই লওক',
     appliedToast: 'আবেদন কৰা হ’ল। ঘৰৰ মানুহে আপোনাক দেখা পাব।', newJobToast: 'নতুন কাম: {area}ত {service}',
     unavailableNote: 'আপুনি “উপলব্ধ নহয়” বুলি দিয়া আছে। প্ৰফাইলত সলনি কৰক।',
-    household: 'ঘৰ', markDone: 'কাম সম্পূৰ্ণ বুলি দিয়ক', confirmDone: 'কামটো শেষ হ’লনে?', markedDone: 'সম্পূৰ্ণ বুলি দিয়া হ’ল। এতিয়া পইচা লওক।',
+    household: 'ঘৰ', markDone: 'কাম সম্পূৰ্ণ বুলি দিয়ক', confirmDone: 'কামটো শেষ হ’লনে?', markedDone: 'পঠোৱা হ’ল। ঘৰৰ মানুহে নিশ্চিত কৰাৰ বাবে অপেক্ষা।',
     gotPaidHow: 'আপুনি কেনেকৈ পইচা পালে?', gotCash: 'মই নগদ পালোঁ', gotUpi: 'মই পোনপটীয়া UPI পালোঁ',
     confirmGot: 'আপুনি ₹{n} পালে বুলি নিশ্চিত কৰিবনে?', onlineAuto: 'ঘৰৰ মানুহে অনলাইনত দিলে ইয়াত নিজে নিজে দেখা যাব।',
     feeOwed: 'কামঘৰক দিবলগীয়া মাচুল: ₹{n}', feeSettled: 'মাচুল দিয়া হ’ল',
@@ -550,7 +561,17 @@ const T = {
     rateLabel: 'প্ৰতিজনৰ দৈনিক মজুৰি (₹)', rateHint: 'সাধাৰণতে ₹{s} · কমেও ₹{m}', rateLow: 'এই কামৰ কমেও দৈনিক মজুৰি ₹{m}',
     totalPay: 'মুঠ মজুৰি', perDay: '₹{n}/দিন',
     peopleLabel: 'কিমান জন মানুহ', peopleN: '{n} জন', personOne: '১ জন', hiredOf: '{m} জনৰ {n} জন লোৱা হ’ল', hiredSoFar: 'এতিয়ালৈ লোৱা',
-    stopHiring: '{n} জনৰ সৈতে আৰম্ভ কৰক', confirmStop: 'আৰু নলয়, {n} জনৰ সৈতে আৰম্ভ কৰিবনে?', yourWorkers: 'আপোনাৰ কৰ্মীসকল', astatus_hired: 'কামত আছে', fileTooBig: 'ফাইলটো বেছি ডাঙৰ (সৰ্বাধিক 5 MB)',
+    stopHiring: '{n} জনৰ সৈতে আৰম্ভ কৰক', confirmStop: 'আৰু নলয়, {n} জনৰ সৈতে আৰম্ভ কৰিবনে?', yourWorkers: 'আপোনাৰ কৰ্মীসকল',
+    astatus_hired: 'লোৱা হ’ল', astatus_arrived: 'আহি পালে', astatus_working: 'কামত আছে', astatus_done_claimed: 'কাম শেষ', astatus_disputed: 'সমস্যা জনোৱা হৈছে', step_arrived: 'আহি পালে',
+    wHiredNote: 'কামৰ দিনা ঘৰ পালে “মই আহি পালোঁ” টিপক।', btnArrived: 'মই আহি পালোঁ', confirmArrivedQ: 'ঘৰৰ মানুহক আপুনি আহি পোৱাৰ খবৰ দিবনে?',
+    wArrivedNote: 'আপুনি আহি পোৱাটো ঘৰৰ মানুহে নিশ্চিত কৰাৰ বাবে অপেক্ষা।', btnFinished: 'কাম শেষ হ’ল',
+    wClaimNote: 'ঘৰৰ মানুহে নিশ্চিত কৰাৰ বাবে অপেক্ষা। উত্তৰ নিদিলে {when} ত নিজে নিজে নিশ্চিত হ’ব।',
+    wDisputeNote: 'ঘৰৰ মানুহে এটা সমস্যা জনাইছে: “{p}”। কামঘৰে আপোনাক ফোন কৰিব।',
+    hNotArrived: 'এতিয়াও অহা নাই', btnConfirmArrival: 'হয়, {name} আহি পালে',
+    hClaimNote: '{name}এ কাম শেষ হোৱা বুলি কৈছে। অনুগ্ৰহ কৰি চাওক। {when} ত নিজে নিজে নিশ্চিত হ’ব।',
+    btnConfirmDone: 'কাম শেষ বুলি নিশ্চিত কৰক', confirmDoneQ: '{name}এ কাম শেষ কৰাটো নিশ্চিত কৰিবনে?', btnProblem: 'সমস্যা জনাওক',
+    problemPrompt: 'কি ভুল হ’ল?', problemSend: 'পঠিয়াওক', problemSent: 'সমস্যা জনোৱা হ’ল। কামঘৰে দুয়োকে যোগাযোগ কৰিব।',
+    hDisputeNote: 'আপুনি সমস্যা জনাইছে। কামঘৰে আপোনাক যোগাযোগ কৰিব।', fileTooBig: 'ফাইলটো বেছি ডাঙৰ (সৰ্বাধিক 5 MB)',
     skill_clean: 'ঘৰ চাফা', skill_cook: 'ৰন্ধা-বঢ়া', skill_garden: 'বাগিচাৰ কাম', skill_paint: 'ৰং কৰা',
     skill_helper: 'সহায়কাৰী', skill_plumb: 'প্লাম্বিং', skill_elec: 'বিজুলীৰ কাম',
     skill_care: 'যত্নকাৰী', skill_health: 'স্বাস্থ্যকৰ্মী', skill_other: 'অন্যান্য',
@@ -601,7 +622,7 @@ const T = {
     noOpenJobs: 'अभी कोई काम नहीं। नए काम यहाँ तुरंत दिखेंगे।', apply: 'आवेदन करें', applied: 'आवेदन किया', withdraw: 'वापस लें',
     appliedToast: 'आवेदन हो गया। घर वाले आपको देखेंगे।', newJobToast: 'नया काम: {area} में {service}',
     unavailableNote: 'आप “उपलब्ध नहीं” हैं। प्रोफ़ाइल में बदलें।',
-    household: 'घर', markDone: 'काम पूरा मार्क करें', confirmDone: 'क्या काम पूरा हो गया?', markedDone: 'पूरा मार्क हो गया। अब भुगतान लें।',
+    household: 'घर', markDone: 'काम पूरा मार्क करें', confirmDone: 'क्या काम पूरा हो गया?', markedDone: 'भेज दिया। घर वालों की पुष्टि का इंतज़ार।',
     gotPaidHow: 'आपको भुगतान कैसे मिला?', gotCash: 'मुझे नकद मिला', gotUpi: 'मुझे सीधे UPI मिला',
     confirmGot: 'पुष्टि करें कि आपको ₹{n} मिले?', onlineAuto: 'अगर घर वाले ऑनलाइन भुगतान करते हैं, तो यह यहाँ अपने आप दिखेगा।',
     feeOwed: 'कामघर को देय शुल्क: ₹{n}', feeSettled: 'शुल्क चुका दिया',
@@ -615,7 +636,17 @@ const T = {
     rateLabel: 'प्रति व्यक्ति रोज़ की मज़दूरी (₹)', rateHint: 'आम तौर पर ₹{s} · कम से कम ₹{m}', rateLow: 'इस काम की कम से कम मज़दूरी ₹{m} रोज़ है',
     totalPay: 'कुल मज़दूरी', perDay: '₹{n}/दिन',
     peopleLabel: 'कितने लोग', peopleN: '{n} लोग', personOne: '1 व्यक्ति', hiredOf: '{m} में से {n} रखे गए', hiredSoFar: 'अब तक रखे गए',
-    stopHiring: '{n} लोगों के साथ शुरू करें', confirmStop: 'और नहीं रखें, {n} लोगों के साथ शुरू करें?', yourWorkers: 'आपके कामगार', astatus_hired: 'काम पर', fileTooBig: 'फ़ाइल बहुत बड़ी है (अधिकतम 5 MB)',
+    stopHiring: '{n} लोगों के साथ शुरू करें', confirmStop: 'और नहीं रखें, {n} लोगों के साथ शुरू करें?', yourWorkers: 'आपके कामगार',
+    astatus_hired: 'रखा गया', astatus_arrived: 'पहुँच गए', astatus_working: 'काम पर', astatus_done_claimed: 'काम पूरा', astatus_disputed: 'समस्या बताई गई', step_arrived: 'पहुँचे',
+    wHiredNote: 'काम के दिन घर पहुँचकर “पहुँच गए” दबाएँ।', btnArrived: 'पहुँच गए', confirmArrivedQ: 'घर वालों को बताएँ कि आप पहुँच गए हैं?',
+    wArrivedNote: 'घर वालों की पुष्टि का इंतज़ार है कि आप पहुँच गए।', btnFinished: 'काम पूरा हुआ',
+    wClaimNote: 'घर वालों की पुष्टि का इंतज़ार है। जवाब न मिलने पर {when} को अपने आप पुष्टि हो जाएगी।',
+    wDisputeNote: 'घर वालों ने एक समस्या बताई है: “{p}”। कामघर आपको कॉल करेगा।',
+    hNotArrived: 'अभी नहीं पहुँचे', btnConfirmArrival: 'हाँ, {name} पहुँच गए',
+    hClaimNote: '{name} ने कहा कि काम पूरा हो गया। कृपया देख लें। {when} को अपने आप पुष्टि हो जाएगी।',
+    btnConfirmDone: 'काम पूरा होने की पुष्टि करें', confirmDoneQ: 'पुष्टि करें कि {name} ने काम पूरा किया?', btnProblem: 'समस्या बताएँ',
+    problemPrompt: 'क्या गड़बड़ हुई?', problemSend: 'भेजें', problemSent: 'समस्या दर्ज हो गई। कामघर दोनों से संपर्क करेगा।',
+    hDisputeNote: 'आपने समस्या बताई है। कामघर आपसे संपर्क करेगा।', fileTooBig: 'फ़ाइल बहुत बड़ी है (अधिकतम 5 MB)',
     skill_clean: 'सफ़ाई', skill_cook: 'खाना बनाना', skill_garden: 'बागवानी', skill_paint: 'पेंटिंग',
     skill_helper: 'हेल्पर', skill_plumb: 'प्लंबिंग', skill_elec: 'बिजली का काम',
     skill_care: 'देखभाल', skill_health: 'स्वास्थ्य कर्मी', skill_other: 'अन्य',
@@ -847,7 +878,8 @@ darkQuery.addEventListener('change', paintThemeChrome);
 // ===================== Shared bits of UI =====================
 // A worker's own progress on a job: Working, then Done.
 function assignmentBadge(status) {
-  return status === 'hired' ? `<span class="badge assigned"><i class="dot"></i>${te('astatus_hired')}</span>` : statusBadge(status);
+  const cls = { hired: 'assigned', arrived: 'open', working: 'assigned', done_claimed: 'open', disputed: 'warn' }[status];
+  return cls ? `<span class="badge ${cls}"><i class="dot"></i>${te('astatus_' + status)}</span>` : statusBadge(status);
 }
 function statusBadge(status) { return `<span class="badge ${status}"><i class="dot"></i>${te('status_' + status)}</span>`; }
 
@@ -882,12 +914,13 @@ function workerLine(w) {
 }
 
 // Posted → Hired → Done → Paid, with the next step highlighted.
-function progress(j, paid, a) {
+// How far one person's part has got: 1 hired, 2 arrived (confirmed), 3 done, 4 paid.
+function stageOf(a, paid) {
+  return { hired: 1, arrived: 1, working: 2, done_claimed: 2, disputed: 2, done: paid ? 4 : 3 }[a.status] ?? 1;
+}
+function progress(j, reached) {
   if (j.status === 'cancelled') return '';
-  const reached = a
-    ? (a.status === 'done' ? (paid ? 3 : 2) : 1)
-    : (j.status === 'open' ? 0 : j.status === 'assigned' ? 1 : paid ? 3 : 2);
-  return `<div class="progress">${['posted', 'hired', 'done', 'paid'].map((s, k) =>
+  return `<div class="progress">${['posted', 'hired', 'arrived', 'done', 'paid'].map((s, k) =>
     `<div class="st ${k <= reached ? 'done' : k === reached + 1 ? 'now' : ''}" style="--d:${k * 90}ms"><i>${k <= reached ? icon('check', 14) : k + 1}</i>${te('step_' + s)}</div>`).join('')}</div>`;
 }
 function refreshBtn() { return `<button class="iconbtn" data-act="reload" aria-label="${te('refresh')}" title="${te('refresh')}">${icon('refresh', 20)}</button>`; }
@@ -1150,13 +1183,14 @@ async function updateMatchCount() {
 }
 
 async function viewJobs() {
+  await settleOverdue();
   const jobs = await api.myPostedJobs(S.user.id);
   if (!jobs.length) return `<h1>${te('tabMyJobs')}</h1>${empty('list', t('noJobs'), `<div style="margin-top:14px"><a class="btn" href="#post">${te('postFirst')}</a></div>`)}`;
   return `${titleRow(te('tabMyJobs'))}
     ${jobs.map((j) => jobCard(j, 'job/' + j.id)).join('')}`;
 }
 
-function jobHeader(j, backTo, paid, a) {
+function jobHeader(j, backTo, stage, a) {
   return `<div class="title-row">${backLink(backTo)}${refreshBtn()}</div>
     <div class="card">
       <div class="job-head">
@@ -1167,11 +1201,15 @@ function jobHeader(j, backTo, paid, a) {
         </div>
       </div>
       ${j.notes ? `<p style="margin:12px 0 0">${esc(j.notes)}</p>` : ''}
-      ${progress(j, paid, a)}
+      ${progress(j, stage)}
     </div>`;
 }
 
+// Confirms any "work finished" left unanswered for 24 hours before showing jobs (also runs on a schedule).
+const settleOverdue = () => api.autoComplete().catch(() => 0);
+
 async function viewJobHousehold(id) {
+  await settleOverdue();
   const j = await api.job(id);
   if (!j || j.household_id !== S.user.id) return empty('alert', t('error'));
   const [asg, pays] = await Promise.all([api.jobAssignments(id), api.jobPayments(id)]);
@@ -1180,9 +1218,11 @@ async function viewJobHousehold(id) {
   const prof = Object.fromEntries(profs.map((p) => [p.id, p]));
   const pub = Object.fromEntries(pubs.map((p) => [p.id, p]));
   const payOf = Object.fromEntries(pays.map((p) => [p.assignment_id, p]));
-  const allPaid = j.status === 'done' && pays.length > 0 && pays.every((p) => p.status === 'paid');
+  // The job is as far along as its slowest person.
+  const stage = j.status === 'open' || !asg.length ? 0
+    : Math.min(...asg.map((a) => stageOf(a, payOf[a.id] && payOf[a.id].status === 'paid')));
   const people = asg.map((a) => personCard(j, a, pub[a.worker_id], prof[a.worker_id], payOf[a.id])).join('');
-  let html = jobHeader(j, 'jobs', allPaid);
+  let html = jobHeader(j, 'jobs', stage);
 
   if (j.status === 'open') {
     if (j.workers_needed > 1) html += `<div class="note">${icon('users', 20)}<span>${te('hiredOf', { n: asg.length, m: j.workers_needed })}</span></div>`;
@@ -1211,13 +1251,33 @@ async function viewJobHousehold(id) {
   return html;
 }
 
+// "Sat 4:30 pm": when an unanswered "work finished" is confirmed automatically.
+function fmtWhen(ts) {
+  try { return new Date(ts).toLocaleString(LOCALE[S.lang], { weekday: 'short', hour: 'numeric', minute: '2-digit' }); }
+  catch (_) { return ts; }
+}
+
 // One hired person on the household's job page: call, progress, payment, rating.
 function personCard(j, a, pw, p, pm) {
   let html = `<div class="card stack">
     <div class="row between nowrap"><div style="min-width:0">${pw ? workerLine(pw) : `<div class="who">${avatar(p && p.full_name)}<b>${esc(p && p.full_name)}</b></div>`}</div>
       ${p && p.phone ? `<a class="btn soft sm" href="${telLink(p.phone)}">${icon('phone', 18)}${te('call')}</a>` : ''}</div>
     <div>${assignmentBadge(a.status)}</div>`;
-  if (a.status === 'hired' && j.status !== 'open') html += `<div class="muted small">${te('waitDone')}</div>`;
+  const name = (pw && pw.full_name) || (p && p.full_name) || '';
+  if (a.status === 'hired' && j.status !== 'open') html += `<div class="muted small">${te('hNotArrived')}</div>`;
+  if (a.status === 'arrived') {
+    html += `<button class="btn block" data-act="confirmArrival" data-assignment="${a.id}">${icon('check', 20)}${te('btnConfirmArrival', { name })}</button>`;
+  }
+  if (a.status === 'done_claimed') {
+    html += `<div class="note">${icon('clock', 20)}<span>${te('hClaimNote', { name, when: fmtWhen(a.auto_done_at) })}</span></div>
+      <button class="btn block" data-act="confirmDone" data-assignment="${a.id}" data-name="${esc(name)}">${icon('check', 20)}${te('btnConfirmDone')}</button>
+      <button class="btn danger block" data-act="problemOpen" data-assignment="${a.id}">${icon('alert', 20)}${te('btnProblem')}</button>
+      <form class="stack" data-form="problem" data-assignment="${a.id}" id="prob-${a.id}" hidden>
+        <textarea name="problem" maxlength="500" placeholder="${te('problemPrompt')}" required></textarea>
+        <button class="btn danger block">${te('problemSend')}</button>
+      </form>`;
+  }
+  if (a.status === 'disputed') html += `<div class="note warn">${icon('alert', 20)}<span>${te('hDisputeNote')}</span></div>`;
   if (a.status === 'done' && pm) {
     if (pm.status === 'paid') {
       html += `<div class="note">${icon('check', 20)}<span>${te('paidVia', { n: pm.amount.toLocaleString('en-IN'), method: t('method_' + pm.method) })}</span></div>`;
@@ -1294,6 +1354,7 @@ async function viewFind() {
 }
 
 async function viewWork() {
+  await settleOverdue();
   const rows = (await api.myWork(S.user.id)).filter((a) => a.jobs);
   const head = `${titleRow(te('tabMyWork'))}`;
   if (!rows.length) return head + empty('briefcase', t('noWork'), `<div style="margin-top:14px"><a class="btn" href="#find">${te('tabFind')}</a></div>`);
@@ -1301,16 +1362,27 @@ async function viewWork() {
 }
 
 async function viewJobWorker(id) {
+  await settleOverdue();
   const [j, a] = await Promise.all([api.job(id), api.myAssignment(id, S.user.id)]);
   if (!j || !a) return empty('alert', t('error'));
   const [h, pm] = await Promise.all([api.profileById(j.household_id), a.status === 'done' ? api.paymentForAssignment(a.id) : null]);
-  let html = jobHeader(j, 'work', pm && pm.status === 'paid', a);
+  let html = jobHeader(j, 'work', stageOf(a, pm && pm.status === 'paid'), a);
   html += `<h2>${te('household')}</h2><div class="card"><div class="row between nowrap"><div class="who">${avatar(h?.full_name)}<div><b>${esc(h?.full_name)}</b><div class="meta"><span>${icon('pin', 15)}${esc(areaName(h?.area))}</span></div></div></div>
     ${h?.phone ? `<a class="btn soft" href="${telLink(h.phone)}">${icon('phone', 18)}${te('call')}</a>` : ''}</div></div>`;
 
+  // Handshake, worker side: "I've arrived", then "Work finished"; the household confirms each.
+  let steps = '';
   if (a.status === 'hired') {
-    html += `<button class="btn block" data-act="complete" data-job="${j.id}" style="margin-top:8px">${icon('check', 20)}${te('markDone')}</button>`;
+    steps += `<div class="note">${icon('pin', 20)}<span>${te('wHiredNote')}</span></div>
+      <button class="btn block" data-act="arrived" data-job="${j.id}">${icon('pin', 20)}${te('btnArrived')}</button>`;
   }
+  if (a.status === 'arrived') steps += `<div class="note">${icon('clock', 20)}<span>${te('wArrivedNote')}</span></div>`;
+  if (a.status === 'arrived' || a.status === 'working') {
+    steps += `<button class="btn block" data-act="complete" data-job="${j.id}">${icon('check', 20)}${te('btnFinished')}</button>`;
+  }
+  if (a.status === 'done_claimed') steps += `<div class="note">${icon('clock', 20)}<span>${te('wClaimNote', { when: fmtWhen(a.auto_done_at) })}</span></div>`;
+  if (a.status === 'disputed') steps += `<div class="note warn">${icon('alert', 20)}<span>${te('wDisputeNote', { p: a.problem || '' })}</span></div>`;
+  if (steps) html += `<div class="stack" style="margin-top:14px">${steps}</div>`;
   if (a.status === 'done') {
     html += `<h2>${te('payment')}</h2>`;
     if (pm && pm.status === 'pending') {
@@ -1393,12 +1465,21 @@ async function shrinkImage(file) {
 
 // ===================== Admin =====================
 async function viewOverview() {
-  const [s, rateRows] = await Promise.all([api.admin.stats(), api.rates()]);
+  const [s, rateRows, disputes] = await Promise.all([api.admin.stats(), api.rates(), api.admin.disputes()]);
   const rates = Object.fromEntries(rateRows.map((r) => [r.service, r]));
   const keys = ['jobs_open', 'jobs_assigned', 'jobs_done', 'unpaid_jobs', 'jobs_last_7d', 'jobs_cancelled',
     'households', 'workers', 'workers_verified', 'awaiting_verify',
     'paid_total', 'fees_online', 'fees_owed', 'fees_settled', 'payouts_pending', 'avg_rating'];
+  const disputeCards = disputes.map((d) => `<div class="card stack">
+      <b>${te('skill_' + d.service)} · ${esc(fmtDate(d.job_date))}</b>
+      <div class="note warn">${icon('alert', 20)}<span>${esc(d.problem)}</span></div>
+      <div class="meta"><span>${te('household')}: ${esc(d.household_name)} <a href="${telLink(d.household_phone)}">+${esc(d.household_phone)}</a></span>
+        <span>${te('workerLabel')}: ${esc(d.worker_name)} <a href="${telLink(d.worker_phone)}">+${esc(d.worker_phone)}</a></span></div>
+      <div class="row"><button class="btn sm" data-act="resolve" data-assignment="${d.assignment_id}" data-v="1">${te('resolveDone')}</button>
+        <button class="btn danger sm" data-act="resolve" data-assignment="${d.assignment_id}" data-v="0">${te('resolveCancel')}</button></div>
+    </div>`).join('');
   return `${titleRow(te('tabOverview'))}
+    ${disputes.length ? `<h2>${te('disputesTitle')} (${disputes.length})</h2>${disputeCards}` : ''}
     <div class="stat">${keys.map((k) => `<div><b>${s[k] ?? '—'}</b><span>${te('st_' + k)}</span></div>`).join('')}</div>
     <h2>${te('ratesTitle')}</h2>
     <div class="card rates">
@@ -1539,6 +1620,24 @@ const ACTIONS = {
     $('#peopleOut').textContent = peopleText(n);
     updatePayPreview();
   },
+  async arrived(el) {
+    if (!(await ask(t('confirmArrivedQ')))) return;
+    await busy(el, async () => { await api.markArrived(el.dataset.job); refresh(); });
+  },
+  async confirmArrival(el) { await busy(el, async () => { await api.confirmArrival(el.dataset.assignment); refresh(); }); },
+  async confirmDone(el) {
+    if (!(await ask(t('confirmDoneQ', { name: el.dataset.name })))) return;
+    await busy(el, async () => { await api.confirmCompletion(el.dataset.assignment); refresh(); });
+  },
+  problemOpen(el) {
+    const f = $('#prob-' + el.dataset.assignment);
+    f.hidden = !f.hidden;
+    if (!f.hidden) f.problem.focus();
+  },
+  async resolve(el) {
+    if (!(await ask(el.textContent.trim() + '?'))) return;
+    await busy(el, async () => { await api.admin.resolveDispute(el.dataset.assignment, el.dataset.v === '1'); toast(t('resolved')); refresh(); });
+  },
   async stopHiring(el) {
     if (!(await ask(t('confirmStop', { n: el.dataset.n })))) return;
     await busy(el, async () => { await api.stopHiring(el.dataset.job); refresh(); });
@@ -1599,6 +1698,11 @@ const ACTIONS = {
 
 // ===================== Forms =====================
 const FORMS = {
+  async problem(f, btn) {
+    const text = f.problem.value.trim();
+    if (!text) return f.problem.focus();
+    await busy(btn, async () => { await api.reportProblem(f.dataset.assignment, text); toast(t('problemSent')); refresh(); });
+  },
   async sendCode(f, btn) {
     const email = f.querySelector('#em').value.trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast(t('badEmail'), 'err');

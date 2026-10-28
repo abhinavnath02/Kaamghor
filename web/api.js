@@ -71,6 +71,12 @@ const api = {
   },
   hire: (jobId, workerId) => q(sb.rpc('hire_worker', { p_job: jobId, p_worker: workerId })),
   stopHiring: (jobId) => q(sb.rpc('stop_hiring', { p_job: jobId })),
+  // Two-way handshake: the household confirms the worker's arrival and the finished work.
+  confirmArrival: (assignmentId) => q(sb.rpc('confirm_arrival', { p_assignment: assignmentId })),
+  confirmCompletion: (assignmentId) => q(sb.rpc('confirm_completion', { p_assignment: assignmentId })),
+  reportProblem: (assignmentId, problem) => q(sb.rpc('report_problem', { p_assignment: assignmentId, p_problem: problem })),
+  // Confirms work whose household didn't respond within 24 hours (also runs on a schedule).
+  autoComplete: () => q(sb.rpc('auto_complete_due')),
   // Everyone hired for a job (one assignment per person).
   jobAssignments: (jobId) => q(sb.from('assignments').select('*').eq('job_id', jobId).neq('status', 'cancelled').order('hired_at')),
   profilesByIds: (ids) => q(sb.from('profiles').select('id, full_name, phone, area').in('id', ids)),
@@ -103,6 +109,7 @@ const api = {
   myWork: (uid) => q(sb.from('assignments').select('*, jobs(*)').eq('worker_id', uid).neq('status', 'cancelled').order('hired_at', { ascending: false }).limit(100)),
   myAssignment: (jobId, uid) => q(sb.from('assignments').select('*').eq('job_id', jobId).eq('worker_id', uid).maybeSingle()),
   paymentForAssignment: (assignmentId) => q(sb.from('payments').select('*').eq('assignment_id', assignmentId).maybeSingle()),
+  markArrived: (jobId) => q(sb.rpc('mark_arrived', { p_job: jobId })),
   complete: (jobId) => q(sb.rpc('complete_job', { p_job: jobId })),
   confirmCash: (jobId) => q(sb.rpc('confirm_cash', { p_job: jobId })),
   confirmDirect: (jobId) => q(sb.rpc('confirm_direct', { p_job: jobId })),
@@ -131,5 +138,7 @@ const api = {
     feesOwed: () => q(sb.rpc('admin_fees_owed')),
     settleFees: (workerId, ref) => q(sb.rpc('settle_fees', { p_worker: workerId, p_ref: ref })),
     setRate: (service, daily, min) => q(sb.rpc('set_rate', { p_service: service, p_daily: daily, p_min: min })),
+    disputes: () => q(sb.rpc('admin_disputes')),
+    resolveDispute: (assignmentId, completed) => q(sb.rpc('resolve_dispute', { p_assignment: assignmentId, p_completed: completed })),
   },
 };

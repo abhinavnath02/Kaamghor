@@ -59,6 +59,15 @@ async function test(name, fn) { await fn(); passed++; console.log('ok -', name);
 const signUp = (user, role, name, phone, area) =>
   as(user, `insert into profiles (id, role, full_name, phone, area) values ('${ids[user]}', '${role}', '${name}', '${phone}', '${area}')`);
 
+// Full two-way handshake for one worker on one of the household's jobs (migration 10).
+async function handshake(jobId, worker) {
+  const a = `(select id from assignments where job_id = '${jobId}' and worker_id = '${ids[worker]}')`;
+  await as(worker, `select mark_arrived('${jobId}')`);
+  await as('house', `select confirm_arrival(${a})`);
+  await as(worker, `select complete_job('${jobId}')`);
+  await as('house', `select confirm_completion(${a})`);
+}
+
 await test('sign-up creates own profile with a valid mobile; role admin is refused', async () => {
   await signUp('house', 'household', 'Rina', '919000000001', 'town');
   await signUp('w1', 'worker', 'Bikash', '919000000002', 'town');
@@ -160,7 +169,7 @@ await test('complete: only hired worker; creates payment with 10% fee', async ()
   await fails('w2', `select complete_job('${job.id}')`);
   await fails('house', `select complete_job('${job.id}')`);
   await fails('w1', `select get_pay_target('${job.id}', '${ids.w1}')`);
-  await as('w1', `select complete_job('${job.id}')`);
+  await handshake(job.id, 'w1');
   await fails('w1', `select complete_job('${job.id}')`, /not in progress/);
   const [pm] = await as('house', `select * from payments where job_id = '${job.id}'`);
   assert.equal(pm.amount, 400); assert.equal(pm.fee, 40); assert.equal(pm.status, 'pending');
@@ -211,7 +220,7 @@ await test('admin: verify, fees owed, settle, payouts, stats; non-admin refused'
     values ('${ids.house}', 'cook', 'town', current_date, 1, 500) returning id`);
   await as('w1', `insert into applications (job_id, worker_id) values ('${j2.id}', '${ids.w1}')`);
   await as('house', `select hire_worker('${j2.id}', '${ids.w1}')`);
-  await as('w1', `select complete_job('${j2.id}')`);
+  await handshake(j2.id, 'w1');
   await db.exec(`update payments set status = 'paid', method = 'upi', paid_at = now(), payout_status = 'pending',
                  razorpay_order_id = 'order_1', razorpay_payment_id = 'pay_1' where job_id = '${j2.id}'`);
   const [po] = await as('admin', `select * from admin_payouts()`);
@@ -272,9 +281,9 @@ await test('09: a job for 2 people: hire each, separate payments, done when both
   // each worker sees the household's phone; workers don't see each other's assignment
   assert.equal((await as('w2', `select * from profiles where id = '${ids.house}'`)).length, 1);
   assert.equal((await as('w2', `select * from assignments where job_id = '${j.id}'`)).length, 1);
-  await as('w1', `select complete_job('${j.id}')`);
+  await handshake(j.id, 'w1');
   assert.equal((await as('house', `select status from jobs where id = '${j.id}'`))[0].status, 'assigned');
-  await as('w2', `select complete_job('${j.id}')`);
+  await handshake(j.id, 'w2');
   assert.equal((await as('house', `select status from jobs where id = '${j.id}'`))[0].status, 'done');
   const pays = await as('house', `select amount, fee from payments where job_id = '${j.id}' order by amount`);
   assert.deepEqual(pays.map((p) => [p.amount, p.fee]), [[1000, 100], [1000, 100]]);
@@ -293,6 +302,62 @@ await test('09: stop hiring starts the job with the people already hired', async
   await as('house', `select stop_hiring('${j.id}')`);
   const [row] = await as('house', `select status, workers_needed, pay from jobs where id = '${j.id}'`);
   assert.deepEqual([row.status, row.workers_needed, row.pay], ['assigned', 1, 400]);
+});
+
+await test('10: arrival and completion need both sides; problems go to admin; 24h auto-confirm', async () => {
+  const mk = async () => {
+    const [j] = await as('house', `insert into jobs (household_id, service, area, job_date, days, rate) values ('${ids.house}', 'clean', 'town', current_date + 1, 1, 400) returning id`);
+    await as('w1', `insert into applications (job_id, worker_id) values ('${j.id}', '${ids.w1}')`);
+    await as('house', `select hire_worker('${j.id}', '${ids.w1}')`);
+    return [j.id, `(select id from assignments where job_id = '${j.id}')`];
+  };
+  const status = async (j) => (await db.query(`select status from assignments where job_id = '${j}'`)).rows[0].status;
+  const payments = async (j) => (await db.query(`select * from payments where job_id = '${j}'`)).rows.length;
+
+  // order is enforced, and each side can only do its own step
+  let [j, a] = await mk();
+  await fails('house', `select confirm_arrival(${a})`, /not marked arrival/);
+  await fails('w1', `select confirm_arrival(${a})`, /Job not found/);
+  await fails('house', `select mark_arrived('${j}')`, /Job not found/);
+  await as('w1', `select mark_arrived('${j}')`);
+  await fails('w1', `select mark_arrived('${j}')`, /Already/);
+  await as('house', `select confirm_arrival(${a})`);
+  assert.equal(await status(j), 'working');
+  await fails('house', `select confirm_completion(${a})`, /not finished/);
+  await as('w1', `select complete_job('${j}')`);
+  assert.equal(await status(j), 'done_claimed');
+  assert.equal(await payments(j), 0); // no payment until confirmed
+  await fails('w1', `select confirm_completion(${a})`, /Job not found/);
+  await as('house', `select confirm_completion(${a})`);
+  assert.equal(await status(j), 'done');
+  assert.equal(await payments(j), 1);
+
+  // worker may finish even if the household never confirmed arrival
+  [j, a] = await mk();
+  await as('w1', `select mark_arrived('${j}')`);
+  await as('w1', `select complete_job('${j}')`);
+  // household reports a problem -> disputed, no payment; admin decides
+  await fails('house', `select report_problem(${a}, '  ')`, /describe/);
+  await as('house', `select report_problem(${a}, 'Left after one hour')`);
+  assert.equal(await status(j), 'disputed');
+  await fails('house', `select * from admin_disputes()`, /Admins only/);
+  const [d] = await as('admin', `select * from admin_disputes()`);
+  assert.equal(d.problem, 'Left after one hour');
+  await as('admin', `select resolve_dispute(${a}, false)`);
+  assert.equal(await status(j), 'cancelled');
+  assert.equal((await db.query(`select status from jobs where id = '${j}'`)).rows[0].status, 'open');
+
+  // household doesn't respond: after 24 hours it is confirmed automatically
+  [j, a] = await mk();
+  await as('w1', `select mark_arrived('${j}')`);
+  await as('w1', `select complete_job('${j}')`);
+  const [{ auto_complete_due: none }] = await as('w1', `select auto_complete_due()`);
+  assert.equal(none, 0);
+  await db.exec(`update assignments set auto_done_at = now() - interval '1 minute' where job_id = '${j}'`);
+  const [{ auto_complete_due: n }] = await as('w1', `select auto_complete_due()`);
+  assert.equal(n, 1);
+  assert.equal(await status(j), 'done');
+  assert.equal(await payments(j), 1);
 });
 
 await test('anon has no access', async () => {

@@ -150,8 +150,8 @@
     }
   }
 
-  const ARG_TYPES = { p_job: 'uuid', p_worker: 'uuid', p_payment: 'uuid', p_rating: 'int', p_verified: 'boolean', p_ref: 'text', p_service: 'text', p_daily: 'int', p_min: 'int', p_assignment: 'uuid' };
-  const SET_RETURNING = { get_pay_target: 1, admin_payouts: 1, admin_fees_owed: 1 };
+  const ARG_TYPES = { p_job: 'uuid', p_worker: 'uuid', p_payment: 'uuid', p_rating: 'int', p_verified: 'boolean', p_ref: 'text', p_service: 'text', p_daily: 'int', p_min: 'int', p_assignment: 'uuid', p_problem: 'text', p_completed: 'boolean' };
+  const SET_RETURNING = { get_pay_target: 1, admin_payouts: 1, admin_fees_owed: 1, admin_disputes: 1 };
   // Functions that update the jobs table, so realtime would send an event.
   const JOB_CHANGING = { hire_worker: 1, complete_job: 1, stop_hiring: 1 };
   async function rpc(name, args = {}) {
