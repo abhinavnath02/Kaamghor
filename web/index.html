@@ -424,7 +424,7 @@ const T = {
     fillAll: 'Please fill all fields', pickSkill: 'Choose at least one kind of work', mustAgree: 'Please accept the terms',
     badUpi: 'UPI ID looks wrong. It should look like name@bank',
     tabPost: 'Post job', tabMyJobs: 'My jobs', tabProfile: 'Profile', tabFind: 'Find jobs', tabMyWork: 'My work',
-    service: 'Work needed', date: 'Date', hours: 'Hours', pay: 'Pay (₹)', payHint: 'Minimum ₹100',
+    service: 'Work needed', date: 'Start date', daysLabel: 'How many days', pay: 'Pay (₹)', payHint: 'Minimum ₹100',
     notes: 'Details (optional)', notesPh: 'e.g. 2 rooms, bring your own broom', postBtn: 'Post job',
     matchCount: '{n} workers available for this in your area', posted: 'Job posted. Workers nearby can see it now.',
     noJobs: 'You have not posted any jobs yet', postFirst: 'Post a job',
@@ -459,7 +459,7 @@ const T = {
     uploadId: 'Upload photo of ID', replaceId: 'Upload again', idPrivate: 'Only Kaamghor staff can see your ID.',
     uploaded: 'Uploaded. We will check it soon.', idNone: 'Not uploaded', myRating: 'Rating', jobsDone: 'Jobs done',
     logout: 'Log out', terms: 'Terms & privacy', phone: 'Phone', offline: 'You are offline. Showing saved screens.',
-    error: 'Something went wrong', yes: 'Yes', no: 'No', hoursN: '{n} hrs', fileTooBig: 'File is too large (max 5 MB)',
+    error: 'Something went wrong', yes: 'Yes', no: 'No', daysN: '{n} days', dayOne: '1 day', fileTooBig: 'File is too large (max 5 MB)',
     skill_clean: 'Cleaning', skill_cook: 'Cooking', skill_garden: 'Gardening', skill_paint: 'Painting',
     skill_helper: 'Helper', skill_plumb: 'Plumbing', skill_elec: 'Electrical',
     skill_care: 'Caretaker', skill_health: 'Healthcare', skill_other: 'Others',
@@ -496,7 +496,7 @@ const T = {
     fillAll: 'অনুগ্ৰহ কৰি সকলো তথ্য পূৰণ কৰক', pickSkill: 'অন্ততঃ এবিধ কাম বাছনি কৰক', mustAgree: 'অনুগ্ৰহ কৰি চৰ্তাৱলী মানি লওক',
     badUpi: 'UPI ID শুদ্ধ যেন লগা নাই। ই name@bank ৰ দৰে হ’ব লাগে',
     tabPost: 'কাম দিয়ক', tabMyJobs: 'মোৰ কাম', tabProfile: 'প্ৰফাইল', tabFind: 'কাম বিচাৰক', tabMyWork: 'মোৰ কাম',
-    service: 'কি কাম লাগে', date: 'তাৰিখ', hours: 'ঘণ্টা', pay: 'মজুৰি (₹)', payHint: 'কমেও ₹100',
+    service: 'কি কাম লাগে', date: 'আৰম্ভণিৰ তাৰিখ', daysLabel: 'কিমান দিন', pay: 'মজুৰি (₹)', payHint: 'কমেও ₹100',
     notes: 'বিৱৰণ (ইচ্ছা অনুসৰি)', notesPh: 'যেনে: ২টা কোঠা, নিজৰ ঝাড়ু আনিব', postBtn: 'কামটো দিয়ক',
     matchCount: 'আপোনাৰ অঞ্চলত এই কামৰ বাবে {n} জন কৰ্মী উপলব্ধ', posted: 'কামটো দিয়া হ’ল। ওচৰৰ কৰ্মীসকলে এতিয়া দেখা পাব।',
     noJobs: 'আপুনি এতিয়ালৈ কোনো কাম দিয়া নাই', postFirst: 'কাম দিয়ক',
@@ -531,7 +531,7 @@ const T = {
     uploadId: 'পৰিচয়পত্ৰৰ ফটো আপলোড কৰক', replaceId: 'পুনৰ আপলোড কৰক', idPrivate: 'আপোনাৰ পৰিচয়পত্ৰ কেৱল কামঘৰৰ কৰ্মীয়েহে দেখিব।',
     uploaded: 'আপলোড হ’ল। আমি সোনকালে পৰীক্ষা কৰিম।', idNone: 'আপলোড কৰা নাই', myRating: 'ৰেটিং', jobsDone: 'কৰা কাম',
     logout: 'লগ আউট', terms: 'চৰ্তাৱলী আৰু গোপনীয়তা', phone: 'ফোন', offline: 'আপুনি অফলাইন। সাঁচি ৰখা পৃষ্ঠা দেখুওৱা হৈছে।',
-    error: 'কিবা ভুল হ’ল', yes: 'হয়', no: 'নহয়', hoursN: '{n} ঘণ্টা', fileTooBig: 'ফাইলটো বেছি ডাঙৰ (সৰ্বাধিক 5 MB)',
+    error: 'কিবা ভুল হ’ল', yes: 'হয়', no: 'নহয়', daysN: '{n} দিন', dayOne: '১ দিন', fileTooBig: 'ফাইলটো বেছি ডাঙৰ (সৰ্বাধিক 5 MB)',
     skill_clean: 'ঘৰ চাফা', skill_cook: 'ৰন্ধা-বঢ়া', skill_garden: 'বাগিচাৰ কাম', skill_paint: 'ৰং কৰা',
     skill_helper: 'সহায়কাৰী', skill_plumb: 'প্লাম্বিং', skill_elec: 'বিজুলীৰ কাম',
     skill_care: 'যত্নকাৰী', skill_health: 'স্বাস্থ্যকৰ্মী', skill_other: 'অন্যান্য',
@@ -557,7 +557,7 @@ const T = {
     fillAll: 'कृपया सभी जानकारी भरें', pickSkill: 'कम से कम एक काम चुनें', mustAgree: 'कृपया नियम स्वीकार करें',
     badUpi: 'UPI ID सही नहीं लग रहा। यह name@bank जैसा होना चाहिए',
     tabPost: 'काम डालें', tabMyJobs: 'मेरे काम', tabProfile: 'प्रोफ़ाइल', tabFind: 'काम खोजें', tabMyWork: 'मेरा काम',
-    service: 'कौन-सा काम', date: 'तारीख़', hours: 'घंटे', pay: 'मज़दूरी (₹)', payHint: 'कम से कम ₹100',
+    service: 'कौन-सा काम', date: 'शुरू की तारीख़', daysLabel: 'कितने दिन', pay: 'मज़दूरी (₹)', payHint: 'कम से कम ₹100',
     notes: 'विवरण (वैकल्पिक)', notesPh: 'जैसे: 2 कमरे, अपनी झाड़ू लाएँ', postBtn: 'काम डालें',
     matchCount: 'आपके इलाके में इस काम के लिए {n} कामगार उपलब्ध हैं', posted: 'काम डाल दिया गया। आसपास के कामगार इसे अभी देख सकते हैं।',
     noJobs: 'आपने अभी तक कोई काम नहीं डाला', postFirst: 'काम डालें',
@@ -592,7 +592,7 @@ const T = {
     uploadId: 'ID की फ़ोटो अपलोड करें', replaceId: 'फिर से अपलोड करें', idPrivate: 'आपका ID सिर्फ़ कामघर का स्टाफ़ देख सकता है।',
     uploaded: 'अपलोड हो गया। हम जल्द जाँचेंगे।', idNone: 'अपलोड नहीं किया', myRating: 'रेटिंग', jobsDone: 'किए गए काम',
     logout: 'लॉग आउट', terms: 'नियम और गोपनीयता', phone: 'फ़ोन', offline: 'आप ऑफ़लाइन हैं। सेव की गई स्क्रीन दिख रही है।',
-    error: 'कुछ गड़बड़ हो गई', yes: 'हाँ', no: 'नहीं', hoursN: '{n} घंटे', fileTooBig: 'फ़ाइल बहुत बड़ी है (अधिकतम 5 MB)',
+    error: 'कुछ गड़बड़ हो गई', yes: 'हाँ', no: 'नहीं', daysN: '{n} दिन', dayOne: '1 दिन', fileTooBig: 'फ़ाइल बहुत बड़ी है (अधिकतम 5 MB)',
     skill_clean: 'सफ़ाई', skill_cook: 'खाना बनाना', skill_garden: 'बागवानी', skill_paint: 'पेंटिंग',
     skill_helper: 'हेल्पर', skill_plumb: 'प्लंबिंग', skill_elec: 'बिजली का काम',
     skill_care: 'देखभाल', skill_health: 'स्वास्थ्य कर्मी', skill_other: 'अन्य',
@@ -699,6 +699,15 @@ function fmtDate(d) {
   catch (_) { return d; }
 }
 function todayIST() { return new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10); }
+const daysText = (n) => (n === 1 ? t('dayOne') : t('daysN', { n }));
+// "Tue, 28 Oct" for one day, "28 Oct – 30 Oct" for longer jobs.
+function fmtRange(j) {
+  if (!j.days || j.days === 1) return fmtDate(j.job_date);
+  try {
+    const f = (d) => new Date(d + 'T00:00:00').toLocaleDateString(LOCALE[S.lang], { day: 'numeric', month: 'short' });
+    return `${f(j.job_date)} – ${f(addDays(j.job_date, j.days - 1))}`;
+  } catch (_) { return j.job_date; }
+}
 function addDays(d, n) { const x = new Date(d + 'T00:00:00Z'); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); }
 function upiLink(pa, pn, amount) {
   return `upi://pay?pa=${encodeURIComponent(pa)}&pn=${encodeURIComponent(pn)}&am=${Number(amount).toFixed(2)}&cu=INR&tn=${encodeURIComponent('Kaamghor job')}`;
@@ -813,7 +822,7 @@ darkQuery.addEventListener('change', paintThemeChrome);
 function statusBadge(status) { return `<span class="badge ${status}"><i class="dot"></i>${te('status_' + status)}</span>`; }
 
 function jobMeta(j) {
-  return `<div class="meta"><span>${icon('calendar', 15)}${esc(fmtDate(j.job_date))}</span><span>${icon('clock', 15)}${te('hoursN', { n: j.hours })}</span><span>${icon('pin', 15)}${esc(areaName(j.area))}</span></div>`;
+  return `<div class="meta"><span>${icon('calendar', 15)}${esc(fmtRange(j))}</span><span>${icon('clock', 15)}${esc(daysText(j.days))}</span><span>${icon('pin', 15)}${esc(areaName(j.area))}</span></div>`;
 }
 function jobCard(j, href, extra = '') {
   return `<a class="card tap job" href="#${href}">
@@ -1053,13 +1062,13 @@ async function viewPost() {
         <label class="choice pill"><input type="radio" name="when" value="other"><span>${icon('calendar', 16)}${te('otherDate')}</span></label>
       </div>
       <input id="jDate" name="job_date" type="date" min="${today}" value="${today}" aria-label="${te('date')}" style="margin-top:10px" hidden required>
-      <label class="f">${te('hours')}</label>
+      <label class="f">${te('daysLabel')}</label>
       <div class="numstep">
-        <button type="button" data-act="hours" data-d="-1" aria-label="−">−</button>
-        <output id="hoursOut">${te('hoursN', { n: 4 })}</output>
-        <button type="button" data-act="hours" data-d="1" aria-label="+">+</button>
+        <button type="button" data-act="days" data-d="-1" aria-label="−">−</button>
+        <output id="daysOut">${esc(daysText(1))}</output>
+        <button type="button" data-act="days" data-d="1" aria-label="+">+</button>
       </div>
-      <input type="hidden" name="hours" value="4">
+      <input type="hidden" name="days" value="1">
       <label class="f" for="jPay">${te('pay')}</label>
       <div class="seg even" style="margin-bottom:10px">${[300, 400, 500, 700, 1000].map((v) => `<button type="button" class="pillbtn" data-act="payPick" data-v="${v}">₹${v}</button>`).join('')}</div>
       <input id="jPay" name="pay" type="number" inputmode="numeric" min="100" step="10" placeholder="${te('payHint')}" required>
@@ -1428,12 +1437,11 @@ const ACTIONS = {
     if (!(await ask(t('confirmHire', { name: el.dataset.name })))) return;
     await busy(el, async () => { await api.hire(el.dataset.job, el.dataset.worker); toast(t('hired')); refresh(); });
   },
-  hours(el) {
+  days(el) {
     const f = el.form;
-    const n = Math.min(12, Math.max(1, Number(f.hours.value) + Number(el.dataset.d)));
-    f.hours.value = n;
-    const out = $('#hoursOut');
-    out.textContent = t('hoursN', { n });
+    const n = Math.min(30, Math.max(1, Number(f.days.value) + Number(el.dataset.d)));
+    f.days.value = n;
+    $('#daysOut').textContent = daysText(n);
   },
   payPick(el) {
     const input = $('#jPay');
@@ -1539,7 +1547,7 @@ const FORMS = {
     await busy(btn, async () => {
       const row = await api.postJob({
         household_id: S.user.id, service: f.service.value, area: f.area.value,
-        job_date: f.job_date.value, hours: parseInt(f.hours.value, 10), pay, notes: f.notes.value.trim() || null,
+        job_date: f.job_date.value, days: parseInt(f.days.value, 10), pay, notes: f.notes.value.trim() || null,
       });
       toast(t('posted'));
       go('job/' + row.id);

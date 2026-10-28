@@ -117,21 +117,21 @@ await test('storage: worker uploads to own folder only; only admin reads', async
 
 let job;
 await test('only households post jobs; status and worker cannot be set by browser', async () => {
-  [job] = await as('house', `insert into jobs (household_id, service, area, job_date, hours, pay, notes)
+  [job] = await as('house', `insert into jobs (household_id, service, area, job_date, days, pay, notes)
     values ('${ids.house}', 'clean', 'town', current_date + 1, 3, 400, 'Two rooms') returning id, status`);
   assert.equal(job.status, 'open');
-  await fails('w1', `insert into jobs (household_id, service, area, job_date, hours, pay) values ('${ids.w1}', 'clean', 'town', current_date + 1, 3, 400)`);
-  await fails('house', `insert into jobs (household_id, service, area, job_date, hours, pay, status) values ('${ids.house}', 'clean', 'town', current_date + 1, 3, 400, 'done')`);
-  await fails('house', `insert into jobs (household_id, service, area, job_date, hours, pay) values ('${ids.house}', 'clean', 'town', current_date + 1, 3, 50)`);
-  await fails('house', `insert into jobs (household_id, service, area, job_date, hours, pay) values ('${ids.house}', 'clean', 'town', current_date + 1, 13, 400)`);
-  await fails('house', `insert into jobs (household_id, service, area, job_date, hours, pay) values ('${ids.house}', 'clean', 'town', current_date - 3, 3, 400)`);
+  await fails('w1', `insert into jobs (household_id, service, area, job_date, days, pay) values ('${ids.w1}', 'clean', 'town', current_date + 1, 3, 400)`);
+  await fails('house', `insert into jobs (household_id, service, area, job_date, days, pay, status) values ('${ids.house}', 'clean', 'town', current_date + 1, 3, 400, 'done')`);
+  await fails('house', `insert into jobs (household_id, service, area, job_date, days, pay) values ('${ids.house}', 'clean', 'town', current_date + 1, 3, 50)`);
+  await fails('house', `insert into jobs (household_id, service, area, job_date, days, pay) values ('${ids.house}', 'clean', 'town', current_date + 1, 31, 400)`);
+  await fails('house', `insert into jobs (household_id, service, area, job_date, days, pay) values ('${ids.house}', 'clean', 'town', current_date - 3, 3, 400)`);
   await fails('house', `update jobs set status = 'done' where id = '${job.id}'`);
 });
 
 await test('apply: matching skill only; household sees applicants', async () => {
   await as('w1', `insert into applications (job_id, worker_id) values ('${job.id}', '${ids.w1}')`);
   await as('w2', `insert into applications (job_id, worker_id) values ('${job.id}', '${ids.w2}')`);
-  const [cookJob] = await as('house', `insert into jobs (household_id, service, area, job_date, hours, pay)
+  const [cookJob] = await as('house', `insert into jobs (household_id, service, area, job_date, days, pay)
     values ('${ids.house}', 'plumb', 'town', current_date, 2, 300) returning id`);
   await fails('w1', `insert into applications (job_id, worker_id) values ('${cookJob.id}', '${ids.w1}')`);
   await fails('w1', `insert into applications (job_id, worker_id) values ('${job.id}', '${ids.w2}')`);
@@ -207,7 +207,7 @@ await test('admin: verify, fees owed, settle, payouts, stats; non-admin refused'
   assert.equal((await as('admin', `select * from admin_fees_owed()`)).length, 0);
 
   // Online payment as the webhook would record it (service role), then admin pays out.
-  const [j2] = await as('house', `insert into jobs (household_id, service, area, job_date, hours, pay)
+  const [j2] = await as('house', `insert into jobs (household_id, service, area, job_date, days, pay)
     values ('${ids.house}', 'cook', 'town', current_date, 2, 250) returning id`);
   await as('w1', `insert into applications (job_id, worker_id) values ('${j2.id}', '${ids.w1}')`);
   await as('house', `select hire_worker('${j2.id}', '${ids.w1}')`);
@@ -225,12 +225,20 @@ await test('admin: verify, fees owed, settle, payouts, stats; non-admin refused'
 
 await test('06: caretaker, healthcare and others; others needs a description', async () => {
   for (const s of ['care', 'health']) {
-    await as('house', `insert into jobs (household_id, service, area, job_date, hours, pay) values ('${ids.house}', '${s}', 'town', current_date + 1, 4, 600)`);
+    await as('house', `insert into jobs (household_id, service, area, job_date, days, pay) values ('${ids.house}', '${s}', 'town', current_date + 1, 4, 600)`);
   }
-  await fails('house', `insert into jobs (household_id, service, area, job_date, hours, pay) values ('${ids.house}', 'other', 'town', current_date + 1, 4, 600)`, /jobs_other_needs_notes/);
-  await as('house', `insert into jobs (household_id, service, area, job_date, hours, pay, notes) values ('${ids.house}', 'other', 'town', current_date + 1, 4, 600, 'Move furniture upstairs')`);
+  await fails('house', `insert into jobs (household_id, service, area, job_date, days, pay) values ('${ids.house}', 'other', 'town', current_date + 1, 4, 600)`, /jobs_other_needs_notes/);
+  await as('house', `insert into jobs (household_id, service, area, job_date, days, pay, notes) values ('${ids.house}', 'other', 'town', current_date + 1, 4, 600, 'Move furniture upstairs')`);
   await as('w2', `update worker_profiles set skills = '{clean,care,health,other}' where user_id = '${ids.w2}'`);
   await fails('w2', `update worker_profiles set skills = '{babysit}' where user_id = '${ids.w2}'`);
+});
+
+await test('07: jobs are booked in days (1 to 30)', async () => {
+  const [j] = await as('house', `insert into jobs (household_id, service, area, job_date, days, pay) values ('${ids.house}', 'paint', 'town', current_date + 2, 30, 900) returning days`);
+  assert.equal(j.days, 30);
+  await fails('house', `insert into jobs (household_id, service, area, job_date, days, pay) values ('${ids.house}', 'paint', 'town', current_date + 2, 0, 900)`);
+  const cols = (await db.query(`select column_name from information_schema.columns where table_name = 'jobs'`)).rows.map((r) => r.column_name);
+  assert.ok(!cols.includes('hours'));
 });
 
 await test('anon has no access', async () => {
