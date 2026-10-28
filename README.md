@@ -28,6 +28,7 @@ sql/                         Run every file in name order in the Supabase SQL ed
   12_verified_phone.sql      Every account has an SMS-verified mobile; the profile phone comes from Auth
   13_location.sql            Exact pin for hired people only; a ~1 km point for everyone else
   14_thikadar.sql            Verified Thikadars apply with a crew; the crew fills places and is paid as one
+  15_half_days.sql           Jobs can be booked in half days (0.5, 1, 1.5 ...); pay rounds to whole rupees
 supabase/functions/
   create-order/              Creates the Razorpay order (holds the Razorpay secret)
   razorpay-webhook/          The only thing that marks an online payment paid (checks signature and amount)
@@ -40,7 +41,7 @@ You need: a Supabase account, a Razorpay account, a Google Cloud account (for "C
 
 **1. Supabase project.** Create a project in the **Mumbai (ap-south-1)** region. Move to a paid plan before real users (free projects pause when idle and have no daily backups).
 
-**2. Database.** In the SQL editor, run every file in `sql/` one at a time, in name order (`01` to `14`). Each later file upgrades the tables from the earlier ones and keeps existing data, so an existing project only runs the files it hasn't run yet.
+**2. Database.** In the SQL editor, run every file in `sql/` one at a time, in name order (`01` to `15`). Each later file upgrades the tables from the earlier ones and keeps existing data, so an existing project only runs the files it hasn't run yet.
 
 Turn on **pg_cron** first (Database → Extensions → pg_cron) so `10_handshake.sql` can schedule the 24-hour auto-confirm. Without it, overdue jobs are still confirmed whenever someone opens their jobs.
 
@@ -112,7 +113,7 @@ node sql.test.mjs
 node edge.test.mjs
 ```
 
-`sql.test.mjs` runs every SQL file on a real Postgres engine (PGlite) and checks the security rules and the full job flow (25 tests). `edge.test.mjs` checks both Edge Functions, including bad signatures and wrong amounts (6 tests).
+`sql.test.mjs` runs every SQL file on a real Postgres engine (PGlite) and checks the security rules and the full job flow (26 tests). `edge.test.mjs` checks both Edge Functions, including bad signatures and wrong amounts (6 tests).
 
 To click through the app without a Supabase project:
 

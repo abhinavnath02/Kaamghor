@@ -254,7 +254,7 @@ await test('06: caretaker, healthcare and others; others needs a description', a
 
 await test('07: jobs are booked in days (1 to 30)', async () => {
   const [j] = await as('house', `insert into jobs (household_id, service, area, job_date, days, rate) values ('${ids.house}', 'paint', 'town', current_date + 2, 30, 900) returning days`);
-  assert.equal(j.days, 30);
+  assert.equal(Number(j.days), 30);
   await fails('house', `insert into jobs (household_id, service, area, job_date, days, rate) values ('${ids.house}', 'paint', 'town', current_date + 2, 0, 900)`);
   const cols = (await db.query(`select column_name from information_schema.columns where table_name = 'jobs'`)).rows.map((r) => r.column_name);
   assert.ok(!cols.includes('hours'));
@@ -457,6 +457,21 @@ await test('14: a verified Thikadar brings a crew that fills places and is paid 
   await fails('house', `select hire_worker('${k.id}', '${ids.w1}')`, /Not enough places/);
   const [pw] = await as('house', `select is_thikadar, crew_max from public_workers where id = '${ids.w1}'`);
   assert.deepEqual([pw.is_thikadar, pw.crew_max], [true, 3]);
+});
+
+await test('15: half days (0.5 steps); pay rounds to whole rupees', async () => {
+  const [a] = await as('house', `insert into jobs (household_id, service, area, job_date, days, rate) values ('${ids.house}', 'clean', 'town', current_date + 1, 0.5, 455) returning days, pay`);
+  assert.deepEqual([Number(a.days), a.pay], [0.5, 228]); // 455 x 0.5 = 227.5 -> 228
+  const [b] = await as('house', `insert into jobs (household_id, service, area, job_date, days, rate, workers_needed) values ('${ids.house}', 'clean', 'town', current_date + 1, 1.5, 400, 2) returning pay`);
+  assert.equal(b.pay, 1200);
+  await fails('house', `insert into jobs (household_id, service, area, job_date, days, rate) values ('${ids.house}', 'clean', 'town', current_date + 1, 1.3, 400)`, /jobs_days_check/);
+  await fails('house', `insert into jobs (household_id, service, area, job_date, days, rate) values ('${ids.house}', 'clean', 'town', current_date + 1, 0, 400)`, /jobs_days_check/);
+  // a half-day job pays the worker half a day
+  await as('w2', `insert into applications (job_id, worker_id) select id, '${ids.w2}' from jobs where pay = 228`);
+  const [j] = await as('house', `select id from jobs where pay = 228`);
+  await as('house', `select hire_worker('${j.id}', '${ids.w2}')`);
+  await handshake(j.id, 'w2');
+  assert.equal((await as('w2', `select amount from payments where job_id = '${j.id}'`))[0].amount, 228);
 });
 
 await test('anon has no access', async () => {

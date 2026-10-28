@@ -513,7 +513,7 @@ const T = {
     uploadId: 'Upload photo of ID', replaceId: 'Upload again', idPrivate: 'Only Kaamghor staff can see your ID.',
     uploaded: 'Uploaded. We will check it soon.', idNone: 'Not uploaded', myRating: 'Rating', jobsDone: 'Jobs done',
     logout: 'Log out', terms: 'Terms & privacy', phone: 'Phone', offline: 'You are offline. Showing saved screens.',
-    error: 'Something went wrong', yes: 'Yes', no: 'No', daysN: '{n} days', dayOne: '1 day',
+    error: 'Something went wrong', yes: 'Yes', no: 'No', daysN: '{n} days', dayOne: '1 day', halfDay: 'Half day',
     rateLabel: 'Daily rate per person (₹)', rateHint: 'Usual rate ₹{s} · minimum ₹{m}', rateLow: 'The minimum rate for this work is ₹{m} a day',
     totalPay: 'Total pay', perDay: '₹{n}/day',
     peopleLabel: 'How many people', peopleN: '{n} people', personOne: '1 person', hiredOf: 'Hired {n} of {m}', hiredSoFar: 'Hired so far',
@@ -621,7 +621,7 @@ const T = {
     uploadId: 'পৰিচয়পত্ৰৰ ফটো আপলোড কৰক', replaceId: 'পুনৰ আপলোড কৰক', idPrivate: 'আপোনাৰ পৰিচয়পত্ৰ কেৱল কামঘৰৰ কৰ্মীয়েহে দেখিব।',
     uploaded: 'আপলোড হ’ল। আমি সোনকালে পৰীক্ষা কৰিম।', idNone: 'আপলোড কৰা নাই', myRating: 'ৰেটিং', jobsDone: 'কৰা কাম',
     logout: 'লগ আউট', terms: 'চৰ্তাৱলী আৰু গোপনীয়তা', phone: 'ফোন', offline: 'আপুনি অফলাইন। সাঁচি ৰখা পৃষ্ঠা দেখুওৱা হৈছে।',
-    error: 'কিবা ভুল হ’ল', yes: 'হয়', no: 'নহয়', daysN: '{n} দিন', dayOne: '১ দিন',
+    error: 'কিবা ভুল হ’ল', yes: 'হয়', no: 'নহয়', daysN: '{n} দিন', dayOne: '১ দিন', halfDay: 'আধা দিন',
     rateLabel: 'প্ৰতিজনৰ দৈনিক মজুৰি (₹)', rateHint: 'সাধাৰণতে ₹{s} · কমেও ₹{m}', rateLow: 'এই কামৰ কমেও দৈনিক মজুৰি ₹{m}',
     totalPay: 'মুঠ মজুৰি', perDay: '₹{n}/দিন',
     peopleLabel: 'কিমান জন মানুহ', peopleN: '{n} জন', personOne: '১ জন', hiredOf: '{m} জনৰ {n} জন লোৱা হ’ল', hiredSoFar: 'এতিয়ালৈ লোৱা',
@@ -716,7 +716,7 @@ const T = {
     uploadId: 'ID की फ़ोटो अपलोड करें', replaceId: 'फिर से अपलोड करें', idPrivate: 'आपका ID सिर्फ़ कामघर का स्टाफ़ देख सकता है।',
     uploaded: 'अपलोड हो गया। हम जल्द जाँचेंगे।', idNone: 'अपलोड नहीं किया', myRating: 'रेटिंग', jobsDone: 'किए गए काम',
     logout: 'लॉग आउट', terms: 'नियम और गोपनीयता', phone: 'फ़ोन', offline: 'आप ऑफ़लाइन हैं। सेव की गई स्क्रीन दिख रही है।',
-    error: 'कुछ गड़बड़ हो गई', yes: 'हाँ', no: 'नहीं', daysN: '{n} दिन', dayOne: '1 दिन',
+    error: 'कुछ गड़बड़ हो गई', yes: 'हाँ', no: 'नहीं', daysN: '{n} दिन', dayOne: '1 दिन', halfDay: 'आधा दिन',
     rateLabel: 'प्रति व्यक्ति रोज़ की मज़दूरी (₹)', rateHint: 'आम तौर पर ₹{s} · कम से कम ₹{m}', rateLow: 'इस काम की कम से कम मज़दूरी ₹{m} रोज़ है',
     totalPay: 'कुल मज़दूरी', perDay: '₹{n}/दिन',
     peopleLabel: 'कितने लोग', peopleN: '{n} लोग', personOne: '1 व्यक्ति', hiredOf: '{m} में से {n} रखे गए', hiredSoFar: 'अब तक रखे गए',
@@ -845,16 +845,18 @@ function fmtDate(d) {
   catch (_) { return d; }
 }
 function todayIST() { return new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10); }
-const daysText = (n) => (n === 1 ? t('dayOne') : t('daysN', { n }));
+// Days come in half steps: "Half day", "1 day", "1.5 days".
+const daysText = (d) => { const n = Number(d); return n === 0.5 ? t('halfDay') : n === 1 ? t('dayOne') : t('daysN', { n }); };
 const peopleText = (n) => (n === 1 ? t('personOne') : t('peopleN', { n }));
 // What one person earns for the whole job.
-const personPay = (j) => (j.rate ? j.rate * j.days : Math.round(j.pay / (j.workers_needed || 1)));
+const personPay = (j) => Math.round(j.rate ? j.rate * Number(j.days) : j.pay / (j.workers_needed || 1));
 // "Tue, 28 Oct" for one day, "28 Oct – 30 Oct" for longer jobs.
 function fmtRange(j) {
-  if (!j.days || j.days === 1) return fmtDate(j.job_date);
+  const span = Math.ceil(Number(j.days) || 1); // 1.5 days runs over 2 dates
+  if (span <= 1) return fmtDate(j.job_date);
   try {
     const f = (d) => new Date(d + 'T00:00:00').toLocaleDateString(LOCALE[S.lang], { day: 'numeric', month: 'short' });
-    return `${f(j.job_date)} – ${f(addDays(j.job_date, j.days - 1))}`;
+    return `${f(j.job_date)} – ${f(addDays(j.job_date, span - 1))}`;
   } catch (_) { return j.job_date; }
 }
 function addDays(d, n) { const x = new Date(d + 'T00:00:00Z'); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); }
@@ -1421,13 +1423,13 @@ function updatePayPreview() {
   const f = main.querySelector('form[data-form=postJob]');
   if (!f || !S.rates) return;
   const r = S.rates[f.service.value];
-  const rate = parseInt(f.rate.value, 10) || 0, days = parseInt(f.days.value, 10) || 1, people = parseInt(f.workers_needed.value, 10) || 1;
+  const rate = parseInt(f.rate.value, 10) || 0, days = parseFloat(f.days.value) || 1, people = parseInt(f.workers_needed.value, 10) || 1;
   $('#rateHint').textContent = r ? t('rateHint', { s: r.daily_rate, m: r.min_rate }) : '';
   const low = r && rate < r.min_rate;
   $('#payTotal').classList.toggle('low', !!low);
   $('#payTotal').innerHTML = low
     ? esc(t('rateLow', { m: r.min_rate }))
-    : `<span>${te('totalPay')}</span><b>${rupee(rate * days * people)}</b><small>${rupee(rate)} × ${esc(daysText(days))}${people > 1 ? ` × ${esc(peopleText(people))}` : ''}</small>`;
+    : `<span>${te('totalPay')}</span><b>${rupee(Math.round(rate * days * people))}</b><small>${rupee(rate)} × ${esc(daysText(days))}${people > 1 ? ` × ${esc(peopleText(people))}` : ''}</small>`;
 }
 
 async function updateMatchCount() {
@@ -2006,7 +2008,7 @@ const ACTIONS = {
   },
   days(el) {
     const f = el.form;
-    const n = Math.min(30, Math.max(1, Number(f.days.value) + Number(el.dataset.d)));
+    const n = Math.min(30, Math.max(0.5, Number(f.days.value) + Number(el.dataset.d) * 0.5)); // half-day steps
     f.days.value = n;
     $('#daysOut').textContent = daysText(n);
     updatePayPreview();
@@ -2201,7 +2203,7 @@ const FORMS = {
     await busy(btn, async () => {
       const row = await api.postJob({
         household_id: S.user.id, service: f.service.value, area: f.area.value,
-        job_date: f.job_date.value, days: parseInt(f.days.value, 10), workers_needed: parseInt(f.workers_needed.value, 10), rate, notes: f.notes.value.trim() || null,
+        job_date: f.job_date.value, days: parseFloat(f.days.value), workers_needed: parseInt(f.workers_needed.value, 10), rate, notes: f.notes.value.trim() || null,
       });
       if (f.lat.value) await api.setJobLocation(row.id, Number(f.lat.value), Number(f.lng.value), f.landmark.value.trim() || null);
       toast(t('posted'));

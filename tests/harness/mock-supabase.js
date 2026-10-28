@@ -28,7 +28,7 @@
   const isoTz = (v) => v.replace(' ', 'T').replace(/([+-]\d\d)$/, '$1:00');
   const ready = (async () => {
     const { PGlite } = await import('/node_modules/@electric-sql/pglite/dist/index.js');
-    const db = new PGlite(DB_NAME, { parsers: { 1082: (v) => v, 1114: (v) => v, 1184: isoTz } });
+    const db = new PGlite(DB_NAME, { parsers: { 1082: (v) => v, 1114: (v) => v, 1184: isoTz, 1700: (v) => Number(v) } });
     const { rows } = await db.query(`select to_regclass('auth.users') as t`);
     if (!rows[0].t) await db.exec(STUBS + ' create schema harness; create table harness.applied (name text primary key);');
     // Apply any SQL file not applied yet, in order, like running new migrations on Supabase.
