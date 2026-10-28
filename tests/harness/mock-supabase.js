@@ -6,12 +6,12 @@
 // Helpers in the console: __sql('select ...') runs as superuser, __reset() wipes the database.
 (function () {
   'use strict';
-  const DB_NAME = 'idb://kaamghor-harness-v2';
+  const DB_NAME = 'idb://kaamghor-harness-v3';
   const STUBS = `
     create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
     create schema auth; create schema storage;
     grant usage on schema public, auth, storage to anon, authenticated, service_role;
-    create table auth.users (id uuid primary key, email text);
+    create table auth.users (id uuid primary key, email text, phone text, phone_confirmed_at timestamptz);
     create function auth.uid() returns uuid language sql stable as
       $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
     create table storage.buckets (id text primary key, name text, public boolean, file_size_limit bigint, allowed_mime_types text[]);
@@ -29,12 +29,15 @@
   const ready = (async () => {
     const { PGlite } = await import('/node_modules/@electric-sql/pglite/dist/index.js');
     const db = new PGlite(DB_NAME, { parsers: { 1082: (v) => v, 1114: (v) => v, 1184: isoTz } });
-    const { rows } = await db.query(`select to_regclass('public.jobs') as t`);
-    if (!rows[0].t) {
-      await db.exec(STUBS);
-      for (const f of ['01_schema.sql', '02_security.sql', '03_functions.sql', '04_storage.sql', '05_realtime_admin.sql']) {
-        await db.exec(await (await fetch('/sql/' + f)).text());
-      }
+    const { rows } = await db.query(`select to_regclass('auth.users') as t`);
+    if (!rows[0].t) await db.exec(STUBS + ' create schema harness; create table harness.applied (name text primary key);');
+    // Apply any SQL file not applied yet, in order, like running new migrations on Supabase.
+    const done = new Set((await db.query('select name from harness.applied')).rows.map((r) => r.name));
+    for (const f of await (await fetch('/__mock/sql-list')).json()) {
+      if (done.has(f)) continue;
+      await db.exec(await (await fetch('/sql/' + f)).text());
+      await db.query('insert into harness.applied values ($1)', [f]);
+      console.log('[mock] applied', f);
     }
     return db;
   })();

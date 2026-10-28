@@ -2,7 +2,7 @@
 // Supabase's auth and storage schemas, then checks the security rules and the full job flow.
 // Usage: cd tests && npm install && node sql.test.mjs
 import { PGlite } from '@electric-sql/pglite';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import assert from 'node:assert/strict';
 
 const db = new PGlite();
@@ -12,7 +12,7 @@ await db.exec(`
   create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
   create schema auth; create schema storage;
   grant usage on schema public, auth, storage to anon, authenticated, service_role;
-  create table auth.users (id uuid primary key, phone text);
+  create table auth.users (id uuid primary key, email text, phone text, phone_confirmed_at timestamptz);
   create function auth.uid() returns uuid language sql stable as
     $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
   create table storage.buckets (id text primary key, name text, public boolean, file_size_limit bigint, allowed_mime_types text[]);
@@ -27,7 +27,8 @@ await db.exec(`
   alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
 `);
 
-for (const f of ['01_schema.sql', '02_security.sql', '03_functions.sql', '04_storage.sql', '05_realtime_admin.sql']) {
+// Every file in sql/, in name order: 01-05 are the base, 06+ upgrade an existing database.
+for (const f of readdirSync(sqlDir).filter((n) => n.endsWith('.sql')).sort()) {
   await db.exec(readFileSync(new URL(f, sqlDir), 'utf8'));
 }
 
