@@ -194,11 +194,12 @@ await test('payment cannot be faked from the browser; worker confirms cash', asy
   assert.equal(pm.status, 'paid'); assert.equal(pm.method, 'cash'); assert.equal(pm.payout_status, 'na');
 });
 
-await test('rate: once, 1 to 5, household only; updates worker average', async () => {
-  await fails('house', `select rate_worker((select id from assignments where job_id = '${job.id}'), 6)`);
-  await fails('w1', `select rate_worker((select id from assignments where job_id = '${job.id}'), 5)`);
-  await as('house', `select rate_worker((select id from assignments where job_id = '${job.id}'), 4)`);
-  await fails('house', `select rate_worker((select id from assignments where job_id = '${job.id}'), 5)`, /Already rated/);
+await test('rate: once each, 1 to 5, both sides; updates averages', async () => {
+  await fails('house', `select rate_person((select id from assignments where job_id = '${job.id}'), 6, '{}', null)`, /1 to 5/);
+  await fails('other', `select rate_person((select id from assignments where job_id = '${job.id}'), 5, '{}', null)`, /Job not found/);
+  await as('house', `select rate_person((select id from assignments where job_id = '${job.id}'), 4, '{on_time}', null)`);
+  await fails('house', `select rate_person((select id from assignments where job_id = '${job.id}'), 5, '{}', null)`, /Already rated/);
+  await as('w1', `select rate_person((select id from assignments where job_id = '${job.id}'), 5, '{paid_on_time,respectful}', 'Good family')`);
   const [w] = await as('house', `select rating_avg from public_workers where id = '${ids.w1}'`);
   assert.equal(Number(w.rating_avg), 4);
 });
@@ -358,6 +359,27 @@ await test('10: arrival and completion need both sides; problems go to admin; 24
   assert.equal(n, 1);
   assert.equal(await status(j), 'done');
   assert.equal(await payments(j), 1);
+});
+
+await test('11: tags, comments, public profiles and reviews', async () => {
+  const [hp] = await as('w2', `select * from public_profiles where id = '${ids.house}'`);
+  assert.equal(Number(hp.rating_avg), 5); assert.equal(hp.rating_count, 1);
+  assert.ok(!('phone' in hp));
+  const reviews = await as('w2', `select * from public_reviews where ratee_id = '${ids.house}'`);
+  assert.equal(reviews.length, 1); assert.equal(reviews[0].rater_name, 'Bikash'); assert.equal(reviews[0].comment, 'Good family');
+  assert.deepEqual(reviews[0].tags, ['paid_on_time', 'respectful']);
+  // raw ratings rows are private to the two people involved
+  assert.equal((await as('w2', `select * from ratings`)).length, 0);
+  assert.equal((await as('w1', `select * from ratings`)).length >= 2, true);
+  // unknown tags and direct writes are refused
+  const [j] = await as('house', `insert into jobs (household_id, service, area, job_date, days, rate) values ('${ids.house}', 'clean', 'town', current_date + 1, 1, 400) returning id`);
+  await as('w1', `insert into applications (job_id, worker_id) values ('${j.id}', '${ids.w1}')`);
+  await as('house', `select hire_worker('${j.id}', '${ids.w1}')`);
+  const a = `(select id from assignments where job_id = '${j.id}')`;
+  await fails('house', `select rate_person(${a}, 5, '{}', null)`, /once the work is confirmed/);
+  await handshake(j.id, 'w1');
+  await fails('house', `select rate_person(${a}, 5, '{best_ever}', null)`);
+  await fails('house', `insert into ratings (assignment_id, rater_id, ratee_id, stars) values (${a}, '${ids.house}', '${ids.w1}', 5)`);
 });
 
 await test('anon has no access', async () => {

@@ -234,7 +234,7 @@ textarea { min-height: 88px; resize: vertical; }
 @keyframes breathe { 50% { opacity: .4; } }
 .who { display: flex; gap: 12px; align-items: center; min-width: 0; }
 .avatar { flex: none; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 18px; color: #fff;
-  background: linear-gradient(140deg, hsl(var(--h) 62% 58%), hsl(calc(var(--h) + 40) 58% 40%)); box-shadow: var(--hi), 0 6px 14px -6px hsl(var(--h) 60% 40% / .6); }
+  background: linear-gradient(140deg, hsl(var(--h) 62% 58%), hsl(calc(var(--h) + 20) 58% 42%)); box-shadow: var(--hi), 0 6px 14px -6px hsl(var(--h) 60% 40% / .6); }
 .vcheck { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--brand); color: var(--brand-ink); vertical-align: -3px; margin-left: 4px; }
 .stars { color: var(--star); letter-spacing: 1px; }
 /* Stars are in reverse order so hovering one also lights the ones before it. */
@@ -340,6 +340,18 @@ dialog .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .vcheck { background: var(--info); color: #fff; }
 .top .iconbtn { width: 38px; height: 38px; color: var(--text); }
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .28s; animation-timing-function: ease; }
+
+/* ---------- Profiles and ratings ---------- */
+.plink { color: inherit; text-decoration: none; font-weight: 700; }
+a.meta.plink { font-weight: 600; margin-top: 6px; }
+.plink:active { opacity: .7; }
+.profile-head { text-align: center; }
+.profile-head .meta, .profile-head .seg { justify-content: center; }
+.profile-head h1 { margin: 4px 0 0; }
+.profile-head .stat { grid-template-columns: repeat(auto-fit, minmax(110px, 150px)); justify-content: center; }
+.avatar.lg { width: 76px; height: 76px; font-size: 30px; margin: 0 auto; }
+.rateform .rate { margin: 0 auto; }
+#tabs.nolens::before { opacity: 0; }
 
 /* ---------- Pay total and admin rates ---------- */
 .total { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; margin-top: 12px; padding: 14px 16px; border-radius: 18px; background: var(--brand-soft); }
@@ -484,6 +496,11 @@ const T = {
     btnConfirmDone: 'Confirm work done', confirmDoneQ: 'Confirm {name} finished the work?', btnProblem: 'Report a problem',
     problemPrompt: 'What went wrong?', problemSend: 'Send', problemSent: 'Problem reported. Kaamghor will contact you both.',
     hDisputeNote: 'You reported a problem. Kaamghor will contact you.',
+    rateHousehold: 'Rate the household', commentPh: 'Anything to add? (optional)', submitRating: 'Submit rating', pickStars: 'Tap the stars first',
+    youRated: 'You rated', reviews: 'Reviews', noReviews: 'No reviews yet', memberSince: 'Member since {d}', ratingsN: '{n} ratings', ratingOne: '1 rating', jobOne: '1 job',
+    myReviews: 'See my ratings and reviews', roleWorkerLabel: 'Worker', theyRated: 'Their rating of you',
+    tag_on_time: 'On time', tag_good_work: 'Good work', tag_polite: 'Polite', tag_tidy: 'Neat and tidy', tag_late: 'Came late', tag_careless: 'Careless work',
+    tag_paid_on_time: 'Paid on time', tag_respectful: 'Respectful', tag_clear: 'Clear instructions', tag_safe: 'Safe place', tag_paid_late: 'Paid late', tag_rude: 'Rude',
     disputesTitle: 'Problems reported', resolveDone: 'Work was done: pay worker', resolveCancel: 'Cancel this booking', workerLabel: 'Worker', resolved: 'Updated',
     ratesTitle: 'Daily rates (₹ per person per day)', rateStd: 'Usual', rateMin: 'Minimum', rateSaved: 'Rate saved', save2: 'Save', fileTooBig: 'File is too large (max 5 MB)',
     skill_clean: 'Cleaning', skill_cook: 'Cooking', skill_garden: 'Gardening', skill_paint: 'Painting',
@@ -571,7 +588,12 @@ const T = {
     hClaimNote: '{name}এ কাম শেষ হোৱা বুলি কৈছে। অনুগ্ৰহ কৰি চাওক। {when} ত নিজে নিজে নিশ্চিত হ’ব।',
     btnConfirmDone: 'কাম শেষ বুলি নিশ্চিত কৰক', confirmDoneQ: '{name}এ কাম শেষ কৰাটো নিশ্চিত কৰিবনে?', btnProblem: 'সমস্যা জনাওক',
     problemPrompt: 'কি ভুল হ’ল?', problemSend: 'পঠিয়াওক', problemSent: 'সমস্যা জনোৱা হ’ল। কামঘৰে দুয়োকে যোগাযোগ কৰিব।',
-    hDisputeNote: 'আপুনি সমস্যা জনাইছে। কামঘৰে আপোনাক যোগাযোগ কৰিব।', fileTooBig: 'ফাইলটো বেছি ডাঙৰ (সৰ্বাধিক 5 MB)',
+    hDisputeNote: 'আপুনি সমস্যা জনাইছে। কামঘৰে আপোনাক যোগাযোগ কৰিব।',
+    rateHousehold: 'ঘৰখনক ৰেটিং দিয়ক', commentPh: 'আৰু কিবা কব বিচাৰে নেকি? (ইচ্ছা অনুসৰি)', submitRating: 'ৰেটিং দিয়ক', pickStars: 'প্ৰথমে তৰাত টিপক',
+    youRated: 'আপুনি দিলে', reviews: 'মতামত', noReviews: 'এতিয়ালৈ কোনো মতামত নাই', memberSince: '{d}ৰ পৰা সদস্য', ratingsN: '{n}টা ৰেটিং', ratingOne: '১টা ৰেটিং', jobOne: '১টা কাম',
+    myReviews: 'মোৰ ৰেটিং আৰু মতামত চাওক', roleWorkerLabel: 'কৰ্মী', theyRated: 'আপোনাক দিয়া ৰেটিং',
+    tag_on_time: 'সময়মতে আহিল', tag_good_work: 'ভাল কাম', tag_polite: 'ভদ্ৰ', tag_tidy: 'চাফ-চিকুণ', tag_late: 'পলমকৈ আহিল', tag_careless: 'অসাৱধান কাম',
+    tag_paid_on_time: 'সময়মতে পইচা দিলে', tag_respectful: 'সন্মান কৰিলে', tag_clear: 'স্পষ্ট নিৰ্দেশনা', tag_safe: 'সুৰক্ষিত ঠাই', tag_paid_late: 'পলমকৈ পইচা দিলে', tag_rude: 'অভদ্ৰ', fileTooBig: 'ফাইলটো বেছি ডাঙৰ (সৰ্বাধিক 5 MB)',
     skill_clean: 'ঘৰ চাফা', skill_cook: 'ৰন্ধা-বঢ়া', skill_garden: 'বাগিচাৰ কাম', skill_paint: 'ৰং কৰা',
     skill_helper: 'সহায়কাৰী', skill_plumb: 'প্লাম্বিং', skill_elec: 'বিজুলীৰ কাম',
     skill_care: 'যত্নকাৰী', skill_health: 'স্বাস্থ্যকৰ্মী', skill_other: 'অন্যান্য',
@@ -646,7 +668,12 @@ const T = {
     hClaimNote: '{name} ने कहा कि काम पूरा हो गया। कृपया देख लें। {when} को अपने आप पुष्टि हो जाएगी।',
     btnConfirmDone: 'काम पूरा होने की पुष्टि करें', confirmDoneQ: 'पुष्टि करें कि {name} ने काम पूरा किया?', btnProblem: 'समस्या बताएँ',
     problemPrompt: 'क्या गड़बड़ हुई?', problemSend: 'भेजें', problemSent: 'समस्या दर्ज हो गई। कामघर दोनों से संपर्क करेगा।',
-    hDisputeNote: 'आपने समस्या बताई है। कामघर आपसे संपर्क करेगा।', fileTooBig: 'फ़ाइल बहुत बड़ी है (अधिकतम 5 MB)',
+    hDisputeNote: 'आपने समस्या बताई है। कामघर आपसे संपर्क करेगा।',
+    rateHousehold: 'घर वालों को रेटिंग दें', commentPh: 'कुछ और कहना है? (वैकल्पिक)', submitRating: 'रेटिंग दें', pickStars: 'पहले सितारे चुनें',
+    youRated: 'आपने दी', reviews: 'समीक्षाएँ', noReviews: 'अभी कोई समीक्षा नहीं', memberSince: '{d} से सदस्य', ratingsN: '{n} रेटिंग', ratingOne: '1 रेटिंग', jobOne: '1 काम',
+    myReviews: 'मेरी रेटिंग और समीक्षाएँ देखें', roleWorkerLabel: 'कामगार', theyRated: 'आपको दी गई रेटिंग',
+    tag_on_time: 'समय पर आए', tag_good_work: 'अच्छा काम', tag_polite: 'विनम्र', tag_tidy: 'साफ़-सुथरा', tag_late: 'देर से आए', tag_careless: 'लापरवाह काम',
+    tag_paid_on_time: 'समय पर भुगतान', tag_respectful: 'सम्मानजनक', tag_clear: 'साफ़ निर्देश', tag_safe: 'सुरक्षित जगह', tag_paid_late: 'देर से भुगतान', tag_rude: 'असभ्य', fileTooBig: 'फ़ाइल बहुत बड़ी है (अधिकतम 5 MB)',
     skill_clean: 'सफ़ाई', skill_cook: 'खाना बनाना', skill_garden: 'बागवानी', skill_paint: 'पेंटिंग',
     skill_helper: 'हेल्पर', skill_plumb: 'प्लंबिंग', skill_elec: 'बिजली का काम',
     skill_care: 'देखभाल', skill_health: 'स्वास्थ्य कर्मी', skill_other: 'अन्य',
@@ -901,15 +928,15 @@ function jobCard(j, href, extra = '', badge = '', forWorker = false) {
 function avatar(name) {
   const s = String(name || '?').trim();
   let h = 0;
-  for (const ch of s) h = (h * 31 + ch.codePointAt(0)) % 210;
-  h = (h + 200) % 360; // blues, purples, pinks and warm tones; never green
+  for (const ch of s) h = (h * 31 + ch.codePointAt(0)) % 180;
+  h = (h + 190) % 360; // blues, purples, pinks and reds (the gradient adds +20); never green
   return `<div class="avatar" style="--h:${h}" aria-hidden="true">${esc([...s][0] || '?').toUpperCase()}</div>`;
 }
 function workerLine(w) {
-  const rating = w.rating_avg ? `<span><span class="stars">${icon('star', 14)}</span>${Number(w.rating_avg).toFixed(1)}</span>` : `<span class="badge gray">${te('newWorker')}</span>`;
+  const rating = ratingBadge(w.rating_avg, w.rating_count);
   return `<div class="who">${avatar(w.full_name)}<div style="min-width:0">
-      <b>${esc(w.full_name)}</b>${w.verified ? `<span class="vcheck" title="${te('verified')}">${icon('check', 12)}</span>` : ''}
-      <div class="meta">${rating}<span>${te('jobsN', { n: w.jobs_done })}</span>${w.verified ? '' : `<span>${te('notVerified')}</span>`}</div>
+      <a class="plink" href="#person/${w.id}">${esc(w.full_name)}</a>${w.verified ? `<span class="vcheck" title="${te('verified')}">${icon('check', 12)}</span>` : ''}
+      <div class="meta">${rating}<span>${esc(w.jobs_done === 1 ? t('jobOne') : t('jobsN', { n: w.jobs_done }))}</span>${w.verified ? '' : `<span>${te('notVerified')}</span>`}</div>
     </div></div>`;
 }
 
@@ -1035,12 +1062,13 @@ function renderTabs(active) {
     nav.innerHTML = tabs.map(([h, ic, k]) => `<a href="#${h}">${icon(ic, 24)}<span>${te(k)}</span></a>`).join('');
     nav.dataset.sig = sig;
   }
-  const i = Math.max(0, tabs.findIndex(([h]) => h === active));
+  const found = tabs.findIndex(([h]) => h === active), i = Math.max(0, found);
+  nav.classList.toggle('nolens', found < 0); // e.g. someone's profile page: no tab is current
   nav.style.setProperty('--n', tabs.length);
   nav.style.setProperty('--i', i);
   nav.querySelectorAll('a').forEach((a, k) => {
-    a.classList.toggle('on', k === i);
-    if (k === i) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    a.classList.toggle('on', k === found);
+    if (k === found) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
   });
   nav.hidden = false;
 }
@@ -1059,9 +1087,9 @@ async function loadMe(user) {
 }
 
 const VIEWS = {
-  household: { post: viewPost, jobs: viewJobs, job: viewJobHousehold, profile: viewProfile },
-  worker: { find: viewFind, work: viewWork, wjob: viewJobWorker, profile: viewProfile },
-  admin: { overview: viewOverview, verify: viewVerify, payouts: viewPayouts, fees: viewFees },
+  household: { post: viewPost, jobs: viewJobs, job: viewJobHousehold, profile: viewProfile, person: viewPerson },
+  worker: { find: viewFind, work: viewWork, wjob: viewJobWorker, profile: viewProfile, person: viewPerson },
+  admin: { overview: viewOverview, verify: viewVerify, payouts: viewPayouts, fees: viewFees, person: viewPerson },
 };
 // Which tab a detail page belongs to.
 const PARENT = { job: 'jobs', wjob: 'work' };
@@ -1218,10 +1246,12 @@ async function viewJobHousehold(id) {
   const prof = Object.fromEntries(profs.map((p) => [p.id, p]));
   const pub = Object.fromEntries(pubs.map((p) => [p.id, p]));
   const payOf = Object.fromEntries(pays.map((p) => [p.assignment_id, p]));
+  const rts = asg.some((a) => a.status === 'done') ? await api.ratingsFor(asg.map((a) => a.id)) : [];
+  const myRating = Object.fromEntries(rts.filter((r) => r.rater_id === S.user.id).map((r) => [r.assignment_id, r]));
   // The job is as far along as its slowest person.
   const stage = j.status === 'open' || !asg.length ? 0
     : Math.min(...asg.map((a) => stageOf(a, payOf[a.id] && payOf[a.id].status === 'paid')));
-  const people = asg.map((a) => personCard(j, a, pub[a.worker_id], prof[a.worker_id], payOf[a.id])).join('');
+  const people = asg.map((a) => personCard(j, a, pub[a.worker_id], prof[a.worker_id], payOf[a.id], myRating[a.id])).join('');
   let html = jobHeader(j, 'jobs', stage);
 
   if (j.status === 'open') {
@@ -1251,6 +1281,34 @@ async function viewJobHousehold(id) {
   return html;
 }
 
+// Quick tags offered when rating a worker or a household (must match valid_rating_tags in SQL).
+const RATING_TAGS = {
+  worker: ['on_time', 'good_work', 'polite', 'tidy', 'late', 'careless'],
+  household: ['paid_on_time', 'respectful', 'clear', 'safe', 'paid_late', 'rude'],
+};
+function ratingForm(assignmentId, rateeRole) {
+  return `<form class="stack rateform" data-form="rate" data-assignment="${assignmentId}">
+    <div class="rate">${[5, 4, 3, 2, 1].map((n) => `<button type="button" data-act="pickStar" data-n="${n}" aria-label="${n} / 5">${icon('star', 36)}</button>`).join('')}</div>
+    <input type="hidden" name="stars" value="">
+    <div class="seg">${RATING_TAGS[rateeRole].map((tg) => `<label class="choice pill"><input type="checkbox" name="tags" value="${tg}"><span>${te('tag_' + tg)}</span></label>`).join('')}</div>
+    <textarea name="comment" maxlength="300" placeholder="${te('commentPh')}"></textarea>
+    <button class="btn block">${te('submitRating')}</button>
+  </form>`;
+}
+// A rating already given or received: stars, tags and comment.
+function ratingView(r, label) {
+  return `<div class="stack">
+    <div class="row" style="gap:10px">${label ? `<span class="muted small">${esc(label)}</span>` : ''}${stars(r.stars, 18)}</div>
+    ${r.tags && r.tags.length ? `<div class="seg">${r.tags.map((tg) => `<span class="badge gray">${te('tag_' + tg)}</span>`).join('')}</div>` : ''}
+    ${r.comment ? `<div class="muted small">“${esc(r.comment)}”</div>` : ''}
+  </div>`;
+}
+// "★ 4.6 (12)", or "New" when nobody has rated them yet.
+function ratingBadge(avg, count) {
+  return avg ? `<span><span class="stars">${icon('star', 14)}</span>${Number(avg).toFixed(1)}${count ? ` <span class="muted">(${count})</span>` : ''}</span>`
+    : `<span class="badge gray">${te('newWorker')}</span>`;
+}
+
 // "Sat 4:30 pm": when an unanswered "work finished" is confirmed automatically.
 function fmtWhen(ts) {
   try { return new Date(ts).toLocaleString(LOCALE[S.lang], { weekday: 'short', hour: 'numeric', minute: '2-digit' }); }
@@ -1258,7 +1316,7 @@ function fmtWhen(ts) {
 }
 
 // One hired person on the household's job page: call, progress, payment, rating.
-function personCard(j, a, pw, p, pm) {
+function personCard(j, a, pw, p, pm, mine) {
   let html = `<div class="card stack">
     <div class="row between nowrap"><div style="min-width:0">${pw ? workerLine(pw) : `<div class="who">${avatar(p && p.full_name)}<b>${esc(p && p.full_name)}</b></div>`}</div>
       ${p && p.phone ? `<a class="btn soft sm" href="${telLink(p.phone)}">${icon('phone', 18)}${te('call')}</a>` : ''}</div>
@@ -1288,9 +1346,7 @@ function personCard(j, a, pw, p, pm) {
         <button class="btn soft block" data-act="payCash" data-amount="${pm.amount}" data-box="pay-${a.id}">${icon('cash', 20)}${te('payCash')}</button>
         <div id="pay-${a.id}"></div>`;
     }
-    html += a.rating
-      ? `<div class="row" style="gap:10px"><span class="muted small">${te('yourRating')}</span>${stars(a.rating, 20)}</div>`
-      : `<div><div class="muted small">${te('rateWorker')}</div><div class="rate">${[5, 4, 3, 2, 1].map((n) => `<button data-act="rate" data-assignment="${a.id}" data-n="${n}" aria-label="${n} / 5">${icon('star', 34)}</button>`).join('')}</div></div>`;
+    html += mine ? ratingView(mine, t('youRated')) : `<div><div class="muted small">${te('rateWorker')}</div>${ratingForm(a.id, 'worker')}</div>`;
   }
   return html + '</div>';
 }
@@ -1338,11 +1394,13 @@ async function viewFind() {
   const [jobs, applied] = await Promise.all([api.openJobs(w.skills, S.onlyMyArea ? S.profile.area : null), api.myApplications(S.user.id)]);
   const mine = new Set(applied);
   if (!jobs.length) return html + empty('search', t('noOpenJobs'));
+  const homes = Object.fromEntries((await api.publicProfilesByIds([...new Set(jobs.map((j) => j.household_id))])).map((p) => [p.id, p]));
   return html + jobs.map((j) => `<div class="card job">
       ${skillIcon(j.service, 26, 'job-ic')}
       <div class="job-body">
         <div class="title-row"><div class="jobtitle">${te('skill_' + j.service)}</div><div class="pay">${rupee(personPay(j))}</div></div>
         ${jobMeta(j)}
+        ${homes[j.household_id] ? `<a class="meta plink" href="#person/${j.household_id}"><span>${icon('home', 15)}${esc(homes[j.household_id].full_name.split(' ')[0])}</span>${ratingBadge(homes[j.household_id].rating_avg, homes[j.household_id].rating_count)}</a>` : ''}
         ${j.notes ? `<p style="margin:8px 0 0">${esc(j.notes)}</p>` : ''}
         <div class="row" style="margin-top:12px">
           ${mine.has(j.id)
@@ -1367,7 +1425,7 @@ async function viewJobWorker(id) {
   if (!j || !a) return empty('alert', t('error'));
   const [h, pm] = await Promise.all([api.profileById(j.household_id), a.status === 'done' ? api.paymentForAssignment(a.id) : null]);
   let html = jobHeader(j, 'work', stageOf(a, pm && pm.status === 'paid'), a);
-  html += `<h2>${te('household')}</h2><div class="card"><div class="row between nowrap"><div class="who">${avatar(h?.full_name)}<div><b>${esc(h?.full_name)}</b><div class="meta"><span>${icon('pin', 15)}${esc(areaName(h?.area))}</span></div></div></div>
+  html += `<h2>${te('household')}</h2><div class="card"><div class="row between nowrap"><div class="who">${avatar(h?.full_name)}<div><a class="plink" href="#person/${j.household_id}">${esc(h?.full_name)}</a><div class="meta"><span>${icon('pin', 15)}${esc(areaName(h?.area))}</span></div></div></div>
     ${h?.phone ? `<a class="btn soft" href="${telLink(h.phone)}">${icon('phone', 18)}${te('call')}</a>` : ''}</div></div>`;
 
   // Handshake, worker side: "I've arrived", then "Work finished"; the household confirms each.
@@ -1403,9 +1461,42 @@ async function viewJobWorker(id) {
         html += `<div class="note">${icon('send', 20)}<span>${te('payoutSent', { n: pm.amount - pm.fee, ref: pm.payout_ref })}</span></div>`;
       }
     }
-    if (a.rating) html += `<h2>${te('householdRating')}</h2><div class="card" style="text-align:center">${stars(a.rating, 32)}</div>`;
+    const rts = await api.ratingsFor([a.id]);
+    const mine = rts.find((r) => r.rater_id === S.user.id), theirs = rts.find((r) => r.ratee_id === S.user.id);
+    html += `<h2>${te('rateHousehold')}</h2><div class="card">${mine ? ratingView(mine, t('youRated')) : ratingForm(a.id, 'household')}</div>`;
+    if (theirs) html += `<h2>${te('theyRated')}</h2><div class="card">${ratingView(theirs)}</div>`;
   }
   return html;
+}
+
+// ===================== Public profile page (anyone) =====================
+async function viewPerson(id) {
+  const [p, revs] = await Promise.all([api.publicProfile(id), api.reviews(id)]);
+  if (!p) return empty('alert', t('error'));
+  const counts = {};
+  revs.forEach((r) => (r.tags || []).forEach((tg) => { counts[tg] = (counts[tg] || 0) + 1; }));
+  const top = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  let since = '';
+  try { since = new Date(p.created_at).toLocaleDateString(LOCALE[S.lang], { month: 'long', year: 'numeric' }); } catch (_) { /* old browser */ }
+  const isWorker = p.role === 'worker';
+  return `<div class="title-row"><a class="back" href="#" data-act="back">${icon('back', 20)}${te('back')}</a></div>
+    <div class="card profile-head stack">
+      ${avatar(p.full_name).replace('class="avatar"', 'class="avatar lg"')}
+      <h1>${esc(p.full_name)}${p.verified ? `<span class="vcheck" title="${te('verified')}">${icon('check', 12)}</span>` : ''}</h1>
+      <div class="meta"><span>${isWorker ? te('roleWorkerLabel') : te('household')}</span><span>${icon('pin', 15)}${esc(areaName(p.area))}</span>${since ? `<span>${te('memberSince', { d: since })}</span>` : ''}</div>
+      <div class="stat">
+        <div><b>${p.rating_avg ? Number(p.rating_avg).toFixed(1) : '—'}</b><span>${esc(p.rating_count === 1 ? t('ratingOne') : t('ratingsN', { n: p.rating_count || 0 }))}</span></div>
+        ${isWorker ? `<div><b>${p.jobs_done || 0}</b><span>${te('jobsDone')}</span></div>` : ''}
+      </div>
+      ${isWorker && p.skills && p.skills.length ? `<div class="seg">${p.skills.map((s) => `<span class="badge gray">${skillIcon(s, 15)}${te('skill_' + s)}</span>`).join('')}</div>` : ''}
+    </div>
+    ${top.length ? `<div class="seg">${top.map(([tg, n]) => `<span class="badge">${te('tag_' + tg)} · ${n}</span>`).join('')}</div>` : ''}
+    <h2>${te('reviews')} (${revs.length})</h2>
+    ${revs.length ? revs.map((r) => `<div class="card stack">
+        <div class="row between">${stars(r.stars, 16)}<span class="muted small">${esc(r.rater_name)} · ${esc(fmtDate(String(r.created_at).slice(0, 10)))}</span></div>
+        ${r.tags && r.tags.length ? `<div class="seg">${r.tags.map((tg) => `<span class="badge gray">${te('tag_' + tg)}</span>`).join('')}</div>` : ''}
+        ${r.comment ? `<div>“${esc(r.comment)}”</div>` : ''}
+      </div>`).join('') : empty('star', t('noReviews'))}`;
 }
 
 // ===================== Profile (household and worker) =====================
@@ -1443,6 +1534,7 @@ async function viewProfile() {
         <input type="file" accept="image/*,application/pdf" data-act="idFile" hidden></label>
     </div>`;
   }
+  html += `<a class="card tap row between nowrap" href="#person/${S.user.id}"><span class="row" style="gap:10px">${ratingBadge(p.rating_avg, p.rating_count)}<b>${te('myReviews')}</b></span><span class="muted">›</span></a>`;
   html += `<div id="installSlot"></div><hr><div class="row between"><a href="terms.html" target="_blank">${te('terms')}</a><button class="btn danger sm" data-act="logout">${icon('logout', 18)}${te('logout')}</button></div>`;
   return html;
 }
@@ -1504,7 +1596,7 @@ async function viewVerify(filter) {
   return html + list.map((w) => `<div class="card">
       <div class="row between"><b>${esc(w.profiles?.full_name)}</b>${w.verified ? `<span class="badge ok">${icon('check', 14)}${te('verified')}</span>` : `<span class="badge gray">${te('notVerified')}</span>`}</div>
       <div class="meta"><a href="${telLink(w.profiles?.phone)}">+${esc(w.profiles?.phone)}</a><span>${icon('pin', 15)}${esc(areaName(w.profiles?.area))}</span>
-        <span><span class="row" style="gap:4px">${w.skills.map((s) => skillIcon(s, 18)).join('')}</span></span><span>${te('jobsN', { n: w.jobs_done })}</span>
+        <span><span class="row" style="gap:4px">${w.skills.map((s) => skillIcon(s, 18)).join('')}</span></span><span>${esc(w.jobs_done === 1 ? t('jobOne') : t('jobsN', { n: w.jobs_done }))}</span>
         ${w.rating_avg ? `<span><span class="stars">${icon('star', 14)}</span>${Number(w.rating_avg).toFixed(1)}</span>` : ''}</div>
       <div class="row" style="margin-top:10px">
         ${w.id_doc_path ? `<button class="btn soft sm" data-act="viewId" data-path="${esc(w.id_doc_path)}">${icon('id', 18)}${te('viewId')}</button>` : `<span class="muted small">${te('noIdYet')}</span>`}
@@ -1642,10 +1734,12 @@ const ACTIONS = {
     if (!(await ask(t('confirmStop', { n: el.dataset.n })))) return;
     await busy(el, async () => { await api.stopHiring(el.dataset.job); refresh(); });
   },
-  async rate(el) {
-    el.classList.add('on'); // light up the chosen stars straight away
-    await busy(el, async () => { await api.rateWorker(el.dataset.assignment, Number(el.dataset.n)); toast(t('thanksRating')); refresh(); });
+  pickStar(el) {
+    const f = el.closest('form');
+    f.stars.value = el.dataset.n;
+    f.querySelectorAll('[data-act=pickStar]').forEach((b) => b.classList.toggle('on', b === el));
   },
+  back() { if (history.length > 1) history.back(); else go(''); },
   async payOnline(el) { await busy(el, () => payOnline(el.dataset.payment)); },
   async payDirect(el) {
     await busy(el, async () => {
@@ -1698,6 +1792,16 @@ const ACTIONS = {
 
 // ===================== Forms =====================
 const FORMS = {
+  async rate(f, btn) {
+    const stars = parseInt(f.stars.value, 10);
+    if (!stars) return toast(t('pickStars'), 'err');
+    const tags = [...f.querySelectorAll('input[name=tags]:checked')].map((i) => i.value);
+    await busy(btn, async () => {
+      await api.ratePerson(f.dataset.assignment, stars, tags, f.comment.value.trim() || null);
+      toast(t('thanksRating'));
+      refresh();
+    });
+  },
   async problem(f, btn) {
     const text = f.problem.value.trim();
     if (!text) return f.problem.focus();

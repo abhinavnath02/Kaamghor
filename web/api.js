@@ -83,7 +83,13 @@ const api = {
   publicWorkersByIds: (ids) => q(sb.from('public_workers').select('*').in('id', ids)),
   jobPayments: (jobId) => q(sb.from('payments').select('*').eq('job_id', jobId)),
   paymentById: (id) => q(sb.from('payments').select('*').eq('id', id).maybeSingle()),
-  rateWorker: (assignmentId, rating) => q(sb.rpc('rate_worker', { p_assignment: assignmentId, p_rating: rating })),
+  // Two-way ratings: either side rates the other once the work is confirmed.
+  ratePerson: (assignmentId, stars, tags, comment) => q(sb.rpc('rate_person', { p_assignment: assignmentId, p_stars: stars, p_tags: tags, p_comment: comment })),
+  ratingsFor: (assignmentIds) => q(sb.from('ratings').select('*').in('assignment_id', assignmentIds)),
+  // Public profile (no phone) and reviews, for anyone signed in.
+  publicProfile: (id) => q(sb.from('public_profiles').select('*').eq('id', id).maybeSingle()),
+  publicProfilesByIds: (ids) => q(sb.from('public_profiles').select('*').in('id', ids)),
+  reviews: (id) => q(sb.from('public_reviews').select('*').eq('ratee_id', id).order('created_at', { ascending: false }).limit(30)),
   payTarget: async (jobId, workerId) => (await q(sb.rpc('get_pay_target', { p_job: jobId, p_worker: workerId })))[0],
   // One Razorpay order per person's payment.
   createOrder: async (paymentId) => {

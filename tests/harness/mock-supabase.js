@@ -150,7 +150,7 @@
     }
   }
 
-  const ARG_TYPES = { p_job: 'uuid', p_worker: 'uuid', p_payment: 'uuid', p_rating: 'int', p_verified: 'boolean', p_ref: 'text', p_service: 'text', p_daily: 'int', p_min: 'int', p_assignment: 'uuid', p_problem: 'text', p_completed: 'boolean' };
+  const ARG_TYPES = { p_job: 'uuid', p_worker: 'uuid', p_payment: 'uuid', p_rating: 'int', p_verified: 'boolean', p_ref: 'text', p_service: 'text', p_daily: 'int', p_min: 'int', p_assignment: 'uuid', p_problem: 'text', p_completed: 'boolean', p_stars: 'int', p_tags: 'text[]', p_comment: 'text' };
   const SET_RETURNING = { get_pay_target: 1, admin_payouts: 1, admin_fees_owed: 1, admin_disputes: 1 };
   // Functions that update the jobs table, so realtime would send an event.
   const JOB_CHANGING = { hire_worker: 1, complete_job: 1, stop_hiring: 1 };
@@ -158,7 +158,7 @@
     const keys = Object.keys(args);
     const call = `public.${ident(name)}(${keys.map((k, i) => `${k} => $${i + 1}::${ARG_TYPES[k]}`).join(', ')})`;
     const r = await wrap(async () => {
-      const res = await asUser(SET_RETURNING[name] ? `select * from ${call}` : `select ${call} as v`, keys.map((k) => args[k]));
+      const res = await asUser(SET_RETURNING[name] ? `select * from ${call}` : `select ${call} as v`, keys.map((k) => (Array.isArray(args[k]) ? pgArray(args[k]) : args[k])));
       return SET_RETURNING[name] ? res.rows : res.rows[0].v;
     });
     if (!r.error && JOB_CHANGING[name]) emitJob(args.p_job);
