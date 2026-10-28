@@ -148,7 +148,7 @@
     }
   }
 
-  const ARG_TYPES = { p_job: 'uuid', p_worker: 'uuid', p_payment: 'uuid', p_rating: 'int', p_verified: 'boolean', p_ref: 'text' };
+  const ARG_TYPES = { p_job: 'uuid', p_worker: 'uuid', p_payment: 'uuid', p_rating: 'int', p_verified: 'boolean', p_ref: 'text', p_service: 'text', p_daily: 'int', p_min: 'int' };
   const SET_RETURNING = { get_pay_target: 1, admin_payouts: 1, admin_fees_owed: 1 };
   // Functions that update the jobs table, so realtime would send an event.
   const JOB_CHANGING = { hire_worker: 1, complete_job: 1, rate_job: 1 };

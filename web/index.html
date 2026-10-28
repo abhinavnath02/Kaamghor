@@ -341,6 +341,16 @@ dialog .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .top .iconbtn { width: 38px; height: 38px; color: var(--text); }
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .28s; animation-timing-function: ease; }
 
+/* ---------- Pay total and admin rates ---------- */
+.total { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; margin-top: 12px; padding: 14px 16px; border-radius: 18px; background: var(--brand-soft); }
+.total b { font-size: 22px; letter-spacing: -.02em; }
+.total small { width: 100%; color: var(--muted); font-size: 14px; }
+.total.low { background: var(--danger-soft); color: var(--danger); font-weight: 600; }
+.raterow { display: grid; grid-template-columns: 22px minmax(0, 1fr) 72px 72px auto; gap: 8px; align-items: center; padding: 6px 0; font-size: 15px; }
+.raterow + .raterow { border-top: 1px solid var(--line); }
+.raterow.head { font-size: 12.5px; font-weight: 700; color: var(--muted); padding-top: 0; }
+.raterow input { min-height: 40px !important; padding: 6px 8px !important; border-radius: 10px !important; text-align: right; }
+
 /* ---------- Install card and update bar ---------- */
 .card.install { display: flex; align-items: center; gap: 14px; margin-top: 16px; }
 .card.install .logo { flex: none; width: 40px; height: 28px; color: var(--text); }
@@ -459,7 +469,10 @@ const T = {
     uploadId: 'Upload photo of ID', replaceId: 'Upload again', idPrivate: 'Only Kaamghor staff can see your ID.',
     uploaded: 'Uploaded. We will check it soon.', idNone: 'Not uploaded', myRating: 'Rating', jobsDone: 'Jobs done',
     logout: 'Log out', terms: 'Terms & privacy', phone: 'Phone', offline: 'You are offline. Showing saved screens.',
-    error: 'Something went wrong', yes: 'Yes', no: 'No', daysN: '{n} days', dayOne: '1 day', fileTooBig: 'File is too large (max 5 MB)',
+    error: 'Something went wrong', yes: 'Yes', no: 'No', daysN: '{n} days', dayOne: '1 day',
+    rateLabel: 'Daily rate per person (₹)', rateHint: 'Usual rate ₹{s} · minimum ₹{m}', rateLow: 'The minimum rate for this work is ₹{m} a day',
+    totalPay: 'Total pay', perDay: '₹{n}/day',
+    ratesTitle: 'Daily rates (₹ per person per day)', rateStd: 'Usual', rateMin: 'Minimum', rateSaved: 'Rate saved', save2: 'Save', fileTooBig: 'File is too large (max 5 MB)',
     skill_clean: 'Cleaning', skill_cook: 'Cooking', skill_garden: 'Gardening', skill_paint: 'Painting',
     skill_helper: 'Helper', skill_plumb: 'Plumbing', skill_elec: 'Electrical',
     skill_care: 'Caretaker', skill_health: 'Healthcare', skill_other: 'Others',
@@ -531,7 +544,9 @@ const T = {
     uploadId: 'পৰিচয়পত্ৰৰ ফটো আপলোড কৰক', replaceId: 'পুনৰ আপলোড কৰক', idPrivate: 'আপোনাৰ পৰিচয়পত্ৰ কেৱল কামঘৰৰ কৰ্মীয়েহে দেখিব।',
     uploaded: 'আপলোড হ’ল। আমি সোনকালে পৰীক্ষা কৰিম।', idNone: 'আপলোড কৰা নাই', myRating: 'ৰেটিং', jobsDone: 'কৰা কাম',
     logout: 'লগ আউট', terms: 'চৰ্তাৱলী আৰু গোপনীয়তা', phone: 'ফোন', offline: 'আপুনি অফলাইন। সাঁচি ৰখা পৃষ্ঠা দেখুওৱা হৈছে।',
-    error: 'কিবা ভুল হ’ল', yes: 'হয়', no: 'নহয়', daysN: '{n} দিন', dayOne: '১ দিন', fileTooBig: 'ফাইলটো বেছি ডাঙৰ (সৰ্বাধিক 5 MB)',
+    error: 'কিবা ভুল হ’ল', yes: 'হয়', no: 'নহয়', daysN: '{n} দিন', dayOne: '১ দিন',
+    rateLabel: 'প্ৰতিজনৰ দৈনিক মজুৰি (₹)', rateHint: 'সাধাৰণতে ₹{s} · কমেও ₹{m}', rateLow: 'এই কামৰ কমেও দৈনিক মজুৰি ₹{m}',
+    totalPay: 'মুঠ মজুৰি', perDay: '₹{n}/দিন', fileTooBig: 'ফাইলটো বেছি ডাঙৰ (সৰ্বাধিক 5 MB)',
     skill_clean: 'ঘৰ চাফা', skill_cook: 'ৰন্ধা-বঢ়া', skill_garden: 'বাগিচাৰ কাম', skill_paint: 'ৰং কৰা',
     skill_helper: 'সহায়কাৰী', skill_plumb: 'প্লাম্বিং', skill_elec: 'বিজুলীৰ কাম',
     skill_care: 'যত্নকাৰী', skill_health: 'স্বাস্থ্যকৰ্মী', skill_other: 'অন্যান্য',
@@ -592,7 +607,9 @@ const T = {
     uploadId: 'ID की फ़ोटो अपलोड करें', replaceId: 'फिर से अपलोड करें', idPrivate: 'आपका ID सिर्फ़ कामघर का स्टाफ़ देख सकता है।',
     uploaded: 'अपलोड हो गया। हम जल्द जाँचेंगे।', idNone: 'अपलोड नहीं किया', myRating: 'रेटिंग', jobsDone: 'किए गए काम',
     logout: 'लॉग आउट', terms: 'नियम और गोपनीयता', phone: 'फ़ोन', offline: 'आप ऑफ़लाइन हैं। सेव की गई स्क्रीन दिख रही है।',
-    error: 'कुछ गड़बड़ हो गई', yes: 'हाँ', no: 'नहीं', daysN: '{n} दिन', dayOne: '1 दिन', fileTooBig: 'फ़ाइल बहुत बड़ी है (अधिकतम 5 MB)',
+    error: 'कुछ गड़बड़ हो गई', yes: 'हाँ', no: 'नहीं', daysN: '{n} दिन', dayOne: '1 दिन',
+    rateLabel: 'प्रति व्यक्ति रोज़ की मज़दूरी (₹)', rateHint: 'आम तौर पर ₹{s} · कम से कम ₹{m}', rateLow: 'इस काम की कम से कम मज़दूरी ₹{m} रोज़ है',
+    totalPay: 'कुल मज़दूरी', perDay: '₹{n}/दिन', fileTooBig: 'फ़ाइल बहुत बड़ी है (अधिकतम 5 MB)',
     skill_clean: 'सफ़ाई', skill_cook: 'खाना बनाना', skill_garden: 'बागवानी', skill_paint: 'पेंटिंग',
     skill_helper: 'हेल्पर', skill_plumb: 'प्लंबिंग', skill_elec: 'बिजली का काम',
     skill_care: 'देखभाल', skill_health: 'स्वास्थ्य कर्मी', skill_other: 'अन्य',
@@ -822,7 +839,7 @@ darkQuery.addEventListener('change', paintThemeChrome);
 function statusBadge(status) { return `<span class="badge ${status}"><i class="dot"></i>${te('status_' + status)}</span>`; }
 
 function jobMeta(j) {
-  return `<div class="meta"><span>${icon('calendar', 15)}${esc(fmtRange(j))}</span><span>${icon('clock', 15)}${esc(daysText(j.days))}</span><span>${icon('pin', 15)}${esc(areaName(j.area))}</span></div>`;
+  return `<div class="meta"><span>${icon('calendar', 15)}${esc(fmtRange(j))}</span><span>${icon('clock', 15)}${esc(daysText(j.days))}</span><span>${icon('pin', 15)}${esc(areaName(j.area))}</span>${j.rate ? `<span>${icon('cash', 15)}${te('perDay', { n: j.rate })}</span>` : ''}</div>`;
 }
 function jobCard(j, href, extra = '') {
   return `<a class="card tap job" href="#${href}">
@@ -1048,6 +1065,7 @@ function go(hash) {
 async function viewPost() {
   const p = S.profile;
   const today = todayIST();
+  const rates = await getRates();
   return `<h1>${te('tabPost')}</h1>
     <form data-form="postJob">
       <label class="f">${te('service')}</label>
@@ -1069,13 +1087,33 @@ async function viewPost() {
         <button type="button" data-act="days" data-d="1" aria-label="+">+</button>
       </div>
       <input type="hidden" name="days" value="1">
-      <label class="f" for="jPay">${te('pay')}</label>
-      <div class="seg even" style="margin-bottom:10px">${[300, 400, 500, 700, 1000].map((v) => `<button type="button" class="pillbtn" data-act="payPick" data-v="${v}">₹${v}</button>`).join('')}</div>
-      <input id="jPay" name="pay" type="number" inputmode="numeric" min="100" step="10" placeholder="${te('payHint')}" required>
+      <label class="f" for="jRate">${te('rateLabel')}</label>
+      <input id="jRate" name="rate" type="number" inputmode="numeric" min="100" step="10" value="${rates.clean ? rates.clean.daily_rate : ''}" required>
+      <div class="muted small" id="rateHint" style="margin-top:6px"></div>
+      <div class="total" id="payTotal" aria-live="polite"></div>
       <label class="f" for="jNotes" id="jNotesLabel">${te('notes')}</label>
       <textarea id="jNotes" name="notes" maxlength="500" placeholder="${te('notesPh')}"></textarea>
       <div style="margin-top:16px"><button class="btn block">${te('postBtn')}</button></div>
     </form>`;
+}
+
+// Usual and minimum daily rates per kind of work, loaded once.
+async function getRates() {
+  if (!S.rates) S.rates = Object.fromEntries((await api.rates()).map((r) => [r.service, r]));
+  return S.rates;
+}
+// Shows "Usual rate ₹450 · minimum ₹350" and "Total pay ₹1,350 (₹450 × 3 days)" under the rate.
+function updatePayPreview() {
+  const f = main.querySelector('form[data-form=postJob]');
+  if (!f || !S.rates) return;
+  const r = S.rates[f.service.value];
+  const rate = parseInt(f.rate.value, 10) || 0, days = parseInt(f.days.value, 10) || 1;
+  $('#rateHint').textContent = r ? t('rateHint', { s: r.daily_rate, m: r.min_rate }) : '';
+  const low = r && rate < r.min_rate;
+  $('#payTotal').classList.toggle('low', !!low);
+  $('#payTotal').innerHTML = low
+    ? esc(t('rateLow', { m: r.min_rate }))
+    : `<span>${te('totalPay')}</span><b>${rupee(rate * days)}</b><small>${rupee(rate)} × ${esc(daysText(days))}</small>`;
 }
 
 async function updateMatchCount() {
@@ -1319,12 +1357,21 @@ async function shrinkImage(file) {
 
 // ===================== Admin =====================
 async function viewOverview() {
-  const s = await api.admin.stats();
+  const [s, rateRows] = await Promise.all([api.admin.stats(), api.rates()]);
+  const rates = Object.fromEntries(rateRows.map((r) => [r.service, r]));
   const keys = ['jobs_open', 'jobs_assigned', 'jobs_done', 'unpaid_jobs', 'jobs_last_7d', 'jobs_cancelled',
     'households', 'workers', 'workers_verified', 'awaiting_verify',
     'paid_total', 'fees_online', 'fees_owed', 'fees_settled', 'payouts_pending', 'avg_rating'];
   return `${titleRow(te('tabOverview'))}
     <div class="stat">${keys.map((k) => `<div><b>${s[k] ?? '—'}</b><span>${te('st_' + k)}</span></div>`).join('')}</div>
+    <h2>${te('ratesTitle')}</h2>
+    <div class="card rates">
+      <div class="raterow head"><span></span><span></span><span>${te('rateStd')}</span><span>${te('rateMin')}</span><span></span></div>
+      ${SKILLS.map((k) => `<div class="raterow">${skillIcon(k, 20)}<span>${te('skill_' + k)}</span>
+        <input type="number" inputmode="numeric" min="100" step="10" id="rd-${k}" value="${rates[k] ? rates[k].daily_rate : ''}" aria-label="${te('rateStd')}">
+        <input type="number" inputmode="numeric" min="100" step="10" id="rm-${k}" value="${rates[k] ? rates[k].min_rate : ''}" aria-label="${te('rateMin')}">
+        <button class="btn soft sm" data-act="saveRate" data-s="${k}">${te('save2')}</button></div>`).join('')}
+    </div>
     <hr><div class="row between"><span class="muted small">${esc(S.user.email)}</span><button class="btn danger sm" data-act="logout">${icon('logout', 18)}${te('logout')}</button></div>`;
 }
 
@@ -1417,6 +1464,10 @@ const ACTIONS = {
     updateInstallSlot();
   },
   applyUpdate() { location.reload(); },
+  async saveRate(el) {
+    const k = el.dataset.s, daily = parseInt($('#rd-' + k).value, 10), min = parseInt($('#rm-' + k).value, 10);
+    await busy(el, async () => { await api.admin.setRate(k, daily, min); S.rates = null; toast(t('rateSaved')); });
+  },
   lang(el) { setLang(el.dataset.lang); },
   reload() { refresh(); },
   changeEmail() { S.login.step = 'start'; showLogin(); },
@@ -1442,11 +1493,7 @@ const ACTIONS = {
     const n = Math.min(30, Math.max(1, Number(f.days.value) + Number(el.dataset.d)));
     f.days.value = n;
     $('#daysOut').textContent = daysText(n);
-  },
-  payPick(el) {
-    const input = $('#jPay');
-    input.value = el.dataset.v;
-    markPayPick();
+    updatePayPreview();
   },
   async rate(el) {
     el.classList.add('on'); // light up the chosen stars straight away
@@ -1541,13 +1588,14 @@ const FORMS = {
     });
   },
   async postJob(f, btn) {
-    const pay = parseInt(f.pay.value, 10);
-    if (!(pay >= 100)) return toast(t('payHint'), 'err');
+    const rate = parseInt(f.rate.value, 10);
+    const min = (S.rates && S.rates[f.service.value] && S.rates[f.service.value].min_rate) || 100;
+    if (!(rate >= min)) { f.rate.focus(); return toast(t('rateLow', { m: min }), 'err'); }
     if (f.service.value === 'other' && f.notes.value.trim().length < 5) { f.notes.focus(); return toast(t('needNotes'), 'err'); }
     await busy(btn, async () => {
       const row = await api.postJob({
         household_id: S.user.id, service: f.service.value, area: f.area.value,
-        job_date: f.job_date.value, days: parseInt(f.days.value, 10), pay, notes: f.notes.value.trim() || null,
+        job_date: f.job_date.value, days: parseInt(f.days.value, 10), rate, notes: f.notes.value.trim() || null,
       });
       toast(t('posted'));
       go('job/' + row.id);
@@ -1585,7 +1633,7 @@ function setLang(l) {
 }
 
 function afterRender(name) {
-  if (name === 'post') updateMatchCount();
+  if (name === 'post') { updateMatchCount(); updatePayPreview(); }
   updateInstallSlot();
 }
 
@@ -1639,7 +1687,12 @@ document.addEventListener('change', async (e) => {
     await busy(null, async () => { await api.uploadIdDoc(S.user.id, blob, ext); toast(t('uploaded')); refresh(); });
   } else if (el.form && el.form.dataset.form === 'postJob' && (el.name === 'service' || el.name === 'area')) {
     updateMatchCount();
-    if (el.name === 'service') $('#jNotesLabel').textContent = t(el.value === 'other' ? 'notesOther' : 'notes');
+    if (el.name === 'service') {
+      $('#jNotesLabel').textContent = t(el.value === 'other' ? 'notesOther' : 'notes');
+      const r = S.rates && S.rates[el.value];
+      if (r) el.form.rate.value = r.daily_rate;
+      updatePayPreview();
+    }
   } else if (el.name === 'when') {
     // Today / Tomorrow fill the date; "Other day" shows the date picker.
     const date = $('#jDate');
@@ -1649,11 +1702,7 @@ document.addEventListener('change', async (e) => {
     else date.value = el.value;
   }
 });
-document.addEventListener('input', (e) => { if (e.target.id === 'jPay') markPayPick(); });
-function markPayPick() {
-  const v = $('#jPay') && $('#jPay').value;
-  main.querySelectorAll('[data-act=payPick]').forEach((b) => b.classList.toggle('on', b.dataset.v === v));
-}
+document.addEventListener('input', (e) => { if (e.target.id === 'jRate') updatePayPreview(); });
 // Header gets a hairline and shadow once the page scrolls under it.
 window.addEventListener('scroll', () => { $('.top').classList.toggle('scrolled', window.scrollY > 4); }, { passive: true });
 document.addEventListener('submit', (e) => {

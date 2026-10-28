@@ -60,6 +60,7 @@ const api = {
 
   // ---------- household ----------
   postJob: (row) => q(sb.from('jobs').insert(row).select('id').single()),
+  rates: () => q(sb.from('rates').select('*')),
   // Open jobs are readable by every signed-in user, so always filter by household.
   myPostedJobs: (uid) => q(sb.from('jobs').select('*').eq('household_id', uid).order('created_at', { ascending: false }).limit(100)),
   job: (id) => q(sb.from('jobs').select('*').eq('id', id).maybeSingle()),
@@ -118,5 +119,6 @@ const api = {
     markPayoutSent: (paymentId, ref) => q(sb.rpc('mark_payout_sent', { p_payment: paymentId, p_ref: ref })),
     feesOwed: () => q(sb.rpc('admin_fees_owed')),
     settleFees: (workerId, ref) => q(sb.rpc('settle_fees', { p_worker: workerId, p_ref: ref })),
+    setRate: (service, daily, min) => q(sb.rpc('set_rate', { p_service: service, p_daily: daily, p_min: min })),
   },
 };
