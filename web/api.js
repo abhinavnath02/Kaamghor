@@ -35,6 +35,13 @@ const api = {
   // Emails a one-time code (the Supabase email template must include {{ .Token }}).
   sendEmailCode: (email) => q(sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true } })),
   verifyEmailCode: (email, token) => q(sb.auth.verifyOtp({ email, token, type: 'email' })),
+  // Mobile: sign in by SMS code, or add/change a verified number on an existing account.
+  sendPhoneCode: (phone) => q(sb.auth.signInWithOtp({ phone })),
+  verifyPhoneCode: (phone, token) => q(sb.auth.verifyOtp({ phone, token, type: 'sms' })),
+  startPhoneChange: (phone) => q(sb.auth.updateUser({ phone })),
+  confirmPhoneChange: (phone, token) => q(sb.auth.verifyOtp({ phone, token, type: 'phone_change' })),
+  // Copies the verified Auth phone onto the profile (the browser can't write it).
+  syncPhone: () => q(sb.rpc('sync_my_phone')),
   signOut: () => sb.auth.signOut(),
   session: async () => (await sb.auth.getSession()).data.session,
 

@@ -38,10 +38,12 @@ const ids = {
   w2: '00000000-0000-0000-0000-00000000000c',
   admin: '00000000-0000-0000-0000-00000000000d',
   other: '00000000-0000-0000-0000-00000000000e',
+  nophone: '00000000-0000-0000-0000-00000000000f',
 };
-await db.exec(`insert into auth.users values
-  ('${ids.house}', '919000000001'), ('${ids.w1}', '919000000002'), ('${ids.w2}', '919000000003'),
-  ('${ids.admin}', '919000000004'), ('${ids.other}', '919000000005');`);
+// Everyone except "nophone" has a mobile verified by SMS code (migration 12).
+await db.exec(`insert into auth.users (id, phone, phone_confirmed_at) values
+  ('${ids.house}', '919000000001', now()), ('${ids.w1}', '919000000002', now()), ('${ids.w2}', '919000000003', now()),
+  ('${ids.admin}', '919000000004', now()), ('${ids.other}', '919000000005', now()), ('${ids.nophone}', '919000000006', null);`);
 
 // Run SQL as a signed-in user (role authenticated + JWT subject), like PostgREST does.
 async function as(user, sql, params = []) {
@@ -56,8 +58,9 @@ async function fails(user, sql, pattern) {
 let passed = 0;
 async function test(name, fn) { await fn(); passed++; console.log('ok -', name); }
 
-const signUp = (user, role, name, phone, area) =>
-  as(user, `insert into profiles (id, role, full_name, phone, area) values ('${ids[user]}', '${role}', '${name}', '${phone}', '${area}')`);
+// The phone is never sent by the browser: it comes from the verified Auth phone.
+const signUp = (user, role, name, area) =>
+  as(user, `insert into profiles (id, role, full_name, area) values ('${ids[user]}', '${role}', '${name}', '${area}')`);
 
 // Full two-way handshake for one worker on one of the household's jobs (migration 10).
 async function handshake(jobId, worker) {
@@ -68,23 +71,29 @@ async function handshake(jobId, worker) {
   await as('house', `select confirm_completion(${a})`);
 }
 
-await test('sign-up creates own profile with a valid mobile; role admin is refused', async () => {
-  await signUp('house', 'household', 'Rina', '919000000001', 'town');
-  await signUp('w1', 'worker', 'Bikash', '919000000002', 'town');
-  await signUp('w2', 'worker', 'Puja', '919000000003', 'hijuguri');
-  await signUp('other', 'household', 'Other', '919000000005', 'town');
-  await fails('admin', `insert into profiles (id, role, full_name, phone, area) values ('${ids.admin}', 'admin', 'X', '919000000004', 'town')`);
-  await fails('admin', `insert into profiles (id, role, full_name, phone, area) values ('${ids.w1}', 'worker', 'X', '919000000004', 'town')`);
-  await fails('admin', `insert into profiles (id, role, full_name, phone, area) values ('${ids.admin}', 'worker', 'X', '12345', 'town')`);
-  await fails('admin', `insert into profiles (id, role, full_name, area) values ('${ids.admin}', 'worker', 'X', 'town')`);
-  await fails('admin', `insert into profiles (id, role, full_name, phone, area) values ('${ids.admin}', 'worker', 'X', '919000000004', 'nowhere')`);
+await test('sign-up takes the phone from the verified Auth phone; role admin is refused', async () => {
+  await signUp('house', 'household', 'Rina', 'town');
+  await signUp('w1', 'worker', 'Bikash', 'town');
+  await signUp('w2', 'worker', 'Puja', 'hijuguri');
+  await signUp('other', 'household', 'Other', 'town');
+  const [p] = await as('house', `select phone, phone_verified from profiles where id = '${ids.house}'`);
+  assert.deepEqual([p.phone, p.phone_verified], ['919000000001', true]);
+  await fails('nophone', `insert into profiles (id, role, full_name, area) values ('${ids.nophone}', 'worker', 'X', 'town')`, /verify your mobile/);
+  await fails('admin', `insert into profiles (id, role, full_name, phone, area) values ('${ids.admin}', 'worker', 'X', '919999999999', 'town')`);
+  await fails('admin', `insert into profiles (id, role, full_name, area) values ('${ids.admin}', 'admin', 'X', 'town')`);
+  await fails('admin', `insert into profiles (id, role, full_name, area) values ('${ids.w1}', 'worker', 'X', 'town')`);
+  await fails('admin', `insert into profiles (id, role, full_name, area) values ('${ids.admin}', 'worker', 'X', 'nowhere')`);
   await db.exec(`insert into profiles (id, role, full_name, phone, area) values ('${ids.admin}', 'admin', 'Admin', '919000000004', 'town')`);
 });
 
-await test('users can change their name and mobile but not their role', async () => {
+await test('users can change their name, not their role or phone; a changed phone syncs from Auth', async () => {
   await fails('house', `update profiles set role = 'admin' where id = '${ids.house}'`);
-  await fails('other', `update profiles set phone = '1' where id = '${ids.other}'`);
-  await as('other', `update profiles set phone = '919111111111' where id = '${ids.other}'`);
+  await fails('other', `update profiles set phone = '919111111111' where id = '${ids.other}'`);
+  // after verifying a new number with Supabase Auth, sync_my_phone copies it over
+  await db.exec(`update auth.users set phone = '919111111111' where id = '${ids.other}'`);
+  await as('other', `select sync_my_phone()`);
+  assert.equal((await as('other', `select phone from profiles where id = '${ids.other}'`))[0].phone, '919111111111');
+  await fails('nophone', `select sync_my_phone()`, /verify your mobile/);
   await as('house', `update profiles set full_name = 'Rina Das' where id = '${ids.house}'`);
   // Updating someone else's row silently changes nothing.
   assert.equal((await as('house', `update profiles set full_name = 'X' where id = '${ids.other}' returning id`)).length, 0);
@@ -380,6 +389,16 @@ await test('11: tags, comments, public profiles and reviews', async () => {
   await handshake(j.id, 'w1');
   await fails('house', `select rate_person(${a}, 5, '{best_ever}', null)`);
   await fails('house', `insert into ratings (assignment_id, rater_id, ratee_id, stars) values (${a}, '${ids.house}', '${ids.w1}', 5)`);
+});
+
+await test('12: an account with an unverified phone cannot post or apply', async () => {
+  // a legacy profile whose phone was typed in, never verified
+  await db.exec(`insert into profiles (id, role, full_name, phone, area) values ('${ids.nophone}', 'household', 'Legacy', '919000000006', 'town')`);
+  assert.equal((await as('nophone', `select phone_verified from profiles where id = '${ids.nophone}'`))[0].phone_verified, false);
+  await fails('nophone', `insert into jobs (household_id, service, area, job_date, days, rate) values ('${ids.nophone}', 'clean', 'town', current_date + 1, 1, 400)`);
+  await db.exec(`update auth.users set phone_confirmed_at = now() where id = '${ids.nophone}'`);
+  await as('nophone', `select sync_my_phone()`);
+  await as('nophone', `insert into jobs (household_id, service, area, job_date, days, rate) values ('${ids.nophone}', 'clean', 'town', current_date + 1, 1, 400)`);
 });
 
 await test('anon has no access', async () => {

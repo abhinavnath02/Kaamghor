@@ -435,6 +435,10 @@ const T = {
     verify: 'Verify', resendIn: 'Resend in {s}s', resend: 'Send code again', changeEmail: 'Change email',
     badEmail: 'Enter a valid email address', badCode: 'Enter the code from the email',
     phoneLabel: 'Mobile number', phoneHint: 'Shown to the other person only after a hire.',
+    loginPhone: 'Continue with mobile number', sendSms: 'Send code by SMS', smsCodeLabel: 'Enter the 6-digit code sent to {phone}',
+    changeNumber: 'Change number', useEmail: 'Use email or Google instead', verifyTitle: 'Verify your mobile number',
+    verifyBody: 'We’ll send a code by SMS. Your number is shown only to people you work with, after a hire.',
+    phoneVerifiedAs: 'Mobile verified: {phone}', phoneUpdated: 'Mobile number updated',
     badPhone: 'Enter a 10-digit mobile number', email: 'Email',
     step_posted: 'Posted', step_hired: 'Hired', step_done: 'Done', step_paid: 'Paid',
     today: 'Today', tomorrow: 'Tomorrow', otherDate: 'Other day', lightMode: 'Light mode', darkMode: 'Dark mode',
@@ -528,6 +532,10 @@ const T = {
     verify: 'নিশ্চিত কৰক', resendIn: '{s} ছেকেণ্ডত পুনৰ পঠিয়াব পাৰিব', resend: 'ক’ড পুনৰ পঠিয়াওক', changeEmail: 'ইমেইল সলনি কৰক',
     badEmail: 'শুদ্ধ ইমেইল ঠিকনা দিয়ক', badCode: 'ইমেইলৰ ক’ডটো দিয়ক',
     phoneLabel: 'মবাইল নম্বৰ', phoneHint: 'কামত লোৱাৰ পিছতহে আনজনে দেখা পাব।',
+    loginPhone: 'মবাইল নম্বৰেৰে আগবাঢ়ক', sendSms: 'SMSত ক’ড পঠিয়াওক', smsCodeLabel: '{phone}লৈ পঠোৱা ৬-অংকৰ ক’ডটো দিয়ক',
+    changeNumber: 'নম্বৰ সলনি কৰক', useEmail: 'তাৰ সলনি ইমেইল বা Google ব্যৱহাৰ কৰক', verifyTitle: 'আপোনাৰ মবাইল নম্বৰ নিশ্চিত কৰক',
+    verifyBody: 'আমি SMSত এটা ক’ড পঠিয়াম। আপোনাৰ নম্বৰ কেৱল কামত লোৱাৰ পিছত একেলগে কাম কৰা মানুহেহে দেখিব।',
+    phoneVerifiedAs: 'মবাইল নিশ্চিত: {phone}', phoneUpdated: 'মবাইল নম্বৰ সলনি হ’ল',
     badPhone: '১০-অংকৰ মবাইল নম্বৰ দিয়ক', email: 'ইমেইল',
     step_posted: 'দিয়া হ’ল', step_hired: 'লোৱা হ’ল', step_done: 'সম্পূৰ্ণ', step_paid: 'পইচা দিয়া',
     today: 'আজি', tomorrow: 'কাইলৈ', otherDate: 'আন দিন', lightMode: 'পোহৰ মোড', darkMode: 'আন্ধাৰ মোড',
@@ -608,6 +616,10 @@ const T = {
     verify: 'पुष्टि करें', resendIn: '{s} सेकंड में दोबारा भेज सकेंगे', resend: 'कोड दोबारा भेजें', changeEmail: 'ईमेल बदलें',
     badEmail: 'सही ईमेल पता डालें', badCode: 'ईमेल वाला कोड डालें',
     phoneLabel: 'मोबाइल नंबर', phoneHint: 'काम पर रखने के बाद ही दूसरे व्यक्ति को दिखेगा।',
+    loginPhone: 'मोबाइल नंबर से जारी रखें', sendSms: 'SMS से कोड भेजें', smsCodeLabel: '{phone} पर भेजा गया 6 अंकों का कोड डालें',
+    changeNumber: 'नंबर बदलें', useEmail: 'इसके बजाय ईमेल या Google इस्तेमाल करें', verifyTitle: 'अपना मोबाइल नंबर सत्यापित करें',
+    verifyBody: 'हम SMS से एक कोड भेजेंगे। आपका नंबर सिर्फ़ काम पर रखने के बाद साथ काम करने वालों को दिखेगा।',
+    phoneVerifiedAs: 'मोबाइल सत्यापित: {phone}', phoneUpdated: 'मोबाइल नंबर बदल गया',
     badPhone: '10 अंकों का मोबाइल नंबर डालें', email: 'ईमेल',
     step_posted: 'डाला गया', step_hired: 'रखा गया', step_done: 'पूरा', step_paid: 'भुगतान',
     today: 'आज', tomorrow: 'कल', otherDate: 'दूसरा दिन', lightMode: 'लाइट मोड', darkMode: 'डार्क मोड',
@@ -972,6 +984,7 @@ function showLogin() {
     main.innerHTML = `${hero}${langs}
       <div class="card">
         <button type="button" class="btn google block" data-act="google">${GOOGLE_G}${te('google')}</button>
+        <button type="button" class="btn ghost block" data-act="loginPhone" style="margin-top:10px">${icon('mobile', 20)}${te('loginPhone')}</button>
         <div class="or"><span>${te('or')}</span></div>
         <form data-form="sendCode">
           <label class="f" for="em" style="margin-top:0">${te('emailLabel')}</label>
@@ -981,6 +994,24 @@ function showLogin() {
       </div>
       <div id="installSlot"></div>`;
     updateInstallSlot();
+  } else if (L.step === 'phone') {
+    main.innerHTML = `${hero}${langs}
+      <form data-form="sendSms" class="card">
+        <label class="f" for="lph" style="margin-top:0">${te('phoneLabel')}</label>
+        ${phoneInput('lph', L.phone || '')}
+        <div style="margin-top:14px"><button class="btn block">${te('sendSms')}</button></div>
+        <div style="margin-top:10px"><button type="button" class="btn ghost sm block" data-act="changeEmail">${te('useEmail')}</button></div>
+      </form>`;
+    $('#lph').focus();
+  } else if (L.step === 'sms') {
+    main.innerHTML = `${hero}
+      <form data-form="verifySms" class="card">
+        <label class="f" for="code">${te('smsCodeLabel', { phone: '+91 ' + L.phone })}</label>
+        <input id="code" class="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required>
+        <div style="margin-top:14px"><button class="btn block">${te('verify')}</button></div>
+        <div style="margin-top:10px"><button type="button" class="btn ghost sm block" data-act="loginPhone">${te('changeNumber')}</button></div>
+      </form>`;
+    $('#code').focus();
   } else {
     main.innerHTML = `${hero}
       <form data-form="verifyCode" class="card">
@@ -1016,6 +1047,30 @@ function tickResend() {
   if (left > 0) setTimeout(tickResend, 1000);
 }
 
+// ===================== Verify a mobile number =====================
+// Used once after Google/email sign-in, and from Profile to change the number.
+function showVerifyPhone() {
+  $('#tabs').hidden = true;
+  const V = S.verify || (S.verify = { step: 'phone', phone: '' });
+  const head = `<div class="hero"><div class="hero-mark">${icon('mobile', 40)}</div><h1 style="font-size:26px">${te('verifyTitle')}</h1>
+    <div class="muted" style="max-width:420px;margin:0 auto">${te('verifyBody')}</div></div>`;
+  main.innerHTML = V.step === 'phone'
+    ? `${head}<form data-form="vpSend" class="card">
+        <label class="f" for="vph" style="margin-top:0">${te('phoneLabel')}</label>
+        ${phoneInput('vph', V.phone)}
+        <div style="margin-top:14px"><button class="btn block">${te('sendSms')}</button></div>
+        ${S.profile ? `<div style="margin-top:10px"><button type="button" class="btn ghost sm block" data-act="cancelVerify">${te('back')}</button></div>`
+          : `<div style="margin-top:10px"><button type="button" class="btn ghost sm block" data-act="logout">${icon('logout', 18)}${te('logout')}</button></div>`}
+      </form>`
+    : `${head}<form data-form="vpCode" class="card">
+        <label class="f" for="vcode" style="margin-top:0">${te('smsCodeLabel', { phone: '+91 ' + V.phone })}</label>
+        <input id="vcode" class="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required>
+        <div style="margin-top:14px"><button class="btn block">${te('verify')}</button></div>
+        <div style="margin-top:10px"><button type="button" class="btn ghost sm block" data-act="vpBack">${te('changeNumber')}</button></div>
+      </form>`;
+  main.querySelector('input').focus();
+}
+
 // ===================== Sign-up (first login) =====================
 function showOnboard() {
   $('#tabs').hidden = true;
@@ -1027,8 +1082,7 @@ function showOnboard() {
       </div>
       <label class="f" for="nm">${te('fullName')}</label>
       <input id="nm" name="full_name" type="text" maxlength="80" autocomplete="name" value="${esc(S.user?.user_metadata?.full_name || '')}" required>
-      <label class="f" for="obPh">${te('phoneLabel')}</label>
-      ${phoneInput('obPh', '')}
+      <div class="note" style="margin-top:14px">${icon('shield', 20)}<span>${te('phoneVerifiedAs', { phone: '+' + S.user.phone })}</span></div>
       <label class="f" for="ar">${te('area')}</label>
       <select id="ar" name="area" class="in" required><option value=""></option>${areaOptions('')}</select>
       <div id="workerFields" hidden>
@@ -1073,9 +1127,15 @@ function renderTabs(active) {
   nav.hidden = false;
 }
 
+// Everyone needs a mobile number verified by SMS code (phone login users already have one).
+const phoneVerified = (user) => !!(user && user.phone && user.phone_confirmed_at);
+
 async function loadMe(user) {
   S.user = user;
+  if (!phoneVerified(user)) return showVerifyPhone();
   S.profile = await api.myProfile(user.id);
+  // Older profiles typed their number in: replace it with the verified one.
+  if (S.profile && !S.profile.phone_verified) { await api.syncPhone(); S.profile = await api.myProfile(user.id); }
   if (!S.profile) return showOnboard();
   S.worker = S.profile.role === 'worker' ? await api.myWorker(user.id) : null;
   if (S.profile.role === 'worker' && !S.worker) {
@@ -1516,8 +1576,11 @@ async function viewProfile() {
     <input id="pNm" name="full_name" type="text" maxlength="80" value="${esc(p.full_name)}" required>
     <label class="f" for="pAr">${te('area')}</label>
     <select id="pAr" name="area" class="in">${areaOptions(p.area)}</select>
-    <label class="f" for="pPh">${te('phoneLabel')}</label>
-    ${phoneInput('pPh', p.phone.slice(2))}
+    <label class="f">${te('phoneLabel')}</label>
+    <div class="row between nowrap card" style="margin:0">
+      <span class="row" style="gap:8px">${icon('shield', 18)}<b>+${esc(p.phone)}</b></span>
+      <button type="button" class="btn ghost sm" data-act="changePhone">${te('changeNumber')}</button>
+    </div>
     <div class="muted small" style="margin-top:10px">${te('email')}: ${esc(S.user.email)}</div>`;
   if (isWorker) {
     html += `<label class="f">${te('skills')}</label>${skillChips('skills', 'checkbox', w.skills)}
@@ -1681,6 +1744,10 @@ const ACTIONS = {
   lang(el) { setLang(el.dataset.lang); },
   reload() { refresh(); },
   changeEmail() { S.login.step = 'start'; showLogin(); },
+  loginPhone() { S.login.step = 'phone'; showLogin(); },
+  changePhone() { S.verify = { step: 'phone', phone: '' }; showVerifyPhone(); },
+  cancelVerify() { S.verify = null; route(); },
+  vpBack() { S.verify.step = 'phone'; showVerifyPhone(); },
   async resend(el) {
     await busy(el, async () => { await api.sendEmailCode(S.login.email); S.login.until = Date.now() + 60000; tickResend(); });
   },
@@ -1792,6 +1859,44 @@ const ACTIONS = {
 
 // ===================== Forms =====================
 const FORMS = {
+  async sendSms(f, btn) {
+    const phone = cleanPhone(f.phone.value);
+    if (!phone) return toast(t('badPhone'), 'err');
+    await busy(btn, async () => {
+      await api.sendPhoneCode('+' + phone);
+      S.login = { ...S.login, phone: phone.slice(2), step: 'sms' };
+      showLogin();
+    });
+  },
+  async verifySms(f, btn) {
+    const code = f.querySelector('#code').value.replace(/\D/g, '');
+    if (code.length !== 6) return toast(t('badCode'), 'err');
+    await busy(btn, async () => {
+      const { user } = await api.verifyPhoneCode('+91' + S.login.phone, code);
+      await loadMe(user);
+    });
+  },
+  // Add or change the verified number on a signed-in account.
+  async vpSend(f, btn) {
+    const phone = cleanPhone(f.phone.value);
+    if (!phone) return toast(t('badPhone'), 'err');
+    await busy(btn, async () => {
+      await api.startPhoneChange('+' + phone);
+      S.verify = { step: 'code', phone: phone.slice(2) };
+      showVerifyPhone();
+    });
+  },
+  async vpCode(f, btn) {
+    const code = f.querySelector('#vcode').value.replace(/\D/g, '');
+    if (code.length !== 6) return toast(t('badCode'), 'err');
+    await busy(btn, async () => {
+      const { user } = await api.confirmPhoneChange('+91' + S.verify.phone, code);
+      const changing = !!S.profile;
+      S.verify = null;
+      if (changing) { await api.syncPhone(); toast(t('phoneUpdated')); }
+      await loadMe(user);
+    });
+  },
   async rate(f, btn) {
     const stars = parseInt(f.stars.value, 10);
     if (!stars) return toast(t('pickStars'), 'err');
@@ -1829,15 +1934,13 @@ const FORMS = {
     const full_name = f.full_name.value.trim();
     const area = f.area.value;
     if (!role || !full_name || !area) return toast(t('fillAll'), 'err');
-    const phone = cleanPhone(f.phone.value);
-    if (!phone) return toast(t('badPhone'), 'err');
     const skills = [...f.querySelectorAll('input[name=skills]:checked')].map((i) => i.value);
     const upi_id = f.upi_id.value.trim() || null;
     if (role === 'worker' && !skills.length) return toast(t('pickSkill'), 'err');
     if (role === 'worker' && upi_id && !UPI_RE.test(upi_id)) return toast(t('badUpi'), 'err');
     if (!f.agree.checked) return toast(t('mustAgree'), 'err');
     await busy(btn, async () => {
-      await api.createProfile({ id: S.user.id, role, full_name, phone, area });
+      await api.createProfile({ id: S.user.id, role, full_name, area });
       if (role === 'worker') await api.createWorker({ user_id: S.user.id, skills, upi_id });
       history.replaceState(null, '', location.pathname);
       await loadMe(S.user);
@@ -1860,8 +1963,6 @@ const FORMS = {
   async profile(f, btn) {
     const full_name = f.full_name.value.trim();
     if (!full_name) return toast(t('fillAll'), 'err');
-    const phone = cleanPhone(f.phone.value);
-    if (!phone) return toast(t('badPhone'), 'err');
     const isWorker = S.profile.role === 'worker';
     let wrow;
     if (isWorker) {
@@ -1872,7 +1973,7 @@ const FORMS = {
       wrow = { skills, upi_id, available: f.available.checked };
     }
     await busy(btn, async () => {
-      await api.updateProfile(S.user.id, { full_name, phone, area: f.area.value });
+      await api.updateProfile(S.user.id, { full_name, area: f.area.value });
       if (isWorker) await api.updateWorker(S.user.id, wrow);
       S.profile = await api.myProfile(S.user.id);
       toast(t('saved'));
@@ -1885,7 +1986,7 @@ function setLang(l) {
   S.lang = l;
   store.set('lang', l);
   applyChrome();
-  if (S.profile) refresh(); else if (S.user) showOnboard(); else showLogin();
+  if (S.verify || (S.user && !phoneVerified(S.user))) showVerifyPhone(); else if (S.profile) refresh(); else if (S.user) showOnboard(); else showLogin();
 }
 
 function afterRender(name) {

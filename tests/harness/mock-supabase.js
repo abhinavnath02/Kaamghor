@@ -56,7 +56,18 @@
     const id = await uuidFor(email);
     const db = await ready;
     await db.query('insert into auth.users (id, email) values ($1, $2) on conflict do nothing', [id, email]);
-    const user = { id, email, user_metadata: meta };
+    const { rows } = await db.query('select phone, phone_confirmed_at from auth.users where id = $1', [id]);
+    const user = { id, email, user_metadata: meta, phone: rows[0].phone || '', phone_confirmed_at: rows[0].phone_confirmed_at };
+    save({ user, access_token: 'mock' });
+    return user;
+  }
+  // Phone numbers arrive as +91...; Supabase stores them without the plus.
+  async function signInPhone(phone) {
+    const p = phone.replace('+', '');
+    const id = await uuidFor('phone:' + p);
+    const db = await ready;
+    await db.query('insert into auth.users (id, phone, phone_confirmed_at) values ($1, $2, now()) on conflict do nothing', [id, p]);
+    const user = { id, email: '', user_metadata: {}, phone: p, phone_confirmed_at: new Date().toISOString() };
     save({ user, access_token: 'mock' });
     return user;
   }
@@ -189,12 +200,22 @@
     createClient() {
       return {
         auth: {
-          signInWithOtp: async ({ email }) => (/@/.test(email || '') ? { data: {}, error: null } : { data: null, error: { message: 'Invalid email' } }),
-          verifyOtp: async ({ email, token }) => {
+          signInWithOtp: async ({ email, phone }) => (/@/.test(email || '') || /^\+91[6-9]\d{9}$/.test(phone || '')
+            ? { data: {}, error: null } : { data: null, error: { message: 'Invalid email or phone' } }),
+          verifyOtp: async ({ email, phone, token, type }) => {
             if (token !== '123456') return { data: null, error: { message: 'Token has expired or is invalid' } };
-            const user = await signIn(email, {});
+            if (type === 'phone_change') {
+              const db = await ready;
+              const p = phone.replace('+', '');
+              await db.query('update auth.users set phone = $1, phone_confirmed_at = now() where id = $2', [p, session.user.id]);
+              save({ ...session, user: { ...session.user, phone: p, phone_confirmed_at: new Date().toISOString() } });
+              return { data: { user: session.user, session }, error: null };
+            }
+            const user = type === 'sms' ? await signInPhone(phone) : await signIn(email, {});
             return { data: { user, session }, error: null };
           },
+          updateUser: async ({ phone }) => (/^\+91[6-9]\d{9}$/.test(phone || '')
+            ? { data: { user: session.user }, error: null } : { data: null, error: { message: 'Invalid phone' } }),
           // Real Google leaves the page and comes back with ?code=; here we sign in a fixed Google user and reload.
           signInWithOAuth: async () => {
             await signIn('google.tester@gmail.com', { full_name: 'Google Tester' });
