@@ -70,11 +70,18 @@ const api = {
     return rankWorkers(await q(sb.from('public_workers').select('*').in('id', apps.map((a) => a.worker_id))));
   },
   hire: (jobId, workerId) => q(sb.rpc('hire_worker', { p_job: jobId, p_worker: workerId })),
-  rate: (jobId, rating) => q(sb.rpc('rate_job', { p_job: jobId, p_rating: rating })),
-  payTarget: async (jobId) => (await q(sb.rpc('get_pay_target', { p_job: jobId })))[0],
-  payment: (jobId) => q(sb.from('payments').select('*').eq('job_id', jobId).maybeSingle()),
-  createOrder: async (jobId) => {
-    const { data, error } = await sb.functions.invoke('create-order', { body: { job_id: jobId } });
+  stopHiring: (jobId) => q(sb.rpc('stop_hiring', { p_job: jobId })),
+  // Everyone hired for a job (one assignment per person).
+  jobAssignments: (jobId) => q(sb.from('assignments').select('*').eq('job_id', jobId).neq('status', 'cancelled').order('hired_at')),
+  profilesByIds: (ids) => q(sb.from('profiles').select('id, full_name, phone, area').in('id', ids)),
+  publicWorkersByIds: (ids) => q(sb.from('public_workers').select('*').in('id', ids)),
+  jobPayments: (jobId) => q(sb.from('payments').select('*').eq('job_id', jobId)),
+  paymentById: (id) => q(sb.from('payments').select('*').eq('id', id).maybeSingle()),
+  rateWorker: (assignmentId, rating) => q(sb.rpc('rate_worker', { p_assignment: assignmentId, p_rating: rating })),
+  payTarget: async (jobId, workerId) => (await q(sb.rpc('get_pay_target', { p_job: jobId, p_worker: workerId })))[0],
+  // One Razorpay order per person's payment.
+  createOrder: async (paymentId) => {
+    const { data, error } = await sb.functions.invoke('create-order', { body: { payment_id: paymentId } });
     if (error) {
       let msg = error.message;
       try { msg = (await error.context.json()).error || msg; } catch (_) { /* not JSON */ }
@@ -92,7 +99,10 @@ const api = {
   myApplications: async (uid) => (await q(sb.from('applications').select('job_id').eq('worker_id', uid))).map((a) => a.job_id),
   apply: (jobId, uid) => q(sb.from('applications').insert({ job_id: jobId, worker_id: uid })),
   withdraw: (jobId, uid) => q(sb.from('applications').delete().eq('job_id', jobId).eq('worker_id', uid)),
-  myWork: (uid) => q(sb.from('jobs').select('*').eq('worker_id', uid).order('job_date', { ascending: false }).limit(100)),
+  // My assignments, each with its job.
+  myWork: (uid) => q(sb.from('assignments').select('*, jobs(*)').eq('worker_id', uid).neq('status', 'cancelled').order('hired_at', { ascending: false }).limit(100)),
+  myAssignment: (jobId, uid) => q(sb.from('assignments').select('*').eq('job_id', jobId).eq('worker_id', uid).maybeSingle()),
+  paymentForAssignment: (assignmentId) => q(sb.from('payments').select('*').eq('assignment_id', assignmentId).maybeSingle()),
   complete: (jobId) => q(sb.rpc('complete_job', { p_job: jobId })),
   confirmCash: (jobId) => q(sb.rpc('confirm_cash', { p_job: jobId })),
   confirmDirect: (jobId) => q(sb.rpc('confirm_direct', { p_job: jobId })),
@@ -106,6 +116,7 @@ const api = {
   // ---------- live updates ----------
   onJobs: (cb) => sb.channel('jobs')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'jobs' }, cb)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'assignments' }, cb)
     .subscribe(),
   offAll: () => sb.removeAllChannels(),
 

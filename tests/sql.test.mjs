@@ -159,7 +159,7 @@ await test('hire: only the job household, only an applicant; phones then visible
 await test('complete: only hired worker; creates payment with 10% fee', async () => {
   await fails('w2', `select complete_job('${job.id}')`);
   await fails('house', `select complete_job('${job.id}')`);
-  await fails('w1', `select get_pay_target('${job.id}')`);
+  await fails('w1', `select get_pay_target('${job.id}', '${ids.w1}')`);
   await as('w1', `select complete_job('${job.id}')`);
   await fails('w1', `select complete_job('${job.id}')`, /not in progress/);
   const [pm] = await as('house', `select * from payments where job_id = '${job.id}'`);
@@ -170,9 +170,9 @@ await test('complete: only hired worker; creates payment with 10% fee', async ()
 });
 
 await test('pay target: UPI only to the household of the done job', async () => {
-  const [t] = await as('house', `select * from get_pay_target('${job.id}')`);
+  const [t] = await as('house', `select * from get_pay_target('${job.id}', '${ids.w1}')`);
   assert.equal(t.upi_id, 'bikash@okaxis'); assert.equal(t.amount, 400);
-  await fails('other', `select * from get_pay_target('${job.id}')`);
+  await fails('other', `select * from get_pay_target('${job.id}', '${ids.w1}')`);
 });
 
 await test('payment cannot be faked from the browser; worker confirms cash', async () => {
@@ -186,10 +186,10 @@ await test('payment cannot be faked from the browser; worker confirms cash', asy
 });
 
 await test('rate: once, 1 to 5, household only; updates worker average', async () => {
-  await fails('house', `select rate_job('${job.id}', 6)`);
-  await fails('w1', `select rate_job('${job.id}', 5)`);
-  await as('house', `select rate_job('${job.id}', 4)`);
-  await fails('house', `select rate_job('${job.id}', 5)`, /Already rated/);
+  await fails('house', `select rate_worker((select id from assignments where job_id = '${job.id}'), 6)`);
+  await fails('w1', `select rate_worker((select id from assignments where job_id = '${job.id}'), 5)`);
+  await as('house', `select rate_worker((select id from assignments where job_id = '${job.id}'), 4)`);
+  await fails('house', `select rate_worker((select id from assignments where job_id = '${job.id}'), 5)`, /Already rated/);
   const [w] = await as('house', `select rating_avg from public_workers where id = '${ids.w1}'`);
   assert.equal(Number(w.rating_avg), 4);
 });
@@ -256,6 +256,45 @@ await test('08: pay = daily rate x days, worked out by the database; rates have 
   assert.equal(c.pay, 600);
 });
 
+await test('09: a job for 2 people: hire each, separate payments, done when both finish', async () => {
+  // w2 gets cleaning back for this test; 'other' household also works as a worker-less check
+  await as('w2', `update worker_profiles set skills = '{clean}' where user_id = '${ids.w2}'`);
+  const [j] = await as('house', `insert into jobs (household_id, service, area, job_date, days, rate, workers_needed)
+    values ('${ids.house}', 'clean', 'town', current_date + 1, 2, 500, 2) returning id, pay`);
+  assert.equal(j.pay, 2000); // 500 x 2 days x 2 people
+  await as('w1', `insert into applications (job_id, worker_id) values ('${j.id}', '${ids.w1}')`);
+  await as('w2', `insert into applications (job_id, worker_id) values ('${j.id}', '${ids.w2}')`);
+  await as('house', `select hire_worker('${j.id}', '${ids.w1}')`);
+  assert.equal((await as('house', `select status from jobs where id = '${j.id}'`))[0].status, 'open');
+  await fails('house', `select hire_worker('${j.id}', '${ids.w1}')`, /Already hired/);
+  await as('house', `select hire_worker('${j.id}', '${ids.w2}')`);
+  assert.equal((await as('house', `select status from jobs where id = '${j.id}'`))[0].status, 'assigned');
+  // each worker sees the household's phone; workers don't see each other's assignment
+  assert.equal((await as('w2', `select * from profiles where id = '${ids.house}'`)).length, 1);
+  assert.equal((await as('w2', `select * from assignments where job_id = '${j.id}'`)).length, 1);
+  await as('w1', `select complete_job('${j.id}')`);
+  assert.equal((await as('house', `select status from jobs where id = '${j.id}'`))[0].status, 'assigned');
+  await as('w2', `select complete_job('${j.id}')`);
+  assert.equal((await as('house', `select status from jobs where id = '${j.id}'`))[0].status, 'done');
+  const pays = await as('house', `select amount, fee from payments where job_id = '${j.id}' order by amount`);
+  assert.deepEqual(pays.map((p) => [p.amount, p.fee]), [[1000, 100], [1000, 100]]);
+  assert.equal((await as('w1', `select * from payments where job_id = '${j.id}'`)).length, 1);
+  const [t] = await as('house', `select * from get_pay_target('${j.id}', '${ids.w2}')`);
+  assert.equal(t.amount, 1000);
+});
+
+await test('09: stop hiring starts the job with the people already hired', async () => {
+  const [j] = await as('house', `insert into jobs (household_id, service, area, job_date, days, rate, workers_needed)
+    values ('${ids.house}', 'clean', 'town', current_date + 1, 1, 400, 3) returning id`);
+  await fails('house', `select stop_hiring('${j.id}')`, /at least one/);
+  await as('w1', `insert into applications (job_id, worker_id) values ('${j.id}', '${ids.w1}')`);
+  await as('house', `select hire_worker('${j.id}', '${ids.w1}')`);
+  await fails('other', `select stop_hiring('${j.id}')`, /Job not found/);
+  await as('house', `select stop_hiring('${j.id}')`);
+  const [row] = await as('house', `select status, workers_needed, pay from jobs where id = '${j.id}'`);
+  assert.deepEqual([row.status, row.workers_needed, row.pay], ['assigned', 1, 400]);
+});
+
 await test('anon has no access', async () => {
   await assert.rejects(() => db.transaction(async (tx) => {
     await tx.exec('set local role anon');
@@ -269,7 +308,7 @@ await test('anon has no access', async () => {
 
 await test('jobs table is in the realtime publication', async () => {
   const r = await db.query(`select tablename from pg_publication_tables where pubname = 'supabase_realtime'`);
-  assert.deepEqual(r.rows.map((x) => x.tablename), ['jobs']);
+  assert.deepEqual(r.rows.map((x) => x.tablename).sort(), ['assignments', 'jobs']);
 });
 
 console.log(`\n${passed} tests passed`);

@@ -472,6 +472,8 @@ const T = {
     error: 'Something went wrong', yes: 'Yes', no: 'No', daysN: '{n} days', dayOne: '1 day',
     rateLabel: 'Daily rate per person (₹)', rateHint: 'Usual rate ₹{s} · minimum ₹{m}', rateLow: 'The minimum rate for this work is ₹{m} a day',
     totalPay: 'Total pay', perDay: '₹{n}/day',
+    peopleLabel: 'How many people', peopleN: '{n} people', personOne: '1 person', hiredOf: 'Hired {n} of {m}', hiredSoFar: 'Hired so far',
+    stopHiring: 'Start with {n} hired', confirmStop: 'Stop hiring and start with {n}?', yourWorkers: 'Your workers', astatus_hired: 'Working',
     ratesTitle: 'Daily rates (₹ per person per day)', rateStd: 'Usual', rateMin: 'Minimum', rateSaved: 'Rate saved', save2: 'Save', fileTooBig: 'File is too large (max 5 MB)',
     skill_clean: 'Cleaning', skill_cook: 'Cooking', skill_garden: 'Gardening', skill_paint: 'Painting',
     skill_helper: 'Helper', skill_plumb: 'Plumbing', skill_elec: 'Electrical',
@@ -546,7 +548,9 @@ const T = {
     logout: 'লগ আউট', terms: 'চৰ্তাৱলী আৰু গোপনীয়তা', phone: 'ফোন', offline: 'আপুনি অফলাইন। সাঁচি ৰখা পৃষ্ঠা দেখুওৱা হৈছে।',
     error: 'কিবা ভুল হ’ল', yes: 'হয়', no: 'নহয়', daysN: '{n} দিন', dayOne: '১ দিন',
     rateLabel: 'প্ৰতিজনৰ দৈনিক মজুৰি (₹)', rateHint: 'সাধাৰণতে ₹{s} · কমেও ₹{m}', rateLow: 'এই কামৰ কমেও দৈনিক মজুৰি ₹{m}',
-    totalPay: 'মুঠ মজুৰি', perDay: '₹{n}/দিন', fileTooBig: 'ফাইলটো বেছি ডাঙৰ (সৰ্বাধিক 5 MB)',
+    totalPay: 'মুঠ মজুৰি', perDay: '₹{n}/দিন',
+    peopleLabel: 'কিমান জন মানুহ', peopleN: '{n} জন', personOne: '১ জন', hiredOf: '{m} জনৰ {n} জন লোৱা হ’ল', hiredSoFar: 'এতিয়ালৈ লোৱা',
+    stopHiring: '{n} জনৰ সৈতে আৰম্ভ কৰক', confirmStop: 'আৰু নলয়, {n} জনৰ সৈতে আৰম্ভ কৰিবনে?', yourWorkers: 'আপোনাৰ কৰ্মীসকল', astatus_hired: 'কামত আছে', fileTooBig: 'ফাইলটো বেছি ডাঙৰ (সৰ্বাধিক 5 MB)',
     skill_clean: 'ঘৰ চাফা', skill_cook: 'ৰন্ধা-বঢ়া', skill_garden: 'বাগিচাৰ কাম', skill_paint: 'ৰং কৰা',
     skill_helper: 'সহায়কাৰী', skill_plumb: 'প্লাম্বিং', skill_elec: 'বিজুলীৰ কাম',
     skill_care: 'যত্নকাৰী', skill_health: 'স্বাস্থ্যকৰ্মী', skill_other: 'অন্যান্য',
@@ -609,7 +613,9 @@ const T = {
     logout: 'लॉग आउट', terms: 'नियम और गोपनीयता', phone: 'फ़ोन', offline: 'आप ऑफ़लाइन हैं। सेव की गई स्क्रीन दिख रही है।',
     error: 'कुछ गड़बड़ हो गई', yes: 'हाँ', no: 'नहीं', daysN: '{n} दिन', dayOne: '1 दिन',
     rateLabel: 'प्रति व्यक्ति रोज़ की मज़दूरी (₹)', rateHint: 'आम तौर पर ₹{s} · कम से कम ₹{m}', rateLow: 'इस काम की कम से कम मज़दूरी ₹{m} रोज़ है',
-    totalPay: 'कुल मज़दूरी', perDay: '₹{n}/दिन', fileTooBig: 'फ़ाइल बहुत बड़ी है (अधिकतम 5 MB)',
+    totalPay: 'कुल मज़दूरी', perDay: '₹{n}/दिन',
+    peopleLabel: 'कितने लोग', peopleN: '{n} लोग', personOne: '1 व्यक्ति', hiredOf: '{m} में से {n} रखे गए', hiredSoFar: 'अब तक रखे गए',
+    stopHiring: '{n} लोगों के साथ शुरू करें', confirmStop: 'और नहीं रखें, {n} लोगों के साथ शुरू करें?', yourWorkers: 'आपके कामगार', astatus_hired: 'काम पर', fileTooBig: 'फ़ाइल बहुत बड़ी है (अधिकतम 5 MB)',
     skill_clean: 'सफ़ाई', skill_cook: 'खाना बनाना', skill_garden: 'बागवानी', skill_paint: 'पेंटिंग',
     skill_helper: 'हेल्पर', skill_plumb: 'प्लंबिंग', skill_elec: 'बिजली का काम',
     skill_care: 'देखभाल', skill_health: 'स्वास्थ्य कर्मी', skill_other: 'अन्य',
@@ -717,6 +723,9 @@ function fmtDate(d) {
 }
 function todayIST() { return new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10); }
 const daysText = (n) => (n === 1 ? t('dayOne') : t('daysN', { n }));
+const peopleText = (n) => (n === 1 ? t('personOne') : t('peopleN', { n }));
+// What one person earns for the whole job.
+const personPay = (j) => (j.rate ? j.rate * j.days : Math.round(j.pay / (j.workers_needed || 1)));
 // "Tue, 28 Oct" for one day, "28 Oct – 30 Oct" for longer jobs.
 function fmtRange(j) {
   if (!j.days || j.days === 1) return fmtDate(j.job_date);
@@ -836,18 +845,22 @@ function toggleTheme() {
 darkQuery.addEventListener('change', paintThemeChrome);
 
 // ===================== Shared bits of UI =====================
+// A worker's own progress on a job: Working, then Done.
+function assignmentBadge(status) {
+  return status === 'hired' ? `<span class="badge assigned"><i class="dot"></i>${te('astatus_hired')}</span>` : statusBadge(status);
+}
 function statusBadge(status) { return `<span class="badge ${status}"><i class="dot"></i>${te('status_' + status)}</span>`; }
 
 function jobMeta(j) {
-  return `<div class="meta"><span>${icon('calendar', 15)}${esc(fmtRange(j))}</span><span>${icon('clock', 15)}${esc(daysText(j.days))}</span><span>${icon('pin', 15)}${esc(areaName(j.area))}</span>${j.rate ? `<span>${icon('cash', 15)}${te('perDay', { n: j.rate })}</span>` : ''}</div>`;
+  return `<div class="meta"><span>${icon('calendar', 15)}${esc(fmtRange(j))}</span><span>${icon('clock', 15)}${esc(daysText(j.days))}</span><span>${icon('pin', 15)}${esc(areaName(j.area))}</span>${j.workers_needed > 1 ? `<span>${icon('users', 15)}${esc(peopleText(j.workers_needed))}</span>` : ''}${j.rate ? `<span>${icon('cash', 15)}${te('perDay', { n: j.rate })}</span>` : ''}</div>`;
 }
-function jobCard(j, href, extra = '') {
+function jobCard(j, href, extra = '', badge = '', forWorker = false) {
   return `<a class="card tap job" href="#${href}">
     ${skillIcon(j.service, 26, 'job-ic')}
     <div class="job-body">
-      <div class="title-row"><div class="jobtitle">${te('skill_' + j.service)}</div><div class="pay">${rupee(j.pay)}</div></div>
+      <div class="title-row"><div class="jobtitle">${te('skill_' + j.service)}</div><div class="pay">${rupee(forWorker ? personPay(j) : j.pay)}</div></div>
       ${jobMeta(j)}
-      <div class="row between" style="margin-top:10px">${statusBadge(j.status)}${extra}</div>
+      <div class="row between" style="margin-top:10px">${badge || statusBadge(j.status)}${extra}</div>
     </div>
   </a>`;
 }
@@ -869,9 +882,11 @@ function workerLine(w) {
 }
 
 // Posted → Hired → Done → Paid, with the next step highlighted.
-function progress(j, pm) {
+function progress(j, paid, a) {
   if (j.status === 'cancelled') return '';
-  const reached = j.status === 'open' ? 0 : j.status === 'assigned' ? 1 : pm && pm.status === 'paid' ? 3 : 2;
+  const reached = a
+    ? (a.status === 'done' ? (paid ? 3 : 2) : 1)
+    : (j.status === 'open' ? 0 : j.status === 'assigned' ? 1 : paid ? 3 : 2);
   return `<div class="progress">${['posted', 'hired', 'done', 'paid'].map((s, k) =>
     `<div class="st ${k <= reached ? 'done' : k === reached + 1 ? 'now' : ''}" style="--d:${k * 90}ms"><i>${k <= reached ? icon('check', 14) : k + 1}</i>${te('step_' + s)}</div>`).join('')}</div>`;
 }
@@ -1087,6 +1102,13 @@ async function viewPost() {
         <button type="button" data-act="days" data-d="1" aria-label="+">+</button>
       </div>
       <input type="hidden" name="days" value="1">
+      <label class="f">${te('peopleLabel')}</label>
+      <div class="numstep">
+        <button type="button" data-act="people" data-d="-1" aria-label="−">−</button>
+        <output id="peopleOut">${esc(peopleText(1))}</output>
+        <button type="button" data-act="people" data-d="1" aria-label="+">+</button>
+      </div>
+      <input type="hidden" name="workers_needed" value="1">
       <label class="f" for="jRate">${te('rateLabel')}</label>
       <input id="jRate" name="rate" type="number" inputmode="numeric" min="100" step="10" value="${rates.clean ? rates.clean.daily_rate : ''}" required>
       <div class="muted small" id="rateHint" style="margin-top:6px"></div>
@@ -1107,13 +1129,13 @@ function updatePayPreview() {
   const f = main.querySelector('form[data-form=postJob]');
   if (!f || !S.rates) return;
   const r = S.rates[f.service.value];
-  const rate = parseInt(f.rate.value, 10) || 0, days = parseInt(f.days.value, 10) || 1;
+  const rate = parseInt(f.rate.value, 10) || 0, days = parseInt(f.days.value, 10) || 1, people = parseInt(f.workers_needed.value, 10) || 1;
   $('#rateHint').textContent = r ? t('rateHint', { s: r.daily_rate, m: r.min_rate }) : '';
   const low = r && rate < r.min_rate;
   $('#payTotal').classList.toggle('low', !!low);
   $('#payTotal').innerHTML = low
     ? esc(t('rateLow', { m: r.min_rate }))
-    : `<span>${te('totalPay')}</span><b>${rupee(rate * days)}</b><small>${rupee(rate)} × ${esc(daysText(days))}</small>`;
+    : `<span>${te('totalPay')}</span><b>${rupee(rate * days * people)}</b><small>${rupee(rate)} × ${esc(daysText(days))}${people > 1 ? ` × ${esc(peopleText(people))}` : ''}</small>`;
 }
 
 async function updateMatchCount() {
@@ -1131,36 +1153,50 @@ async function viewJobs() {
   const jobs = await api.myPostedJobs(S.user.id);
   if (!jobs.length) return `<h1>${te('tabMyJobs')}</h1>${empty('list', t('noJobs'), `<div style="margin-top:14px"><a class="btn" href="#post">${te('postFirst')}</a></div>`)}`;
   return `${titleRow(te('tabMyJobs'))}
-    ${jobs.map((j) => jobCard(j, 'job/' + j.id, j.rating ? `${stars(j.rating, 16)}` : '')).join('')}`;
+    ${jobs.map((j) => jobCard(j, 'job/' + j.id)).join('')}`;
 }
 
-function jobHeader(j, backTo, pm) {
+function jobHeader(j, backTo, paid, a) {
   return `<div class="title-row">${backLink(backTo)}${refreshBtn()}</div>
     <div class="card">
       <div class="job-head">
         ${skillIcon(j.service, 26, 'job-ic')}
         <div class="job-body">
-          <div class="title-row"><div class="jobtitle">${te('skill_' + j.service)}</div><div class="pay">${rupee(j.pay)}</div></div>
+          <div class="title-row"><div class="jobtitle">${te('skill_' + j.service)}</div><div class="pay">${rupee(a ? personPay(j) : j.pay)}</div></div>
           ${jobMeta(j)}
         </div>
       </div>
       ${j.notes ? `<p style="margin:12px 0 0">${esc(j.notes)}</p>` : ''}
-      ${progress(j, pm)}
+      ${progress(j, paid, a)}
     </div>`;
 }
 
 async function viewJobHousehold(id) {
   const j = await api.job(id);
   if (!j || j.household_id !== S.user.id) return empty('alert', t('error'));
-  const pm = j.status === 'done' ? await api.payment(id) : null;
-  let html = jobHeader(j, 'jobs', pm);
+  const [asg, pays] = await Promise.all([api.jobAssignments(id), api.jobPayments(id)]);
+  const ids = asg.map((a) => a.worker_id);
+  const [profs, pubs] = ids.length ? await Promise.all([api.profilesByIds(ids), api.publicWorkersByIds(ids)]) : [[], []];
+  const prof = Object.fromEntries(profs.map((p) => [p.id, p]));
+  const pub = Object.fromEntries(pubs.map((p) => [p.id, p]));
+  const payOf = Object.fromEntries(pays.map((p) => [p.assignment_id, p]));
+  const allPaid = j.status === 'done' && pays.length > 0 && pays.every((p) => p.status === 'paid');
+  const people = asg.map((a) => personCard(j, a, pub[a.worker_id], prof[a.worker_id], payOf[a.id])).join('');
+  let html = jobHeader(j, 'jobs', allPaid);
 
   if (j.status === 'open') {
+    if (j.workers_needed > 1) html += `<div class="note">${icon('users', 20)}<span>${te('hiredOf', { n: asg.length, m: j.workers_needed })}</span></div>`;
+    if (asg.length) {
+      html += `<h2>${te('hiredSoFar')}</h2>${people}
+        <button class="btn ghost block" data-act="stopHiring" data-job="${j.id}" data-n="${asg.length}">${te('stopHiring', { n: asg.length })}</button>`;
+    }
+    const hired = new Set(ids);
     const [applicants, matching] = await Promise.all([api.applicants(id), api.matchingWorkers(j.service, j.area)]);
+    const waiting = applicants.filter((w) => !hired.has(w.id));
     const appliedIds = new Set(applicants.map((w) => w.id));
-    html += `<h2>${te('applicants', { n: applicants.length })}</h2>`;
-    html += applicants.length
-      ? applicants.map((w) => `<div class="card"><div class="row between nowrap"><div style="min-width:0">${workerLine(w)}</div>
+    html += `<h2>${te('applicants', { n: waiting.length })}</h2>`;
+    html += waiting.length
+      ? waiting.map((w) => `<div class="card"><div class="row between nowrap"><div style="min-width:0">${workerLine(w)}</div>
           <button class="btn" data-act="hire" data-job="${j.id}" data-worker="${w.id}" data-name="${esc(w.full_name)}">${te('hire')}</button></div></div>`).join('')
       : `<div class="note">${icon('clock', 20)}<span>${te('noApplicants')}</span></div>`;
     const others = matching.filter((w) => !appliedIds.has(w.id));
@@ -1171,53 +1207,53 @@ async function viewJobHousehold(id) {
     return html;
   }
 
-  if (j.status === 'assigned' || j.status === 'done') {
-    const [w, pw] = await Promise.all([api.profileById(j.worker_id), api.publicWorker(j.worker_id)]);
-    html += `<h2>${te('yourWorker')}</h2><div class="card"><div class="row between nowrap"><div style="min-width:0">${pw ? workerLine(pw) : `<b>${esc(w?.full_name)}</b>`}</div>
-      ${w?.phone ? `<a class="btn soft" href="${telLink(w.phone)}">${icon('phone', 18)}${te('call')}</a>` : ''}</div></div>`;
-  }
-  if (j.status === 'assigned') html += `<div class="note">${icon('clock', 20)}<span>${te('waitDone')}</span></div>`;
-
-  if (j.status === 'done') {
-    html += `<h2>${te('payment')}</h2>`;
-    if (pm && pm.status === 'paid') {
-      html += `<div class="note">${icon('check', 20)}<span>${te('paidVia', { n: pm.amount.toLocaleString('en-IN'), method: t('method_' + pm.method) })}</span></div>`;
-    } else if (pm) {
-      html += `<div class="card stack">
-        <div class="pay">${te('amountDue', { n: pm.amount })}</div>
-        <button class="btn block" data-act="payOnline" data-job="${j.id}">${icon('card', 20)}${te('payOnline')}</button>
-        <button class="btn soft block" data-act="payDirect" data-job="${j.id}">${icon('mobile', 20)}${te('payDirect')}</button>
-        <button class="btn soft block" data-act="payCash" data-amount="${pm.amount}">${icon('cash', 20)}${te('payCash')}</button>
-        <div id="payInfo"></div>
-      </div>`;
-    }
-    html += `<h2>${j.rating ? te('yourRating') : te('rateWorker')}</h2>`;
-    html += j.rating
-      ? `<div class="card" style="text-align:center">${stars(j.rating, 32)}</div>`
-      : `<div class="card" style="text-align:center"><div class="rate">${[5, 4, 3, 2, 1].map((n) => `<button data-act="rate" data-job="${j.id}" data-n="${n}" aria-label="${n} / 5">${icon('star', 40)}</button>`).join('')}</div></div>`;
-  }
+  html += `<h2>${te(asg.length > 1 ? 'yourWorkers' : 'yourWorker')}</h2>${people}`;
   return html;
 }
 
+// One hired person on the household's job page: call, progress, payment, rating.
+function personCard(j, a, pw, p, pm) {
+  let html = `<div class="card stack">
+    <div class="row between nowrap"><div style="min-width:0">${pw ? workerLine(pw) : `<div class="who">${avatar(p && p.full_name)}<b>${esc(p && p.full_name)}</b></div>`}</div>
+      ${p && p.phone ? `<a class="btn soft sm" href="${telLink(p.phone)}">${icon('phone', 18)}${te('call')}</a>` : ''}</div>
+    <div>${assignmentBadge(a.status)}</div>`;
+  if (a.status === 'hired' && j.status !== 'open') html += `<div class="muted small">${te('waitDone')}</div>`;
+  if (a.status === 'done' && pm) {
+    if (pm.status === 'paid') {
+      html += `<div class="note">${icon('check', 20)}<span>${te('paidVia', { n: pm.amount.toLocaleString('en-IN'), method: t('method_' + pm.method) })}</span></div>`;
+    } else {
+      html += `<div class="pay">${te('amountDue', { n: pm.amount })}</div>
+        <button class="btn block" data-act="payOnline" data-payment="${pm.id}">${icon('card', 20)}${te('payOnline')}</button>
+        <button class="btn soft block" data-act="payDirect" data-job="${j.id}" data-worker="${a.worker_id}" data-box="pay-${a.id}">${icon('mobile', 20)}${te('payDirect')}</button>
+        <button class="btn soft block" data-act="payCash" data-amount="${pm.amount}" data-box="pay-${a.id}">${icon('cash', 20)}${te('payCash')}</button>
+        <div id="pay-${a.id}"></div>`;
+    }
+    html += a.rating
+      ? `<div class="row" style="gap:10px"><span class="muted small">${te('yourRating')}</span>${stars(a.rating, 20)}</div>`
+      : `<div><div class="muted small">${te('rateWorker')}</div><div class="rate">${[5, 4, 3, 2, 1].map((n) => `<button data-act="rate" data-assignment="${a.id}" data-n="${n}" aria-label="${n} / 5">${icon('star', 34)}</button>`).join('')}</div></div>`;
+  }
+  return html + '</div>';
+}
+
 // Opens Razorpay. The webhook marks the payment paid; here we only wait and re-check.
-async function payOnline(jobId) {
-  const order = await api.createOrder(jobId);
+async function payOnline(paymentId) {
+  const order = await api.createOrder(paymentId);
   await loadScript('https://checkout.razorpay.com/v1/checkout.js');
   const rz = new Razorpay({
     key: order.key_id, amount: order.amount, currency: order.currency, order_id: order.order_id,
     name: 'Kaamghor', description: 'Job payment',
     prefill: { contact: '+' + (S.profile.phone || ''), email: S.user.email || '' },
     theme: { color: '#1c1c1e' },
-    handler: () => waitForPaid(jobId),
+    handler: () => waitForPaid(paymentId),
   });
   rz.on('payment.failed', (r) => toast(r.error && r.error.description ? r.error.description : t('error'), 'err'));
   rz.open();
 }
-async function waitForPaid(jobId) {
+async function waitForPaid(paymentId) {
   toast(t('confirming'));
   for (let i = 0; i < 10; i++) {
     await new Promise((r) => setTimeout(r, 3000));
-    const pm = await api.payment(jobId).catch(() => null);
+    const pm = await api.paymentById(paymentId).catch(() => null);
     if (pm && pm.status === 'paid') { toast(t('paidOk')); return refresh(); }
   }
   toast(t('stillConfirming'));
@@ -1245,7 +1281,7 @@ async function viewFind() {
   return html + jobs.map((j) => `<div class="card job">
       ${skillIcon(j.service, 26, 'job-ic')}
       <div class="job-body">
-        <div class="title-row"><div class="jobtitle">${te('skill_' + j.service)}</div><div class="pay">${rupee(j.pay)}</div></div>
+        <div class="title-row"><div class="jobtitle">${te('skill_' + j.service)}</div><div class="pay">${rupee(personPay(j))}</div></div>
         ${jobMeta(j)}
         ${j.notes ? `<p style="margin:8px 0 0">${esc(j.notes)}</p>` : ''}
         <div class="row" style="margin-top:12px">
@@ -1258,24 +1294,24 @@ async function viewFind() {
 }
 
 async function viewWork() {
-  const jobs = await api.myWork(S.user.id);
+  const rows = (await api.myWork(S.user.id)).filter((a) => a.jobs);
   const head = `${titleRow(te('tabMyWork'))}`;
-  if (!jobs.length) return head + empty('briefcase', t('noWork'), `<div style="margin-top:14px"><a class="btn" href="#find">${te('tabFind')}</a></div>`);
-  return head + jobs.map((j) => jobCard(j, 'wjob/' + j.id)).join('');
+  if (!rows.length) return head + empty('briefcase', t('noWork'), `<div style="margin-top:14px"><a class="btn" href="#find">${te('tabFind')}</a></div>`);
+  return head + rows.map((a) => jobCard(a.jobs, 'wjob/' + a.job_id, '', assignmentBadge(a.status), true)).join('');
 }
 
 async function viewJobWorker(id) {
-  const j = await api.job(id);
-  if (!j || j.worker_id !== S.user.id) return empty('alert', t('error'));
-  const [h, pm] = await Promise.all([api.profileById(j.household_id), j.status === 'done' ? api.payment(id) : null]);
-  let html = jobHeader(j, 'work', pm);
+  const [j, a] = await Promise.all([api.job(id), api.myAssignment(id, S.user.id)]);
+  if (!j || !a) return empty('alert', t('error'));
+  const [h, pm] = await Promise.all([api.profileById(j.household_id), a.status === 'done' ? api.paymentForAssignment(a.id) : null]);
+  let html = jobHeader(j, 'work', pm && pm.status === 'paid', a);
   html += `<h2>${te('household')}</h2><div class="card"><div class="row between nowrap"><div class="who">${avatar(h?.full_name)}<div><b>${esc(h?.full_name)}</b><div class="meta"><span>${icon('pin', 15)}${esc(areaName(h?.area))}</span></div></div></div>
     ${h?.phone ? `<a class="btn soft" href="${telLink(h.phone)}">${icon('phone', 18)}${te('call')}</a>` : ''}</div></div>`;
 
-  if (j.status === 'assigned') {
+  if (a.status === 'hired') {
     html += `<button class="btn block" data-act="complete" data-job="${j.id}" style="margin-top:8px">${icon('check', 20)}${te('markDone')}</button>`;
   }
-  if (j.status === 'done') {
+  if (a.status === 'done') {
     html += `<h2>${te('payment')}</h2>`;
     if (pm && pm.status === 'pending') {
       html += `<div class="card stack"><div class="pay">${te('waitingPayment')} · ${rupee(pm.amount)}</div>
@@ -1295,7 +1331,7 @@ async function viewJobWorker(id) {
         html += `<div class="note">${icon('send', 20)}<span>${te('payoutSent', { n: pm.amount - pm.fee, ref: pm.payout_ref })}</span></div>`;
       }
     }
-    if (j.rating) html += `<h2>${te('householdRating')}</h2><div class="card" style="text-align:center">${stars(j.rating, 32)}</div>`;
+    if (a.rating) html += `<h2>${te('householdRating')}</h2><div class="card" style="text-align:center">${stars(a.rating, 32)}</div>`;
   }
   return html;
 }
@@ -1436,8 +1472,9 @@ let liveTimer;
 function subscribeLive() {
   api.offAll();
   api.onJobs((ev) => {
-    const j = ev.new || {};
-    if (S.profile.role === 'worker' && ev.eventType === 'INSERT' && S.worker && S.worker.skills.includes(j.service)
+    const row = ev.new && Object.keys(ev.new).length ? ev.new : ev.old || {};
+    const j = ev.table === 'assignments' ? { id: row.job_id } : row;
+    if (S.profile.role === 'worker' && ev.table !== 'assignments' && ev.eventType === 'INSERT' && S.worker && S.worker.skills.includes(j.service)
         && (!S.onlyMyArea || j.area === S.profile.area)) {
       toast(t('newJobToast', { service: skillName(j.service), area: areaName(j.area) }));
       if (navigator.vibrate) navigator.vibrate(200);
@@ -1495,22 +1532,33 @@ const ACTIONS = {
     $('#daysOut').textContent = daysText(n);
     updatePayPreview();
   },
+  people(el) {
+    const f = el.form;
+    const n = Math.min(10, Math.max(1, Number(f.workers_needed.value) + Number(el.dataset.d)));
+    f.workers_needed.value = n;
+    $('#peopleOut').textContent = peopleText(n);
+    updatePayPreview();
+  },
+  async stopHiring(el) {
+    if (!(await ask(t('confirmStop', { n: el.dataset.n })))) return;
+    await busy(el, async () => { await api.stopHiring(el.dataset.job); refresh(); });
+  },
   async rate(el) {
     el.classList.add('on'); // light up the chosen stars straight away
-    await busy(el, async () => { await api.rate(el.dataset.job, Number(el.dataset.n)); toast(t('thanksRating')); refresh(); });
+    await busy(el, async () => { await api.rateWorker(el.dataset.assignment, Number(el.dataset.n)); toast(t('thanksRating')); refresh(); });
   },
-  async payOnline(el) { await busy(el, () => payOnline(el.dataset.job)); },
+  async payOnline(el) { await busy(el, () => payOnline(el.dataset.payment)); },
   async payDirect(el) {
     await busy(el, async () => {
-      const tg = await api.payTarget(el.dataset.job);
-      const box = $('#payInfo');
+      const tg = await api.payTarget(el.dataset.job, el.dataset.worker);
+      const box = $('#' + el.dataset.box);
       box.innerHTML = tg && tg.upi_id
         ? `<div class="note">${te('directInfo', { n: tg.amount, name: tg.worker_name, upi: tg.upi_id })}</div>
            <a class="btn block" href="${esc(upiLink(tg.upi_id, tg.worker_name, tg.amount))}">${te('openUpi')}</a>`
         : `<div class="note warn">${te('noUpi')}</div>`;
     });
   },
-  payCash(el) { $('#payInfo').innerHTML = `<div class="note">${te('cashInfo', { n: el.dataset.amount })}</div>`; },
+  payCash(el) { $('#' + el.dataset.box).innerHTML = `<div class="note">${te('cashInfo', { n: el.dataset.amount })}</div>`; },
   async apply(el) {
     await busy(el, async () => { await api.apply(el.dataset.job, S.user.id); toast(t('appliedToast')); refresh(); });
   },
@@ -1595,7 +1643,7 @@ const FORMS = {
     await busy(btn, async () => {
       const row = await api.postJob({
         household_id: S.user.id, service: f.service.value, area: f.area.value,
-        job_date: f.job_date.value, days: parseInt(f.days.value, 10), rate, notes: f.notes.value.trim() || null,
+        job_date: f.job_date.value, days: parseInt(f.days.value, 10), workers_needed: parseInt(f.workers_needed.value, 10), rate, notes: f.notes.value.trim() || null,
       });
       toast(t('posted'));
       go('job/' + row.id);

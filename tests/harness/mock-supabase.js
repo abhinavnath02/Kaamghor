@@ -87,7 +87,7 @@
   // ---------- query builder (the subset api.js uses) ----------
   const ident = (c) => '"' + c.trim().replace(/"/g, '') + '"';
   const pgArray = (arr) => '{' + arr.map((x) => '"' + String(x).replace(/["\\]/g, '\\$&') + '"').join(',') + '}';
-  const EMBED = { worker_profiles: { profiles: 'id = t.user_id' } };
+  const EMBED = { worker_profiles: { profiles: 'id = t.user_id' }, assignments: { jobs: 'id = t.job_id' } };
 
   class Query {
     constructor(table) { Object.assign(this, { table, op: 'select', cols: '*', where: [], params: [], orderBy: '', lim: '', one: 0, ret: false, opts: {} }); }
@@ -97,6 +97,7 @@
     update(row) { this.op = 'update'; this.row = row; return this; }
     delete() { this.op = 'delete'; return this; }
     eq(c, v) { this.where.push(`t.${ident(c)}::text = ${this.p(String(v))}`); return this; }
+    neq(c, v) { this.where.push(`t.${ident(c)}::text <> ${this.p(String(v))}`); return this; }
     is(c, v) { this.where.push(`t.${ident(c)} is ${v === null ? 'null' : v}`); return this; }
     in(c, arr) { this.where.push(`t.${ident(c)}::text = any(${this.p(pgArray(arr))}::text[])`); return this; }
     contains(c, arr) { this.where.push(`t.${ident(c)} @> ${this.p(pgArray(arr))}::text[]`); return this; }
@@ -111,7 +112,8 @@
         const m = part.trim().match(/^(\w+)\((.*)\)$/);
         if (m) {
           const on = EMBED[this.table][m[1]];
-          return `(select row_to_json(e) from (select ${m[2].split(',').map(ident).join(', ')} from public.${m[1]} where ${on}) e) as ${ident(m[1])}`;
+          const cols = m[2].trim() === '*' ? '*' : m[2].split(',').map(ident).join(', ');
+          return `(select row_to_json(e) from (select ${cols} from public.${m[1]} where ${on}) e) as ${ident(m[1])}`;
         }
         return part.trim() === '*' ? 't.*' : 't.' + ident(part);
       }).join(', ');
@@ -148,10 +150,10 @@
     }
   }
 
-  const ARG_TYPES = { p_job: 'uuid', p_worker: 'uuid', p_payment: 'uuid', p_rating: 'int', p_verified: 'boolean', p_ref: 'text', p_service: 'text', p_daily: 'int', p_min: 'int' };
+  const ARG_TYPES = { p_job: 'uuid', p_worker: 'uuid', p_payment: 'uuid', p_rating: 'int', p_verified: 'boolean', p_ref: 'text', p_service: 'text', p_daily: 'int', p_min: 'int', p_assignment: 'uuid' };
   const SET_RETURNING = { get_pay_target: 1, admin_payouts: 1, admin_fees_owed: 1 };
   // Functions that update the jobs table, so realtime would send an event.
-  const JOB_CHANGING = { hire_worker: 1, complete_job: 1, rate_job: 1 };
+  const JOB_CHANGING = { hire_worker: 1, complete_job: 1, stop_hiring: 1 };
   async function rpc(name, args = {}) {
     const keys = Object.keys(args);
     const call = `public.${ident(name)}(${keys.map((k, i) => `${k} => $${i + 1}::${ARG_TYPES[k]}`).join(', ')})`;
@@ -224,12 +226,11 @@
           invoke: async (name, { body }) => {
             if (name !== 'create-order') return { data: null, error: { message: 'Unknown function' } };
             const db = await ready;
-            const { rows } = await db.query(`select j.household_id, j.status, p.id, p.amount, p.status as pstatus, p.razorpay_order_id
-              from public.jobs j join public.payments p on p.job_id = j.id where j.id = $1`, [body.job_id]);
+            const { rows } = await db.query(`select j.household_id, p.id, p.amount, p.status as pstatus, p.razorpay_order_id
+              from public.payments p join public.jobs j on j.id = p.job_id where p.id = $1`, [body.payment_id]);
             const r = rows[0];
             const fail = (m) => ({ data: null, error: { message: m, context: { json: async () => ({ error: m }) } } });
-            if (!r || r.household_id !== session?.user.id) return fail('Job not found');
-            if (r.status !== 'done') return fail('Job is not done yet');
+            if (!r || r.household_id !== session?.user.id) return fail('Payment not found');
             if (r.pstatus === 'paid') return fail('Already paid');
             const orderId = r.razorpay_order_id || 'order_mock_' + r.id.slice(0, 8);
             await db.query('update public.payments set razorpay_order_id = $1 where id = $2', [orderId, r.id]);

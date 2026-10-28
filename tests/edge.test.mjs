@@ -67,21 +67,21 @@ const call = (tok, body) => createOrder(new Request('http://x/create-order', {
   method: 'POST', headers: { Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' }, body: JSON.stringify(body),
 }));
 
-db.jobs.push({ id: 'j1', household_id: 'house', status: 'done' }, { id: 'j2', household_id: 'house', status: 'assigned' });
+db.jobs.push({ id: 'j1', household_id: 'house', status: 'done' });
 db.payments.push({ id: 'p1', job_id: 'j1', amount: 400, status: 'pending', razorpay_order_id: null });
 
-await test('create-order: rejects missing login, other household, unfinished job', async () => {
-  assert.equal((await call('bad', { job_id: 'j1' })).status, 401);
-  assert.equal((await call('tok-other', { job_id: 'j1' })).status, 404);
-  assert.equal((await call('tok-house', { job_id: 'j2' })).status, 400);
+await test('create-order: rejects missing login, other household, unknown payment', async () => {
+  assert.equal((await call('bad', { payment_id: 'p1' })).status, 401);
+  assert.equal((await call('tok-other', { payment_id: 'p1' })).status, 404);
+  assert.equal((await call('tok-house', { payment_id: 'nope' })).status, 404);
   assert.equal((await call('tok-house', {})).status, 400);
 });
 
 await test('create-order: makes an order in paise once, then reuses it', async () => {
-  const r1 = await (await call('tok-house', { job_id: 'j1' })).json();
+  const r1 = await (await call('tok-house', { payment_id: 'p1' })).json();
   assert.deepEqual(r1, { order_id: 'order_1', key_id: 'rzp_test_1', amount: 40000, currency: 'INR' });
   assert.equal(db.payments[0].razorpay_order_id, 'order_1');
-  const r2 = await (await call('tok-house', { job_id: 'j1' })).json();
+  const r2 = await (await call('tok-house', { payment_id: 'p1' })).json();
   assert.equal(r2.order_id, 'order_1');
   assert.equal(ordersMade, 1);
 });
