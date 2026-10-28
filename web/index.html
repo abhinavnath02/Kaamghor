@@ -65,7 +65,7 @@ html, body { overflow-x: clip; }
 body {
   margin: 0; min-height: 100dvh; color: var(--text); /* no background here: the blobs below must show through */
   font: 17px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Sans Bengali", "Noto Sans Devanagari", sans-serif;
-  padding-bottom: calc(108px + env(safe-area-inset-bottom)); -webkit-tap-highlight-color: transparent;
+  padding-bottom: calc(128px + env(safe-area-inset-bottom)); -webkit-tap-highlight-color: transparent;
 }
 /* The light behind the glass: three soft, still colour blobs. */
 body::before {
@@ -98,7 +98,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 #offline { position: sticky; top: calc(58px + env(safe-area-inset-top)); z-index: 9; margin: 8px auto 0; width: fit-content; max-width: calc(100% - 32px); padding: 6px 14px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; box-shadow: var(--shadow); }
 
 /* ---------- Layout and text ---------- */
-main { max-width: 640px; margin: 0 auto; padding: 16px; }
+main { max-width: 640px; margin: 0 auto; padding: 18px 18px 20px; }
 h1 { font-size: 28px; line-height: 1.15; letter-spacing: -.02em; margin: 6px 0 14px; }
 h2 { font-size: 19px; letter-spacing: -.01em; margin: 26px 0 10px; }
 .muted { color: var(--muted); }
@@ -107,13 +107,22 @@ h2 { font-size: 19px; letter-spacing: -.01em; margin: 26px 0 10px; }
 .between { justify-content: space-between; }
 .nowrap { flex-wrap: nowrap; }
 .nowrap > .btn { flex: none; }
-.stack > * + * { margin-top: 12px; }
+.stack > * + * { margin-top: 14px; }
 .mono { font-family: ui-monospace, monospace; font-size: 14px; word-break: break-all; }
 hr { border: 0; border-top: 1px solid var(--line); margin: 18px 0; }
 .center { text-align: center; padding: 40px 0; }
 
 /* ---------- Glass cards ---------- */
-.card { position: relative; background: var(--glass); border-radius: var(--r); padding: 16px; margin: 12px 0; box-shadow: var(--hi), var(--shadow); }
+.card { position: relative; background: var(--glass); border-radius: var(--r); padding: 18px; margin: 14px 0; box-shadow: var(--hi), var(--shadow); }
+.card.tap.row { display: flex; }
+.card.toggle { padding: 14px 18px; }
+/* A group of switches in one card, separated by hairlines. */
+.toggles { padding: 2px 18px; }
+.toggles .toggle { padding: 14px 0; }
+.toggles > * + * { border-top: 1px solid var(--line); }
+.toggles #crewBox { padding: 6px 0 16px; }
+/* A new section inside a card (e.g. rating under payment). */
+.sect { border-top: 1px solid var(--line); padding-top: 16px; margin-top: 18px !important; }
 .card.tap { display: block; text-decoration: none; color: inherit; transition: transform .3s var(--ease), box-shadow .3s var(--ease); }
 .card.tap:active { transform: scale(.98); }
 @media (hover: hover) { .card.tap:hover { box-shadow: var(--hi), var(--shadow-lg); } }
@@ -155,7 +164,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 18px 0; }
 :focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
 
 /* ---------- Inputs ---------- */
-label.f { display: block; font-weight: 650; font-size: 15px; margin: 18px 0 8px; }
+label.f { display: block; font-weight: 650; font-size: 15px; margin: 22px 0 10px; }
 input[type=text], input[type=tel], input[type=email], input[type=number], input[type=date], select.in, textarea {
   width: 100%; min-height: 52px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 16px; outline: none;
   background: var(--glass-input); box-shadow: inset 0 1px 2px rgba(0,0,0,.04);
@@ -260,7 +269,7 @@ textarea { min-height: 88px; resize: vertical; }
 @keyframes fill { from { transform: scaleX(0); } }
 
 /* ---------- Notes, empty states, stats ---------- */
-.note { display: flex; gap: 10px; align-items: flex-start; border-radius: 18px; padding: 13px 15px; margin: 12px 0; background: var(--brand-soft); box-shadow: inset 0 0 0 1px var(--brand-soft); }
+.note { display: flex; gap: 10px; align-items: flex-start; border-radius: 18px; padding: 14px 16px; margin: 14px 0; background: var(--brand-soft); box-shadow: inset 0 0 0 1px var(--brand-soft); }
 .note.warn { background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent-soft); }
 .note.err { background: var(--danger-soft); color: var(--danger); box-shadow: none; }
 a.note { color: inherit; text-decoration: none; }
@@ -1691,7 +1700,7 @@ function personCard(j, a, pw, p, pm, mine) {
         <button class="btn soft block" data-act="payCash" data-amount="${pm.amount}" data-box="pay-${a.id}">${icon('cash', 20)}${te('payCash')}</button>
         <div id="pay-${a.id}"></div>`;
     }
-    html += mine ? ratingView(mine, t('youRated')) : `<div><div class="muted small">${te('rateWorker')}</div>${ratingForm(a.id, 'worker')}</div>`;
+    html += mine ? `<div class="sect">${ratingView(mine, t('youRated'))}</div>` : `<div class="sect"><div class="muted small" style="margin-bottom:6px">${te('rateWorker')}</div>${ratingForm(a.id, 'worker')}</div>`;
   }
   return html + '</div>';
 }
@@ -1735,7 +1744,7 @@ async function viewFind() {
   let html = `${titleRow(te('tabFind'))}${verifyBanner()}`;
   if (!w.available) html += `<a class="note warn" href="#profile">${icon('alert', 20)}<span>${te('unavailableNote')}</span></a>`;
   if (!w.skills.length) return html + `<a class="note warn" href="#profile">${icon('alert', 20)}<span>${te('pickSkill')} →</span></a>`;
-  html += `<label class="toggle card"><span class="row" style="gap:8px">${icon('pin', 18)}${te('onlyMyArea')} · ${esc(areaName(S.profile.area))}</span><input type="checkbox" data-act="onlyMyArea" ${S.onlyMyArea ? 'checked' : ''}></label>`;
+  html += `<label class="toggle card"><span class="row nowrap" style="gap:10px;min-width:0">${icon('pin', 18)}<span>${te('onlyMyArea')} · ${esc(areaName(S.profile.area))}</span></span><input type="checkbox" data-act="onlyMyArea" ${S.onlyMyArea ? 'checked' : ''}></label>`;
   html += `<div class="row between" style="margin:4px 0 8px"><div class="seg">
       <button type="button" class="pillbtn ${S.findView !== 'map' ? 'on' : ''}" data-act="findView" data-v="list">${icon('list', 16)}${te('showList')}</button>
       <button type="button" class="pillbtn ${S.findView === 'map' ? 'on' : ''}" data-act="findView" data-v="map">${icon('map', 16)}${te('showMap')}</button></div>
@@ -1905,7 +1914,7 @@ async function viewProfile() {
     <select id="pAr" name="area" class="in">${areaOptions(p.area)}</select>
     <label class="f">${te('phoneLabel')}</label>
     <div class="row between nowrap card" style="margin:0">
-      <span class="row" style="gap:8px">${icon('shield', 18)}<b>+${esc(p.phone)}</b></span>
+      <span class="row nowrap" style="gap:8px">${icon('shield', 18)}<b>+${esc(p.phone)}</b></span>
       <button type="button" class="btn ghost sm" data-act="changePhone">${te('changeNumber')}</button>
     </div>
     <div class="muted small" style="margin-top:10px">${te('email')}: ${esc(S.user.email)}</div>`;
@@ -1913,12 +1922,14 @@ async function viewProfile() {
     html += `<label class="f">${te('skills')}</label>${skillChips('skills', 'checkbox', w.skills)}
       <label class="f" for="pUpi">${te('upiId')}</label>
       <input id="pUpi" name="upi_id" type="text" autocapitalize="off" autocomplete="off" placeholder="name@okaxis" value="${esc(w.upi_id || '')}">
+      <div class="card toggles" style="margin-top:22px">
       <label class="toggle"><span>${te('available')}</span><input type="checkbox" name="available" ${w.available ? 'checked' : ''}></label>
       <label class="toggle"><span>${te('thikadarToggle')}</span><input type="checkbox" name="is_thikadar" ${w.is_thikadar ? 'checked' : ''}></label>
       <div id="crewBox" ${w.is_thikadar ? '' : 'hidden'}>
         <div class="muted small">${te('thikadarNote')}${w.verified ? '' : ' ' + te('needVerifiedCrew')}</div>
         <label class="f" for="crewMax">${te('crewMaxLabel')}</label>
         <input id="crewMax" name="crew_max" type="number" inputmode="numeric" min="2" max="20" value="${Math.max(2, w.crew_max || 2)}">
+      </div>
       </div>`;
   }
   html += `<div style="margin-top:16px"><button class="btn block">${te('save')}</button></div></form>`;
