@@ -401,6 +401,26 @@ await test('12: an account with an unverified phone cannot post or apply', async
   await as('nophone', `insert into jobs (household_id, service, area, job_date, days, rate) values ('${ids.nophone}', 'clean', 'town', current_date + 1, 1, 400)`);
 });
 
+await test('13: exact pin only for the household and hired people; others see ~1 km', async () => {
+  await as('w2', `update worker_profiles set skills = '{clean}' where user_id = '${ids.w2}'`);
+  const [j] = await as('house', `insert into jobs (household_id, service, area, job_date, days, rate) values ('${ids.house}', 'clean', 'town', current_date + 1, 1, 400) returning id`);
+  await fails('w1', `select set_job_location('${j.id}', 27.49123, 95.35678, 'x')`, /Job not found/);
+  await fails('house', `select set_job_location('${j.id}', 120, 95, null)`, /Invalid/);
+  await as('house', `select set_job_location('${j.id}', 27.49123, 95.35678, 'Blue gate behind the temple')`);
+  // anyone signed in sees the rounded point on the open job, not the exact pin
+  const [open] = await as('w2', `select approx_lat, approx_lng from jobs where id = '${j.id}'`);
+  assert.deepEqual([open.approx_lat, open.approx_lng], [27.49, 95.36]);
+  assert.equal((await as('w2', `select * from job_locations where job_id = '${j.id}'`)).length, 0);
+  assert.equal((await as('house', `select landmark from job_locations where job_id = '${j.id}'`))[0].landmark, 'Blue gate behind the temple');
+  await fails('house', `insert into job_locations (job_id, lat, lng) values ('${j.id}', 1, 1)`);
+  // once hired, the worker sees the exact pin
+  await as('w1', `insert into applications (job_id, worker_id) values ('${j.id}', '${ids.w1}')`);
+  assert.equal((await as('w1', `select * from job_locations where job_id = '${j.id}'`)).length, 0);
+  await as('house', `select hire_worker('${j.id}', '${ids.w1}')`);
+  const [loc] = await as('w1', `select lat, lng from job_locations where job_id = '${j.id}'`);
+  assert.deepEqual([loc.lat, loc.lng], [27.49123, 95.35678]);
+});
+
 await test('anon has no access', async () => {
   await assert.rejects(() => db.transaction(async (tx) => {
     await tx.exec('set local role anon');

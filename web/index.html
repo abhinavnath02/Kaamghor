@@ -341,6 +341,21 @@ dialog .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .top .iconbtn { width: 38px; height: 38px; color: var(--text); }
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .28s; animation-timing-function: ease; }
 
+/* ---------- Maps ---------- */
+.minimap { height: 160px; border-radius: 16px; overflow: hidden; background: var(--brand-soft); z-index: 0; }
+.bigmap { height: min(62vh, 520px); border-radius: var(--r); overflow: hidden; box-shadow: var(--hi), var(--shadow); z-index: 0; }
+.minimap.dark .leaflet-tile-pane, .bigmap.dark .leaflet-tile-pane, .mapsheet-map.dark .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(.9) contrast(.9); }
+.kg-pin { background: none; border: 0; }
+.leaflet-popup-content-wrapper { border-radius: 16px; }
+.leaflet-popup-content { margin: 12px 14px; font: inherit; }
+.mapsheet { position: fixed; inset: 0; z-index: 40; background: var(--bg); animation: fade .2s var(--ease) both; }
+.mapsheet-map { position: absolute; inset: 0; }
+.mapsheet-pin { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -100%); z-index: 500; pointer-events: none; }
+.mapsheet-top { position: absolute; z-index: 500; top: calc(12px + env(safe-area-inset-top)); left: 12px; right: 64px; padding: 10px 14px; border-radius: 16px; font-weight: 650; font-size: 15px;
+  background: var(--glass-strong); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); box-shadow: var(--hi), var(--shadow); }
+.mapsheet-locate { position: absolute; z-index: 500; top: calc(12px + env(safe-area-inset-top)); right: 12px; }
+.mapsheet-actions { position: absolute; z-index: 500; left: 12px; right: 12px; bottom: calc(14px + env(safe-area-inset-bottom)); display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
+
 /* ---------- Profiles and ratings ---------- */
 .plink { color: inherit; text-decoration: none; font-weight: 700; }
 a.meta.plink { font-weight: 600; margin-top: 6px; }
@@ -439,6 +454,12 @@ const T = {
     changeNumber: 'Change number', useEmail: 'Use email or Google instead', verifyTitle: 'Verify your mobile number',
     verifyBody: 'We’ll send a code by SMS. Your number is shown only to people you work with, after a hire.',
     phoneVerifiedAs: 'Mobile verified: {phone}', phoneUpdated: 'Mobile number updated',
+    locLabel: 'Where is the work?', useMyLoc: 'Use my location', pickOnMap: 'Pick on map', locSet: 'Location set',
+    locNone: 'No location yet. Workers will see only the area.', landmarkLabel: 'Landmark or directions (shown after hiring)',
+    landmarkPh: 'e.g. Blue gate behind Durga temple', useThisLoc: 'Use this location', dragHint: 'Move the map so the pin is on the house',
+    locDenied: 'Location permission is off. You can pick on the map instead.', locating: 'Finding your location…',
+    kmAway: '≈ {d} km away', nearFirst: 'Nearest first', showMap: 'Map', showList: 'List',
+    approxLoc: 'Circles show the rough area. The exact place is shared after hiring.', directions: 'Directions', workPlace: 'Work location',
     badPhone: 'Enter a 10-digit mobile number', email: 'Email',
     step_posted: 'Posted', step_hired: 'Hired', step_done: 'Done', step_paid: 'Paid',
     today: 'Today', tomorrow: 'Tomorrow', otherDate: 'Other day', lightMode: 'Light mode', darkMode: 'Dark mode',
@@ -536,6 +557,12 @@ const T = {
     changeNumber: 'নম্বৰ সলনি কৰক', useEmail: 'তাৰ সলনি ইমেইল বা Google ব্যৱহাৰ কৰক', verifyTitle: 'আপোনাৰ মবাইল নম্বৰ নিশ্চিত কৰক',
     verifyBody: 'আমি SMSত এটা ক’ড পঠিয়াম। আপোনাৰ নম্বৰ কেৱল কামত লোৱাৰ পিছত একেলগে কাম কৰা মানুহেহে দেখিব।',
     phoneVerifiedAs: 'মবাইল নিশ্চিত: {phone}', phoneUpdated: 'মবাইল নম্বৰ সলনি হ’ল',
+    locLabel: 'কামটো ক’ত?', useMyLoc: 'মোৰ স্থান ব্যৱহাৰ কৰক', pickOnMap: 'মেপত বাছক', locSet: 'স্থান দিয়া হ’ল',
+    locNone: 'এতিয়ালৈ স্থান দিয়া নাই। কৰ্মীসকলে কেৱল অঞ্চলটো দেখিব।', landmarkLabel: 'চিনাকি ঠাই বা দিশ (কামত লোৱাৰ পিছত দেখুওৱা হ’ব)',
+    landmarkPh: 'যেনে: দুৰ্গা মন্দিৰৰ পিছফালে নীলা গেট', useThisLoc: 'এই স্থান ব্যৱহাৰ কৰক', dragHint: 'পিনটো ঘৰৰ ওপৰত থাকিবলৈ মেপখন লৰাওক',
+    locDenied: 'স্থানৰ অনুমতি বন্ধ আছে। মেপত বাছিব পাৰে।', locating: 'আপোনাৰ স্থান বিচাৰি আছে…',
+    kmAway: '≈ {d} কি.মি. দূৰত', nearFirst: 'ওচৰৰটো আগতে', showMap: 'মেপ', showList: 'তালিকা',
+    approxLoc: 'বৃত্তবোৰে আনুমানিক ঠাই দেখুৱায়। সঠিক ঠাই কামত লোৱাৰ পিছত জনোৱা হয়।', directions: 'দিশ চাওক', workPlace: 'কামৰ ঠাই',
     badPhone: '১০-অংকৰ মবাইল নম্বৰ দিয়ক', email: 'ইমেইল',
     step_posted: 'দিয়া হ’ল', step_hired: 'লোৱা হ’ল', step_done: 'সম্পূৰ্ণ', step_paid: 'পইচা দিয়া',
     today: 'আজি', tomorrow: 'কাইলৈ', otherDate: 'আন দিন', lightMode: 'পোহৰ মোড', darkMode: 'আন্ধাৰ মোড',
@@ -620,6 +647,12 @@ const T = {
     changeNumber: 'नंबर बदलें', useEmail: 'इसके बजाय ईमेल या Google इस्तेमाल करें', verifyTitle: 'अपना मोबाइल नंबर सत्यापित करें',
     verifyBody: 'हम SMS से एक कोड भेजेंगे। आपका नंबर सिर्फ़ काम पर रखने के बाद साथ काम करने वालों को दिखेगा।',
     phoneVerifiedAs: 'मोबाइल सत्यापित: {phone}', phoneUpdated: 'मोबाइल नंबर बदल गया',
+    locLabel: 'काम कहाँ है?', useMyLoc: 'मेरी जगह इस्तेमाल करें', pickOnMap: 'नक्शे पर चुनें', locSet: 'जगह चुनी गई',
+    locNone: 'अभी जगह नहीं चुनी। कामगार सिर्फ़ इलाका देखेंगे।', landmarkLabel: 'पहचान की जगह या रास्ता (रखने के बाद दिखेगा)',
+    landmarkPh: 'जैसे: दुर्गा मंदिर के पीछे नीला गेट', useThisLoc: 'यह जगह इस्तेमाल करें', dragHint: 'नक्शा खिसकाएँ ताकि पिन घर पर हो',
+    locDenied: 'जगह की अनुमति बंद है। आप नक्शे पर चुन सकते हैं।', locating: 'आपकी जगह ढूँढ रहे हैं…',
+    kmAway: '≈ {d} कि.मी. दूर', nearFirst: 'पास वाले पहले', showMap: 'नक्शा', showList: 'सूची',
+    approxLoc: 'घेरे अंदाज़न इलाका दिखाते हैं। सही जगह रखने के बाद बताई जाती है।', directions: 'रास्ता देखें', workPlace: 'काम की जगह',
     badPhone: '10 अंकों का मोबाइल नंबर डालें', email: 'ईमेल',
     step_posted: 'डाला गया', step_hired: 'रखा गया', step_done: 'पूरा', step_paid: 'भुगतान',
     today: 'आज', tomorrow: 'कल', otherDate: 'दूसरा दिन', lightMode: 'लाइट मोड', darkMode: 'डार्क मोड',
@@ -747,6 +780,9 @@ const ICONS = {
   zap: '<path d="M13 2 3.5 13.5H12L11 22l9.5-11.5H12z"/>',
   heart: '<path d="M12 20.5s-7.5-4.6-9.4-9.3A5.2 5.2 0 0 1 12 6.4a5.2 5.2 0 0 1 9.4 4.8C19.5 15.9 12 20.5 12 20.5z"/>',
   medical: '<rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/>',
+  map: '<path d="M9 4 3 6.2v13.8l6-2.2 6 2.2 6-2.2V4l-6 2.2z"/><path d="M9 4v13.8M15 6.2V20"/>',
+  navigate: '<path d="m3 11 18-8-8 18-2-8z"/>',
+  locate: '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
   dots: '<circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/>',
 };
 function icon(name, size = 22) {
@@ -1100,6 +1136,110 @@ function showOnboard() {
 }
 const UPI_RE = /^[A-Za-z0-9._-]{2,128}@[A-Za-z]{2,64}$/;
 
+// ===================== Maps (OpenStreetMap via Leaflet, loaded only when a map is shown) =====================
+const LEAFLET = 'https://unpkg.com/leaflet@1.9.4/dist/';
+const TINSUKIA = [27.4922, 95.3468];
+let leafletReady;
+function loadLeaflet() {
+  if (!leafletReady) {
+    leafletReady = new Promise((resolve, reject) => {
+      const css = document.createElement('link');
+      css.rel = 'stylesheet'; css.href = LEAFLET + 'leaflet.css';
+      document.head.appendChild(css);
+      loadScript(LEAFLET + 'leaflet.js').then(resolve, (e) => { leafletReady = null; reject(e); });
+    });
+  }
+  return leafletReady;
+}
+const PIN_SVG = '<svg width="32" height="42" viewBox="0 0 32 42" aria-hidden="true"><path d="M16 41s14-13.2 14-24.5A14 14 0 0 0 2 16.5C2 27.8 16 41 16 41z" fill="#1c1c1e" stroke="#fff" stroke-width="2.5"/><circle cx="16" cy="16.5" r="5" fill="#fff"/></svg>';
+function baseMap(el, center, zoom, interactive = true) {
+  const opts = interactive ? {} : { zoomControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false, boxZoom: false, keyboard: false };
+  const m = L.map(el, opts).setView(center, zoom);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(m);
+  el.classList.toggle('dark', isDark());
+  return m;
+}
+const pinIcon = () => L.divIcon({ className: 'kg-pin', html: PIN_SVG, iconSize: [32, 42], iconAnchor: [16, 41] });
+
+// Draws every map on the current page: small fixed maps, and the Find jobs map.
+async function initMaps() {
+  const minis = [...main.querySelectorAll('.minimap[data-lat]')].filter((el) => !el._map);
+  const big = $('#findMap');
+  if (!minis.length && !(big && !big._map)) return;
+  try { await loadLeaflet(); } catch (_) { return; }
+  minis.forEach((el) => {
+    const ll = [Number(el.dataset.lat), Number(el.dataset.lng)];
+    el._map = baseMap(el, ll, 16, false);
+    L.marker(ll, { icon: pinIcon() }).addTo(el._map);
+  });
+  if (big && !big._map) {
+    const m = big._map = baseMap(big, S.myPos || TINSUKIA, 13);
+    const pts = [];
+    (S.findJobs || []).filter((j) => j.approx_lat != null).forEach((j) => {
+      const ll = [j.approx_lat, j.approx_lng];
+      pts.push(ll);
+      L.circle(ll, { radius: 600, color: '#0a6cff', weight: 1.5, fillOpacity: 0.16 }).addTo(m).bindPopup(`<div class="stack" style="min-width:170px">
+        <b>${te('skill_' + j.service)} · ${rupee(personPay(j))}</b><span class="muted small">${esc(fmtRange(j))} · ${esc(daysText(j.days))}</span>
+        ${S.findMine && S.findMine.has(j.id) ? `<span class="badge ok">${te('applied')}</span>` : `<button class="btn sm" data-act="apply" data-job="${j.id}">${te('apply')}</button>`}</div>`);
+    });
+    if (S.myPos) { L.circleMarker(S.myPos, { radius: 8, color: '#fff', weight: 3, fillColor: '#0a6cff', fillOpacity: 1 }).addTo(m); pts.push(S.myPos); }
+    if (pts.length > 1) m.fitBounds(pts, { padding: [40, 40], maxZoom: 15 });
+  }
+}
+
+function geolocate() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) return reject(new Error('no geolocation'));
+    navigator.geolocation.getCurrentPosition((p) => resolve([p.coords.latitude, p.coords.longitude]), reject,
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 });
+  });
+}
+// Straight-line distance in km.
+function kmBetween([a, b], [c, d]) {
+  const r = Math.PI / 180, x = Math.sin((c - a) * r / 2) ** 2 + Math.cos(a * r) * Math.cos(c * r) * Math.sin((d - b) * r / 2) ** 2;
+  return 12742 * Math.asin(Math.sqrt(x));
+}
+
+// Post form: remember the chosen point and show it on a small map.
+function setPostLocation(lat, lng) {
+  const f = main.querySelector('form[data-form=postJob]');
+  if (!f) return;
+  f.lat.value = lat; f.lng.value = lng;
+  $('#locMini').outerHTML = `<div class="minimap" id="locMini" data-lat="${lat}" data-lng="${lng}"></div>`;
+  $('#locText').textContent = t('locSet');
+  initMaps();
+}
+// Full-screen picker: drag the map under a fixed pin.
+async function openMapPicker(start) {
+  try { await loadLeaflet(); } catch (e) { return showErr(e); }
+  const sheet = document.createElement('div');
+  sheet.className = 'mapsheet';
+  sheet.innerHTML = `<div class="mapsheet-map" id="pickMap"></div><div class="mapsheet-pin">${PIN_SVG}</div>
+    <div class="mapsheet-top">${te('dragHint')}</div>
+    <button type="button" class="iconbtn mapsheet-locate" data-act="pickerLocate" aria-label="${te('useMyLoc')}">${icon('locate', 20)}</button>
+    <div class="mapsheet-actions"><button type="button" class="btn ghost" data-act="mapCancel">${te('back')}</button>
+      <button type="button" class="btn" data-act="mapUse">${te('useThisLoc')}</button></div>`;
+  document.body.appendChild(sheet);
+  S.picker = { sheet, map: baseMap($('#pickMap'), start || TINSUKIA, start ? 17 : 14) };
+  setTimeout(() => S.picker && S.picker.map.invalidateSize(), 60);
+}
+function closeMapPicker() {
+  if (!S.picker) return;
+  S.picker.map.remove();
+  S.picker.sheet.remove();
+  S.picker = null;
+}
+// The exact place, for the household and hired workers (the database hides it from others).
+async function locationCard(jobId, withDirections) {
+  const loc = await api.jobLocation(jobId).catch(() => null);
+  if (!loc) return '';
+  return `<h2>${te('workPlace')}</h2><div class="card stack">
+    <div class="minimap" data-lat="${loc.lat}" data-lng="${loc.lng}"></div>
+    ${loc.landmark ? `<div class="row nowrap" style="gap:8px">${icon('pin', 18)}<span>${esc(loc.landmark)}</span></div>` : ''}
+    ${withDirections ? `<a class="btn soft block" href="https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}" target="_blank" rel="noopener">${icon('navigate', 18)}${te('directions')}</a>` : ''}
+  </div>`;
+}
+
 // ===================== Start-up and routing =====================
 const TABS = {
   household: [['post', 'plus', 'tabPost'], ['jobs', 'list', 'tabMyJobs'], ['profile', 'user', 'tabProfile']],
@@ -1209,6 +1349,18 @@ async function viewPost() {
       <label class="f" for="jArea">${te('area')}</label>
       <select id="jArea" name="area" class="in">${areaOptions(p.area)}</select>
       <div class="note small" id="matchCount" hidden></div>
+      <label class="f">${te('locLabel')}</label>
+      <div class="card stack" style="margin:0">
+        <div class="minimap" id="locMini" hidden></div>
+        <div class="muted small" id="locText">${te('locNone')}</div>
+        <div class="row">
+          <button type="button" class="btn soft sm" data-act="useMyLoc">${icon('locate', 18)}${te('useMyLoc')}</button>
+          <button type="button" class="btn ghost sm" data-act="pickOnMap">${icon('map', 18)}${te('pickOnMap')}</button>
+        </div>
+      </div>
+      <input type="hidden" name="lat"><input type="hidden" name="lng">
+      <label class="f" for="jLandmark">${te('landmarkLabel')}</label>
+      <input id="jLandmark" name="landmark" type="text" maxlength="120" placeholder="${te('landmarkPh')}">
       <label class="f">${te('date')}</label>
       <div class="seg">
         <label class="choice pill"><input type="radio" name="when" value="${today}" checked><span>${te('today')}</span></label>
@@ -1312,7 +1464,7 @@ async function viewJobHousehold(id) {
   const stage = j.status === 'open' || !asg.length ? 0
     : Math.min(...asg.map((a) => stageOf(a, payOf[a.id] && payOf[a.id].status === 'paid')));
   const people = asg.map((a) => personCard(j, a, pub[a.worker_id], prof[a.worker_id], payOf[a.id], myRating[a.id])).join('');
-  let html = jobHeader(j, 'jobs', stage);
+  let html = jobHeader(j, 'jobs', stage) + await locationCard(id, false);
 
   if (j.status === 'open') {
     if (j.workers_needed > 1) html += `<div class="note">${icon('users', 20)}<span>${te('hiredOf', { n: asg.length, m: j.workers_needed })}</span></div>`;
@@ -1451,15 +1603,25 @@ async function viewFind() {
   if (!w.available) html += `<a class="note warn" href="#profile">${icon('alert', 20)}<span>${te('unavailableNote')}</span></a>`;
   if (!w.skills.length) return html + `<a class="note warn" href="#profile">${icon('alert', 20)}<span>${te('pickSkill')} →</span></a>`;
   html += `<label class="toggle card"><span class="row" style="gap:8px">${icon('pin', 18)}${te('onlyMyArea')} · ${esc(areaName(S.profile.area))}</span><input type="checkbox" data-act="onlyMyArea" ${S.onlyMyArea ? 'checked' : ''}></label>`;
+  html += `<div class="row between" style="margin:4px 0 8px"><div class="seg">
+      <button type="button" class="pillbtn ${S.findView !== 'map' ? 'on' : ''}" data-act="findView" data-v="list">${icon('list', 16)}${te('showList')}</button>
+      <button type="button" class="pillbtn ${S.findView === 'map' ? 'on' : ''}" data-act="findView" data-v="map">${icon('map', 16)}${te('showMap')}</button></div>
+    <button type="button" class="pillbtn ${S.nearFirst ? 'on' : ''}" data-act="nearFirst">${icon('locate', 16)}${te('nearFirst')}</button></div>`;
   const [jobs, applied] = await Promise.all([api.openJobs(w.skills, S.onlyMyArea ? S.profile.area : null), api.myApplications(S.user.id)]);
   const mine = new Set(applied);
   if (!jobs.length) return html + empty('search', t('noOpenJobs'));
   const homes = Object.fromEntries((await api.publicProfilesByIds([...new Set(jobs.map((j) => j.household_id))])).map((p) => [p.id, p]));
+  // Distance from me to the job's rough area (about 1 km accurate).
+  const distOf = (j) => (S.myPos && j.approx_lat != null ? kmBetween(S.myPos, [j.approx_lat, j.approx_lng]) : null);
+  if (S.nearFirst && S.myPos) jobs.sort((a, b) => (distOf(a) ?? 1e9) - (distOf(b) ?? 1e9));
+  S.findJobs = jobs; S.findMine = mine;
+  if (S.findView === 'map') return html + `<div id="findMap" class="bigmap"></div><p class="muted small">${te('approxLoc')}</p>`;
   return html + jobs.map((j) => `<div class="card job">
       ${skillIcon(j.service, 26, 'job-ic')}
       <div class="job-body">
         <div class="title-row"><div class="jobtitle">${te('skill_' + j.service)}</div><div class="pay">${rupee(personPay(j))}</div></div>
         ${jobMeta(j)}
+        ${distOf(j) != null ? `<div class="meta"><span>${icon('navigate', 15)}${te('kmAway', { d: distOf(j).toFixed(1) })}</span></div>` : ''}
         ${homes[j.household_id] ? `<a class="meta plink" href="#person/${j.household_id}"><span>${icon('home', 15)}${esc(homes[j.household_id].full_name.split(' ')[0])}</span>${ratingBadge(homes[j.household_id].rating_avg, homes[j.household_id].rating_count)}</a>` : ''}
         ${j.notes ? `<p style="margin:8px 0 0">${esc(j.notes)}</p>` : ''}
         <div class="row" style="margin-top:12px">
@@ -1487,6 +1649,7 @@ async function viewJobWorker(id) {
   let html = jobHeader(j, 'work', stageOf(a, pm && pm.status === 'paid'), a);
   html += `<h2>${te('household')}</h2><div class="card"><div class="row between nowrap"><div class="who">${avatar(h?.full_name)}<div><a class="plink" href="#person/${j.household_id}">${esc(h?.full_name)}</a><div class="meta"><span>${icon('pin', 15)}${esc(areaName(h?.area))}</span></div></div></div>
     ${h?.phone ? `<a class="btn soft" href="${telLink(h.phone)}">${icon('phone', 18)}${te('call')}</a>` : ''}</div></div>`;
+  html += await locationCard(j.id, true);
 
   // Handshake, worker side: "I've arrived", then "Work finished"; the household confirms each.
   let steps = '';
@@ -1745,6 +1908,32 @@ const ACTIONS = {
   reload() { refresh(); },
   changeEmail() { S.login.step = 'start'; showLogin(); },
   loginPhone() { S.login.step = 'phone'; showLogin(); },
+  async useMyLoc(el) {
+    toast(t('locating'));
+    await busy(el, async () => {
+      try { const [lat, lng] = await geolocate(); setPostLocation(lat, lng); } catch (_) { toast(t('locDenied'), 'err'); }
+    });
+  },
+  pickOnMap() {
+    const f = main.querySelector('form[data-form=postJob]');
+    openMapPicker(f && f.lat.value ? [Number(f.lat.value), Number(f.lng.value)] : null);
+  },
+  async pickerLocate(el) {
+    await busy(el, async () => {
+      try { S.picker.map.setView(await geolocate(), 17); } catch (_) { toast(t('locDenied'), 'err'); }
+    });
+  },
+  mapUse() { const c = S.picker.map.getCenter(); closeMapPicker(); setPostLocation(c.lat, c.lng); },
+  mapCancel() { closeMapPicker(); },
+  findView(el) { S.findView = el.dataset.v; refresh(); },
+  async nearFirst(el) {
+    if (!S.nearFirst && !S.myPos) {
+      toast(t('locating'));
+      try { S.myPos = await geolocate(); } catch (_) { return toast(t('locDenied'), 'err'); }
+    }
+    S.nearFirst = !S.nearFirst;
+    refresh();
+  },
   changePhone() { S.verify = { step: 'phone', phone: '' }; showVerifyPhone(); },
   cancelVerify() { S.verify = null; route(); },
   vpBack() { S.verify.step = 'phone'; showVerifyPhone(); },
@@ -1956,6 +2145,7 @@ const FORMS = {
         household_id: S.user.id, service: f.service.value, area: f.area.value,
         job_date: f.job_date.value, days: parseInt(f.days.value, 10), workers_needed: parseInt(f.workers_needed.value, 10), rate, notes: f.notes.value.trim() || null,
       });
+      if (f.lat.value) await api.setJobLocation(row.id, Number(f.lat.value), Number(f.lng.value), f.landmark.value.trim() || null);
       toast(t('posted'));
       go('job/' + row.id);
     });
@@ -1990,6 +2180,7 @@ function setLang(l) {
 }
 
 function afterRender(name) {
+  initMaps();
   if (name === 'post') { updateMatchCount(); updatePayPreview(); }
   updateInstallSlot();
 }

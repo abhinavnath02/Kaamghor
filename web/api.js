@@ -68,6 +68,9 @@ const api = {
   // ---------- household ----------
   postJob: (row) => q(sb.from('jobs').insert(row).select('id').single()),
   rates: () => q(sb.from('rates').select('*')),
+  // Exact pin and landmark: only the household, the people it hired and admins can read them.
+  setJobLocation: (jobId, lat, lng, landmark) => q(sb.rpc('set_job_location', { p_job: jobId, p_lat: lat, p_lng: lng, p_landmark: landmark })),
+  jobLocation: (jobId) => q(sb.from('job_locations').select('*').eq('job_id', jobId).maybeSingle()),
   // Open jobs are readable by every signed-in user, so always filter by household.
   myPostedJobs: (uid) => q(sb.from('jobs').select('*').eq('household_id', uid).order('created_at', { ascending: false }).limit(100)),
   job: (id) => q(sb.from('jobs').select('*').eq('id', id).maybeSingle()),
