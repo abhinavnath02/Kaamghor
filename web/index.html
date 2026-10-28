@@ -343,20 +343,49 @@ dialog .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 .crewsel { min-height: 40px !important; width: auto !important; padding: 6px 34px 6px 10px !important; font-size: 14px; border-radius: 12px !important; background-position: right 10px center !important; }
 
-/* ---------- Maps ---------- */
-.minimap { height: 160px; border-radius: 16px; overflow: hidden; background: var(--brand-soft); z-index: 0; }
-.bigmap { height: min(62vh, 520px); border-radius: var(--r); overflow: hidden; box-shadow: var(--hi), var(--shadow); z-index: 0; }
-.minimap.dark .leaflet-tile-pane, .bigmap.dark .leaflet-tile-pane, .mapsheet-map.dark .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(.9) contrast(.9); }
+/* ---------- Maps: monochrome tiles, our pins, glass controls ---------- */
+.kgmap { background: var(--bg); font: inherit; }
+.kgmap .leaflet-tile-pane { filter: grayscale(1) brightness(1.04) contrast(.9); }
+.kgmap.dark .leaflet-tile-pane { filter: invert(1) grayscale(1) brightness(.78) contrast(1.15); }
+.kgmap .leaflet-control-attribution { background: transparent; color: var(--muted); font-size: 10px; padding: 0 8px 4px; }
+.kgmap .leaflet-control-attribution a { color: inherit; }
+.minimap { height: 170px; border-radius: 18px; overflow: hidden; z-index: 0; }
+.mapwrap { position: relative; border-radius: var(--r); overflow: hidden; box-shadow: var(--hi), var(--shadow); isolation: isolate; }
+.bigmap { height: min(64vh, 560px); }
+.mapctl { position: absolute; z-index: 500; right: 12px; top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.mapcard { position: absolute; z-index: 600; left: 10px; right: 10px; bottom: 10px; padding: 16px; border-radius: 22px;
+  background: var(--glass-strong); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); box-shadow: var(--hi), var(--shadow-lg);
+  animation: toastIn .26s var(--ease) both; }
+html.lite .mapcard { background: var(--solid); -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* destination pin */
 .kg-pin { background: none; border: 0; }
-.leaflet-popup-content-wrapper { border-radius: 16px; }
-.leaflet-popup-content { margin: 12px 14px; font: inherit; }
+.kg-pin i { position: absolute; left: 3px; top: 0; width: 22px; height: 22px; border-radius: 7px; background: var(--brand); box-shadow: 0 4px 12px rgba(0,0,0,.28); }
+.kg-pin b { position: absolute; left: 10px; top: 7px; width: 8px; height: 8px; border-radius: 2px; background: var(--brand-ink); }
+.kg-pin s { position: absolute; left: 13px; top: 21px; width: 2px; height: 17px; background: var(--brand); }
+.kg-pin u { position: absolute; left: 9px; top: 37px; width: 10px; height: 4px; border-radius: 50%; background: rgba(0,0,0,.28); transition: transform .2s var(--ease), opacity .2s; }
+/* you are here */
+.kg-me { background: none; border: 0; }
+.kg-me i { position: absolute; inset: 0; margin: auto; width: 16px; height: 16px; border-radius: 50%; background: #0a6cff; border: 3px solid #fff; box-shadow: 0 0 0 10px rgba(10,108,255,.16), 0 2px 6px rgba(0,0,0,.3); }
+/* price tags for jobs */
+.kg-price-wrap { background: none; border: 0; }
+.kg-price { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; padding: 6px 11px; border-radius: 999px; font-weight: 800; font-size: 13px; letter-spacing: -.01em;
+  background: var(--solid); color: var(--text); border: 1px solid var(--line); box-shadow: 0 4px 14px rgba(0,0,0,.22); cursor: pointer; transition: transform .15s var(--ease), background .15s, color .15s; }
+.kg-price.on { background: var(--brand); color: var(--brand-ink); border-color: transparent; transform: translate(-50%, -50%) scale(1.1); }
+/* full-screen picker */
 .mapsheet { position: fixed; inset: 0; z-index: 40; background: var(--bg); animation: fade .2s var(--ease) both; }
 .mapsheet-map { position: absolute; inset: 0; }
-.mapsheet-pin { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -100%); z-index: 500; pointer-events: none; }
-.mapsheet-top { position: absolute; z-index: 500; top: calc(12px + env(safe-area-inset-top)); left: 12px; right: 64px; padding: 10px 14px; border-radius: 16px; font-weight: 650; font-size: 15px;
-  background: var(--glass-strong); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); box-shadow: var(--hi), var(--shadow); }
-.mapsheet-locate { position: absolute; z-index: 500; top: calc(12px + env(safe-area-inset-top)); right: 12px; }
-.mapsheet-actions { position: absolute; z-index: 500; left: 12px; right: 12px; bottom: calc(14px + env(safe-area-inset-bottom)); display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
+/* The pin's tip sits exactly on the map centre, which is the point that gets saved. */
+.mapsheet-pin { position: absolute; left: 50%; top: 50%; z-index: 500; width: 28px; height: 46px; transform: translate(-50%, -90%); pointer-events: none; transition: transform .2s var(--ease); }
+.mapsheet-pin .kg-pin { position: relative; width: 28px; height: 46px; transform: scale(1.25); transform-origin: 50% 90%; }
+.mapsheet.moving .mapsheet-pin { transform: translate(-50%, calc(-90% - 12px)); }
+.mapsheet.moving .kg-pin u { transform: translateY(12px) scale(.7); opacity: .6; }
+.mapsheet-back { position: absolute; z-index: 500; top: calc(14px + env(safe-area-inset-top)); left: 14px; }
+.mapsheet-locate { position: absolute; z-index: 500; right: 14px; bottom: calc(196px + env(safe-area-inset-bottom)); }
+.mapsheet-panel { position: absolute; z-index: 500; left: 0; right: 0; bottom: 0; display: grid; gap: 8px; padding: 20px 18px calc(18px + env(safe-area-inset-bottom));
+  border-radius: 28px 28px 0 0; background: var(--glass-strong); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); box-shadow: var(--hi), var(--shadow-lg); }
+html.lite .mapsheet-panel { background: var(--solid); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.mapsheet-panel .addr { font-weight: 750; font-size: 19px; letter-spacing: -.01em; margin-bottom: 8px; min-height: 26px; }
+@media (min-width: 600px) { .mapsheet-panel { left: 50%; right: auto; width: 480px; transform: translateX(-50%); bottom: 16px; border-radius: 28px; } }
 
 /* ---------- Profiles and ratings ---------- */
 .plink { color: inherit; text-decoration: none; font-weight: 700; }
@@ -461,6 +490,7 @@ const T = {
     applyCrew: 'Apply with crew', crewOf: 'Crew of {n}', hireCrew: 'Hire crew of {n}', confirmHireCrew: 'Hire {name}’s crew of {n}?',
     yourCrew: 'Your crew ({n})', crewNamesLabel: 'Crew members’ names (one per line)', crewSaved: 'Crew saved', saveCrew: 'Save crew',
     crewNamesPending: 'Crew names not added yet', crewPayNote: 'You receive the whole crew’s pay ({amount}). Share it with your crew.',
+    nearAddr: 'Near {a}', findingAddr: 'Finding address…', zoomIn: 'Zoom in', zoomOut: 'Zoom out',
     locLabel: 'Where is the work?', useMyLoc: 'Use my location', pickOnMap: 'Pick on map', locSet: 'Location set',
     locNone: 'No location yet. Workers will see only the area.', landmarkLabel: 'Landmark or directions (shown after hiring)',
     landmarkPh: 'e.g. Blue gate behind Durga temple', useThisLoc: 'Use this location', dragHint: 'Move the map so the pin is on the house',
@@ -569,6 +599,7 @@ const T = {
     applyCrew: 'দলৰ সৈতে আবেদন', crewOf: '{n} জনৰ দল', hireCrew: '{n} জনৰ দল লওক', confirmHireCrew: '{name}ৰ {n} জনৰ দলটো ল’ব নেকি?',
     yourCrew: 'আপোনাৰ দল ({n})', crewNamesLabel: 'দলৰ সদস্যৰ নাম (প্ৰতি শাৰীত এটা)', crewSaved: 'দল সাঁচি ৰখা হ’ল', saveCrew: 'দল সাঁচি ৰাখক',
     crewNamesPending: 'দলৰ নাম এতিয়াও দিয়া নাই', crewPayNote: 'আপুনি গোটেই দলৰ মজুৰি ({amount}) পাব। দলৰ সৈতে ভগাই লওক।',
+    nearAddr: '{a}ৰ ওচৰত', findingAddr: 'ঠিকনা বিচাৰি আছে…', zoomIn: 'ডাঙৰ কৰক', zoomOut: 'সৰু কৰক',
     locLabel: 'কামটো ক’ত?', useMyLoc: 'মোৰ স্থান ব্যৱহাৰ কৰক', pickOnMap: 'মেপত বাছক', locSet: 'স্থান দিয়া হ’ল',
     locNone: 'এতিয়ালৈ স্থান দিয়া নাই। কৰ্মীসকলে কেৱল অঞ্চলটো দেখিব।', landmarkLabel: 'চিনাকি ঠাই বা দিশ (কামত লোৱাৰ পিছত দেখুওৱা হ’ব)',
     landmarkPh: 'যেনে: দুৰ্গা মন্দিৰৰ পিছফালে নীলা গেট', useThisLoc: 'এই স্থান ব্যৱহাৰ কৰক', dragHint: 'পিনটো ঘৰৰ ওপৰত থাকিবলৈ মেপখন লৰাওক',
@@ -664,6 +695,7 @@ const T = {
     applyCrew: 'टीम के साथ आवेदन', crewOf: '{n} लोगों की टीम', hireCrew: '{n} लोगों की टीम रखें', confirmHireCrew: '{name} की {n} लोगों की टीम रखें?',
     yourCrew: 'आपकी टीम ({n})', crewNamesLabel: 'टीम के लोगों के नाम (हर लाइन में एक)', crewSaved: 'टीम सेव हो गई', saveCrew: 'टीम सेव करें',
     crewNamesPending: 'टीम के नाम अभी नहीं जोड़े', crewPayNote: 'आपको पूरी टीम की मज़दूरी ({amount}) मिलेगी। इसे टीम में बाँटें।',
+    nearAddr: '{a} के पास', findingAddr: 'पता ढूँढ रहे हैं…', zoomIn: 'बड़ा करें', zoomOut: 'छोटा करें',
     locLabel: 'काम कहाँ है?', useMyLoc: 'मेरी जगह इस्तेमाल करें', pickOnMap: 'नक्शे पर चुनें', locSet: 'जगह चुनी गई',
     locNone: 'अभी जगह नहीं चुनी। कामगार सिर्फ़ इलाका देखेंगे।', landmarkLabel: 'पहचान की जगह या रास्ता (रखने के बाद दिखेगा)',
     landmarkPh: 'जैसे: दुर्गा मंदिर के पीछे नीला गेट', useThisLoc: 'यह जगह इस्तेमाल करें', dragHint: 'नक्शा खिसकाएँ ताकि पिन घर पर हो',
@@ -799,6 +831,8 @@ const ICONS = {
   medical: '<rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/>',
   map: '<path d="M9 4 3 6.2v13.8l6-2.2 6 2.2 6-2.2V4l-6 2.2z"/><path d="M9 4v13.8M15 6.2V20"/>',
   navigate: '<path d="m3 11 18-8-8 18-2-8z"/>',
+  close: '<path d="M18 6 6 18M6 6l12 12"/>',
+  minus: '<path d="M5 12h14"/>',
   locate: '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
   dots: '<circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/>',
 };
@@ -1157,8 +1191,13 @@ function showOnboard() {
 }
 const UPI_RE = /^[A-Za-z0-9._-]{2,128}@[A-Za-z]{2,64}$/;
 
-// ===================== Maps (OpenStreetMap via Leaflet, loaded only when a map is shown) =====================
+// ===================== Maps =====================
+// OpenStreetMap through Leaflet, styled to match the app: monochrome tiles (inverted in dark mode),
+// our own pins and glass controls, no default chrome. Leaflet loads only when a map is on screen.
+// For an even cleaner ride-hailing look at scale, point MAP_TILES at a styled provider
+// (e.g. Stadia "Alidade Smooth", MapTiler "Dataviz") and remove the tile filter in CSS.
 const LEAFLET = 'https://unpkg.com/leaflet@1.9.4/dist/';
+const MAP_TILES = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 const TINSUKIA = [27.4922, 95.3468];
 let leafletReady;
 function loadLeaflet() {
@@ -1172,15 +1211,20 @@ function loadLeaflet() {
   }
   return leafletReady;
 }
-const PIN_SVG = '<svg width="32" height="42" viewBox="0 0 32 42" aria-hidden="true"><path d="M16 41s14-13.2 14-24.5A14 14 0 0 0 2 16.5C2 27.8 16 41 16 41z" fill="#1c1c1e" stroke="#fff" stroke-width="2.5"/><circle cx="16" cy="16.5" r="5" fill="#fff"/></svg>';
 function baseMap(el, center, zoom, interactive = true) {
-  const opts = interactive ? {} : { zoomControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false, boxZoom: false, keyboard: false };
-  const m = L.map(el, opts).setView(center, zoom);
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(m);
+  const still = { dragging: false, scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false, boxZoom: false, keyboard: false, tap: false };
+  const m = L.map(el, { zoomControl: false, ...(interactive ? {} : still) }).setView(center, zoom);
+  m.attributionControl.setPrefix(false);
+  L.tileLayer(MAP_TILES, { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(m);
+  el.classList.add('kgmap');
   el.classList.toggle('dark', isDark());
   return m;
 }
-const pinIcon = () => L.divIcon({ className: 'kg-pin', html: PIN_SVG, iconSize: [32, 42], iconAnchor: [16, 41] });
+// Destination pin: a dark square on a short stem with a soft shadow (white in dark mode).
+const PIN_HTML = '<i></i><b></b><s></s><u></u>';
+const pinIcon = () => L.divIcon({ className: 'kg-pin', html: PIN_HTML, iconSize: [28, 46], iconAnchor: [14, 42] });
+const meIcon = () => L.divIcon({ className: 'kg-me', html: '<i></i>', iconSize: [40, 40], iconAnchor: [20, 20] });
+const priceIcon = (j, on) => L.divIcon({ className: 'kg-price-wrap', html: `<div class="kg-price${on ? ' on' : ''}">${rupee(personPay(j))}</div>`, iconSize: [0, 0], iconAnchor: [0, 0] });
 
 // Draws every map on the current page: small fixed maps, and the Find jobs map.
 async function initMaps() {
@@ -1191,21 +1235,50 @@ async function initMaps() {
   minis.forEach((el) => {
     const ll = [Number(el.dataset.lat), Number(el.dataset.lng)];
     el._map = baseMap(el, ll, 16, false);
-    L.marker(ll, { icon: pinIcon() }).addTo(el._map);
+    L.marker(ll, { icon: pinIcon(), interactive: false }).addTo(el._map);
   });
   if (big && !big._map) {
-    const m = big._map = baseMap(big, S.myPos || TINSUKIA, 13);
+    const m = big._map = S.bigMap = baseMap(big, S.myPos || TINSUKIA, 13);
+    const halo = isDark() ? '#ffffff' : '#1c1c1e';
     const pts = [];
+    S.findMarkers = {};
     (S.findJobs || []).filter((j) => j.approx_lat != null).forEach((j) => {
       const ll = [j.approx_lat, j.approx_lng];
       pts.push(ll);
-      L.circle(ll, { radius: 600, color: '#0a6cff', weight: 1.5, fillOpacity: 0.16 }).addTo(m).bindPopup(`<div class="stack" style="min-width:170px">
-        <b>${te('skill_' + j.service)} · ${rupee(personPay(j))}</b><span class="muted small">${esc(fmtRange(j))} · ${esc(daysText(j.days))}</span>
-        ${S.findMine && S.findMine.has(j.id) ? `<span class="badge ok">${te('applied')}</span>` : `<button class="btn sm" data-act="apply" data-job="${j.id}">${te('apply')}</button>`}</div>`);
+      // Soft area: the job is somewhere in here (exact place shared after hiring).
+      L.circle(ll, { radius: 600, stroke: false, fillColor: halo, fillOpacity: 0.07, interactive: false }).addTo(m);
+      const mk = L.marker(ll, { icon: priceIcon(j, false), riseOnHover: true, keyboard: true, title: skillName(j.service) }).addTo(m);
+      mk.on('click', (e) => { L.DomEvent.stopPropagation(e); selectJobOnMap(j.id); });
+      S.findMarkers[j.id] = mk;
     });
-    if (S.myPos) { L.circleMarker(S.myPos, { radius: 8, color: '#fff', weight: 3, fillColor: '#0a6cff', fillOpacity: 1 }).addTo(m); pts.push(S.myPos); }
-    if (pts.length > 1) m.fitBounds(pts, { padding: [40, 40], maxZoom: 15 });
+    if (S.myPos) { L.marker(S.myPos, { icon: meIcon(), interactive: false, zIndexOffset: -100 }).addTo(m); pts.push(S.myPos); }
+    if (pts.length > 1) m.fitBounds(pts, { padding: [70, 70], maxZoom: 15 });
+    else if (pts.length === 1) m.setView(pts[0], 14);
+    m.on('click', () => selectJobOnMap(null));
   }
+}
+// Tapping a price tag highlights it and slides up a card with the job and Apply.
+function selectJobOnMap(id) {
+  const card = $('#mapCard');
+  if (!card || !S.findJobs) return;
+  Object.entries(S.findMarkers || {}).forEach(([jid, mk]) => {
+    mk.setIcon(priceIcon(S.findJobs.find((x) => x.id === jid), jid === id));
+    mk.setZIndexOffset(jid === id ? 1000 : 0);
+  });
+  if (!id) { card.hidden = true; return; }
+  const j = S.findJobs.find((x) => x.id === id);
+  card.innerHTML = `<div class="row between nowrap" style="align-items:flex-start">
+      <div class="row nowrap" style="gap:12px;min-width:0">${skillIcon(j.service, 24, 'job-ic')}
+        <div style="min-width:0"><div class="jobtitle">${te('skill_' + j.service)}</div>${jobMeta(j)}</div></div>
+      <button class="iconbtn" data-act="mapCardClose" aria-label="${te('back')}">${icon('close', 18)}</button>
+    </div>
+    <div class="row between nowrap" style="margin-top:14px">
+      <div class="pay">${rupee(personPay(j))}</div>
+      ${S.findMine && S.findMine.has(j.id) ? `<span class="badge ok">${icon('check', 14)}${te('applied')}</span>`
+        : `<button class="btn" data-act="apply" data-job="${j.id}">${te('apply')}</button>`}
+    </div>`;
+  card.hidden = false;
+  S.bigMap.panTo([j.approx_lat, j.approx_lng], { animate: true });
 }
 
 function geolocate() {
@@ -1221,31 +1294,68 @@ function kmBetween([a, b], [c, d]) {
   return 12742 * Math.asin(Math.sqrt(x));
 }
 
-// Post form: remember the chosen point and show it on a small map.
-function setPostLocation(lat, lng) {
+// "Near Durga Bari Road, Tinsukia" for a point, from OpenStreetMap's Nominatim (light use, cached).
+const addrCache = {};
+async function reverseGeocode(lat, lng) {
+  const key = lat.toFixed(4) + ',' + lng.toFixed(4);
+  if (key in addrCache) return addrCache[key];
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=17&lat=${lat}&lon=${lng}&accept-language=${S.lang}`);
+    const d = await res.json();
+    const a = d.address || {};
+    const parts = [a.road || a.pedestrian || a.neighbourhood || a.amenity, a.suburb || a.quarter || a.village || a.hamlet, a.town || a.city || a.county];
+    addrCache[key] = [...new Set(parts.filter(Boolean))].slice(0, 3).join(', ') || null;
+  } catch (_) { addrCache[key] = null; }
+  return addrCache[key];
+}
+
+// Post form: remember the chosen point, show it on a small map with its address.
+async function setPostLocation(lat, lng, addr) {
   const f = main.querySelector('form[data-form=postJob]');
   if (!f) return;
   f.lat.value = lat; f.lng.value = lng;
   $('#locMini').outerHTML = `<div class="minimap" id="locMini" data-lat="${lat}" data-lng="${lng}"></div>`;
-  $('#locText').textContent = t('locSet');
+  const text = $('#locText');
+  text.textContent = addr ? t('nearAddr', { a: addr }) : t('locSet');
   initMaps();
+  if (!addr) {
+    const found = await reverseGeocode(lat, lng);
+    if (found && f.lat.value == lat) text.textContent = t('nearAddr', { a: found });
+  }
 }
-// Full-screen picker: drag the map under a fixed pin.
+// Full-screen picker, like setting a pickup point: drag the map under a fixed pin; the pin lifts
+// while moving and the address underneath updates when it settles.
 async function openMapPicker(start) {
   try { await loadLeaflet(); } catch (e) { return showErr(e); }
   const sheet = document.createElement('div');
   sheet.className = 'mapsheet';
-  sheet.innerHTML = `<div class="mapsheet-map" id="pickMap"></div><div class="mapsheet-pin">${PIN_SVG}</div>
-    <div class="mapsheet-top">${te('dragHint')}</div>
+  sheet.innerHTML = `<div class="mapsheet-map" id="pickMap"></div>
+    <div class="mapsheet-pin"><div class="kg-pin big">${PIN_HTML}</div></div>
+    <button type="button" class="iconbtn mapsheet-back" data-act="mapCancel" aria-label="${te('back')}">${icon('back', 20)}</button>
     <button type="button" class="iconbtn mapsheet-locate" data-act="pickerLocate" aria-label="${te('useMyLoc')}">${icon('locate', 20)}</button>
-    <div class="mapsheet-actions"><button type="button" class="btn ghost" data-act="mapCancel">${te('back')}</button>
-      <button type="button" class="btn" data-act="mapUse">${te('useThisLoc')}</button></div>`;
+    <div class="mapsheet-panel">
+      <div class="muted small">${te('dragHint')}</div>
+      <div class="addr" id="pickAddr">${te('findingAddr')}</div>
+      <button type="button" class="btn block" data-act="mapUse">${icon('check', 20)}${te('useThisLoc')}</button>
+    </div>`;
   document.body.appendChild(sheet);
-  S.picker = { sheet, map: baseMap($('#pickMap'), start || TINSUKIA, start ? 17 : 14) };
-  setTimeout(() => S.picker && S.picker.map.invalidateSize(), 60);
+  const m = baseMap($('#pickMap'), start || TINSUKIA, start ? 17 : 15);
+  S.picker = { sheet, map: m, addr: null };
+  const lookup = async () => {
+    const c = m.getCenter(), mine = S.picker;
+    $('#pickAddr').textContent = t('findingAddr');
+    const a = await reverseGeocode(c.lat, c.lng);
+    if (S.picker !== mine) return;
+    mine.addr = a;
+    $('#pickAddr').textContent = a || `${c.lat.toFixed(5)}, ${c.lng.toFixed(5)}`;
+  };
+  m.on('movestart', () => { sheet.classList.add('moving'); clearTimeout(S.picker && S.picker.timer); });
+  m.on('moveend', () => { sheet.classList.remove('moving'); if (S.picker) S.picker.timer = setTimeout(lookup, 500); });
+  setTimeout(() => { if (S.picker) { m.invalidateSize(); lookup(); } }, 60);
 }
 function closeMapPicker() {
   if (!S.picker) return;
+  clearTimeout(S.picker.timer);
   S.picker.map.remove();
   S.picker.sheet.remove();
   S.picker = null;
@@ -1638,7 +1748,16 @@ async function viewFind() {
   const distOf = (j) => (S.myPos && j.approx_lat != null ? kmBetween(S.myPos, [j.approx_lat, j.approx_lng]) : null);
   if (S.nearFirst && S.myPos) jobs.sort((a, b) => (distOf(a) ?? 1e9) - (distOf(b) ?? 1e9));
   S.findJobs = jobs; S.findMine = mine;
-  if (S.findView === 'map') return html + `<div id="findMap" class="bigmap"></div><p class="muted small">${te('approxLoc')}</p>`;
+  if (S.findView === 'map') {
+    return html + `<div class="mapwrap"><div id="findMap" class="bigmap"></div>
+      <div class="mapctl">
+        <button class="iconbtn" data-act="mapZoom" data-d="1" aria-label="${te('zoomIn')}">${icon('plus', 20)}</button>
+        <button class="iconbtn" data-act="mapZoom" data-d="-1" aria-label="${te('zoomOut')}">${icon('minus', 20)}</button>
+        <button class="iconbtn" data-act="mapMe" aria-label="${te('useMyLoc')}">${icon('locate', 20)}</button>
+      </div>
+      <div id="mapCard" class="mapcard" hidden></div></div>
+      <p class="muted small" style="margin-top:10px">${te('approxLoc')}</p>`;
+  }
   return html + jobs.map((j) => `<div class="card job">
       ${skillIcon(j.service, 26, 'job-ic')}
       <div class="job-body">
@@ -1974,7 +2093,14 @@ const ACTIONS = {
       try { S.picker.map.setView(await geolocate(), 17); } catch (_) { toast(t('locDenied'), 'err'); }
     });
   },
-  mapUse() { const c = S.picker.map.getCenter(); closeMapPicker(); setPostLocation(c.lat, c.lng); },
+  mapUse() { const c = S.picker.map.getCenter(), addr = S.picker.addr; closeMapPicker(); setPostLocation(c.lat, c.lng, addr); },
+  mapZoom(el) { if (S.bigMap) S.bigMap.setZoom(S.bigMap.getZoom() + Number(el.dataset.d)); },
+  async mapMe(el) {
+    await busy(el, async () => {
+      try { S.myPos = await geolocate(); refresh(); } catch (_) { toast(t('locDenied'), 'err'); }
+    });
+  },
+  mapCardClose() { selectJobOnMap(null); },
   mapCancel() { closeMapPicker(); },
   findView(el) { S.findView = el.dataset.v; refresh(); },
   async nearFirst(el) {

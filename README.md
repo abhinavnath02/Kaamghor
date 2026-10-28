@@ -127,7 +127,7 @@ Open http://localhost:5173. Every query runs on an in-browser Postgres loaded wi
 
 - **Login:** Google, an emailed code, or a mobile number by SMS. Every account must verify a mobile once.
 - **Rates** in `08_rates.sql` are placeholders for Assam daily wages; set real ones in the admin Overview.
-- **Maps** use OpenStreetMap tiles, which are free for light use. At real scale, switch the tile address in `baseMap()` to a paid tile provider.
+- **Maps** use OpenStreetMap tiles shown in monochrome (inverted in dark mode) and OpenStreetMap's Nominatim for "Near …" addresses, both free for light use. At real scale, set `MAP_TILES` to a styled provider (e.g. Stadia, MapTiler) and use a paid geocoder.
 - **Thikadars:** a verified worker can turn on "I lead a crew", apply to multi-person jobs with a crew, name the crew, do the handshake for everyone and receive the whole crew's pay to share. Crew members don't need accounts. Aggregator/agency accounts are not built.
 - **ID verification through DigiLocker** is a possible later step (DigiLocker's partner API can confirm Aadhaar/driving licence without storing the document). Not built.
 - **The six pilot areas** are Tinsukia Town, Hijuguri, Borguri, Rangagora Road, Bordoloi Nagar and Chandmari. Change them in `valid_area()` in `sql/01_schema.sql` and `AREAS` plus the `area_*` texts in `web/index.html`.
