@@ -421,6 +421,44 @@ await test('13: exact pin only for the household and hired people; others see ~1
   assert.deepEqual([loc.lat, loc.lng], [27.49123, 95.35678]);
 });
 
+await test('14: a verified Thikadar brings a crew that fills places and is paid as one', async () => {
+  await as('w1', `update worker_profiles set is_thikadar = true, crew_max = 3 where user_id = '${ids.w1}'`);
+  const jobStatus = async (id) => (await as('house', `select status from jobs where id = '${id}'`))[0].status;
+  const [j] = await as('house', `insert into jobs (household_id, service, area, job_date, days, rate, workers_needed)
+    values ('${ids.house}', 'clean', 'town', current_date + 1, 2, 500, 4) returning id`);
+  // only a verified Thikadar may apply with a crew, up to their crew size and the job's places
+  await fails('w2', `insert into applications (job_id, worker_id, crew_size) values ('${j.id}', '${ids.w2}', 2)`);
+  await fails('w1', `insert into applications (job_id, worker_id, crew_size) values ('${j.id}', '${ids.w1}', 4)`);
+  await as('w1', `insert into applications (job_id, worker_id, crew_size) values ('${j.id}', '${ids.w1}', 3)`);
+  await as('w2', `insert into applications (job_id, worker_id) values ('${j.id}', '${ids.w2}')`);
+  await as('house', `select hire_worker('${j.id}', '${ids.w1}')`);
+  assert.equal((await as('house', `select places_filled('${j.id}') as n`))[0].n, 3);
+  assert.equal(await jobStatus(j.id), 'open');
+  await as('house', `select hire_worker('${j.id}', '${ids.w2}')`);
+  assert.equal(await jobStatus(j.id), 'assigned');
+  // the Thikadar names the crew
+  const a = `(select id from assignments where job_id = '${j.id}' and worker_id = '${ids.w1}')`;
+  await fails('w2', `select set_crew(${a}, '{A,B}')`, /Job not found/);
+  await fails('w1', `select set_crew(${a}, '{A,B,C,D}')`, /More names/);
+  await as('w1', `select set_crew(${a}, '{"Ravi Das"," Mina Gogoi ",""}')`);
+  assert.deepEqual((await as('house', `select crew_names from assignments where id = ${a}`))[0].crew_names, ['Ravi Das', 'Mina Gogoi']);
+  // one handshake for the whole crew; paid rate x days x crew size
+  await handshake(j.id, 'w1');
+  const [pm] = await as('w1', `select amount, fee from payments where assignment_id = ${a}`);
+  assert.deepEqual([pm.amount, pm.fee], [3000, 300]);
+  await handshake(j.id, 'w2');
+  assert.equal(await jobStatus(j.id), 'done');
+  // a crew bigger than the places left can't be hired
+  const [k] = await as('house', `insert into jobs (household_id, service, area, job_date, days, rate, workers_needed)
+    values ('${ids.house}', 'clean', 'town', current_date + 1, 1, 400, 2) returning id`);
+  await as('w2', `insert into applications (job_id, worker_id) values ('${k.id}', '${ids.w2}')`);
+  await as('w1', `insert into applications (job_id, worker_id, crew_size) values ('${k.id}', '${ids.w1}', 2)`);
+  await as('house', `select hire_worker('${k.id}', '${ids.w2}')`);
+  await fails('house', `select hire_worker('${k.id}', '${ids.w1}')`, /Not enough places/);
+  const [pw] = await as('house', `select is_thikadar, crew_max from public_workers where id = '${ids.w1}'`);
+  assert.deepEqual([pw.is_thikadar, pw.crew_max], [true, 3]);
+});
+
 await test('anon has no access', async () => {
   await assert.rejects(() => db.transaction(async (tx) => {
     await tx.exec('set local role anon');

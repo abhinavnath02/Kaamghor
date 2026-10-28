@@ -75,9 +75,11 @@ const api = {
   myPostedJobs: (uid) => q(sb.from('jobs').select('*').eq('household_id', uid).order('created_at', { ascending: false }).limit(100)),
   job: (id) => q(sb.from('jobs').select('*').eq('id', id).maybeSingle()),
   applicants: async (jobId) => {
-    const apps = await q(sb.from('applications').select('worker_id').eq('job_id', jobId));
+    const apps = await q(sb.from('applications').select('worker_id, crew_size').eq('job_id', jobId));
     if (!apps.length) return [];
-    return rankWorkers(await q(sb.from('public_workers').select('*').in('id', apps.map((a) => a.worker_id))));
+    const crew = Object.fromEntries(apps.map((a) => [a.worker_id, a.crew_size || 1]));
+    const workers = await q(sb.from('public_workers').select('*').in('id', apps.map((a) => a.worker_id)));
+    return rankWorkers(workers.map((w) => ({ ...w, crew_size: crew[w.id] })));
   },
   hire: (jobId, workerId) => q(sb.rpc('hire_worker', { p_job: jobId, p_worker: workerId })),
   stopHiring: (jobId) => q(sb.rpc('stop_hiring', { p_job: jobId })),
@@ -119,7 +121,9 @@ const api = {
     return q(req.order('job_date', { ascending: true }).limit(100));
   },
   myApplications: async (uid) => (await q(sb.from('applications').select('job_id').eq('worker_id', uid))).map((a) => a.job_id),
-  apply: (jobId, uid) => q(sb.from('applications').insert({ job_id: jobId, worker_id: uid })),
+  // crew > 1: a Thikadar applying with their crew.
+  apply: (jobId, uid, crew = 1) => q(sb.from('applications').insert({ job_id: jobId, worker_id: uid, crew_size: crew })),
+  setCrew: (assignmentId, names) => q(sb.rpc('set_crew', { p_assignment: assignmentId, p_names: names })),
   withdraw: (jobId, uid) => q(sb.from('applications').delete().eq('job_id', jobId).eq('worker_id', uid)),
   // My assignments, each with its job.
   myWork: (uid) => q(sb.from('assignments').select('*, jobs(*)').eq('worker_id', uid).neq('status', 'cancelled').order('hired_at', { ascending: false }).limit(100)),

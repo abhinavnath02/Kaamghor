@@ -2,7 +2,7 @@
 // App files: network first (always the latest when online), saved copy if offline or the network
 // takes longer than 4 s. The pinned supabase-js file never changes, so it is served from the cache.
 // Change CACHE only to throw away old copies (for example after renaming files).
-const CACHE = 'kaamghor-v7';
+const CACHE = 'kaamghor-v8';
 const SUPABASE_JS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
 const SHELL = ['./', './index.html', './api.js', './manifest.webmanifest', './icon.svg', './logo.svg', './icon-192.png', './icon-512.png', './terms.html', SUPABASE_JS];
 const SLOW_MS = 4000;

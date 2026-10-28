@@ -103,6 +103,8 @@
   class Query {
     constructor(table) { Object.assign(this, { table, op: 'select', cols: '*', where: [], params: [], orderBy: '', lim: '', one: 0, ret: false, opts: {} }); }
     p(v) { this.params.push(v); return '$' + this.params.length; }
+    // Like JSON from supabase-js: arrays become Postgres arrays; booleans and numbers stay typed.
+    val(v) { return Array.isArray(v) ? pgArray(v) : v === null || typeof v === 'boolean' || typeof v === 'number' ? v : String(v); }
     select(cols = '*', opts = {}) { if (this.op === 'select') { this.cols = cols; this.opts = opts; } else this.ret = true; return this; }
     insert(row) { this.op = 'insert'; this.row = row; return this; }
     update(row) { this.op = 'update'; this.row = row; return this; }
@@ -141,12 +143,12 @@
         if (this.op === 'select') res = await asUser(`select ${this.selectList()} from ${T}${W}${this.orderBy}${this.lim}`, this.params);
         if (this.op === 'insert') {
           const keys = Object.keys(this.row);
-          const vals = keys.map((k) => { const v = this.row[k]; return Array.isArray(v) ? this.p(pgArray(v)) : this.p(v === null ? null : String(v)); });
+          const vals = keys.map((k) => this.p(this.val(this.row[k])));
           res = await asUser(`insert into public.${ident(this.table)} (${keys.map(ident).join(', ')}) values (${vals.join(', ')})${this.ret || this.table === 'jobs' ? ' returning *' : ''}`, this.params);
           if (this.table === 'jobs') emit('INSERT', res.rows[0]);
         }
         if (this.op === 'update') {
-          const sets = Object.entries(this.row).map(([k, v]) => `${ident(k)} = ${Array.isArray(v) ? this.p(pgArray(v)) : this.p(v === null ? null : String(v))}`);
+          const sets = Object.entries(this.row).map(([k, v]) => `${ident(k)} = ${this.p(this.val(v))}`);
           res = await asUser(`update ${T} set ${sets.join(', ')}${W}${this.ret ? ' returning *' : ''}`, this.params);
         }
         if (this.op === 'delete') res = await asUser(`delete from ${T}${W}`, this.params);
@@ -161,7 +163,7 @@
     }
   }
 
-  const ARG_TYPES = { p_job: 'uuid', p_worker: 'uuid', p_payment: 'uuid', p_rating: 'int', p_verified: 'boolean', p_ref: 'text', p_service: 'text', p_daily: 'int', p_min: 'int', p_assignment: 'uuid', p_problem: 'text', p_completed: 'boolean', p_stars: 'int', p_tags: 'text[]', p_comment: 'text', p_lat: 'double precision', p_lng: 'double precision', p_landmark: 'text' };
+  const ARG_TYPES = { p_job: 'uuid', p_worker: 'uuid', p_payment: 'uuid', p_rating: 'int', p_verified: 'boolean', p_ref: 'text', p_service: 'text', p_daily: 'int', p_min: 'int', p_assignment: 'uuid', p_problem: 'text', p_completed: 'boolean', p_stars: 'int', p_tags: 'text[]', p_comment: 'text', p_lat: 'double precision', p_lng: 'double precision', p_landmark: 'text', p_names: 'text[]' };
   const SET_RETURNING = { get_pay_target: 1, admin_payouts: 1, admin_fees_owed: 1, admin_disputes: 1 };
   // Functions that update the jobs table, so realtime would send an event.
   const JOB_CHANGING = { hire_worker: 1, complete_job: 1, stop_hiring: 1 };

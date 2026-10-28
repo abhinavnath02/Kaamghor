@@ -27,6 +27,7 @@ sql/                         Run every file in name order in the Supabase SQL ed
   11_ratings.sql             Two-way ratings with tags and comments, public profiles and reviews
   12_verified_phone.sql      Every account has an SMS-verified mobile; the profile phone comes from Auth
   13_location.sql            Exact pin for hired people only; a ~1 km point for everyone else
+  14_thikadar.sql            Verified Thikadars apply with a crew; the crew fills places and is paid as one
 supabase/functions/
   create-order/              Creates the Razorpay order (holds the Razorpay secret)
   razorpay-webhook/          The only thing that marks an online payment paid (checks signature and amount)
@@ -39,7 +40,7 @@ You need: a Supabase account, a Razorpay account, a Google Cloud account (for "C
 
 **1. Supabase project.** Create a project in the **Mumbai (ap-south-1)** region. Move to a paid plan before real users (free projects pause when idle and have no daily backups).
 
-**2. Database.** In the SQL editor, run every file in `sql/` one at a time, in name order (`01` to `13`). Each later file upgrades the tables from the earlier ones and keeps existing data, so an existing project only runs the files it hasn't run yet.
+**2. Database.** In the SQL editor, run every file in `sql/` one at a time, in name order (`01` to `14`). Each later file upgrades the tables from the earlier ones and keeps existing data, so an existing project only runs the files it hasn't run yet.
 
 Turn on **pg_cron** first (Database → Extensions → pg_cron) so `10_handshake.sql` can schedule the 24-hour auto-confirm. Without it, overdue jobs are still confirmed whenever someone opens their jobs.
 
@@ -111,7 +112,7 @@ node sql.test.mjs
 node edge.test.mjs
 ```
 
-`sql.test.mjs` runs every SQL file on a real Postgres engine (PGlite) and checks the security rules and the full job flow (24 tests). `edge.test.mjs` checks both Edge Functions, including bad signatures and wrong amounts (6 tests).
+`sql.test.mjs` runs every SQL file on a real Postgres engine (PGlite) and checks the security rules and the full job flow (25 tests). `edge.test.mjs` checks both Edge Functions, including bad signatures and wrong amounts (6 tests).
 
 To click through the app without a Supabase project:
 
@@ -126,6 +127,7 @@ Open http://localhost:5173. Every query runs on an in-browser Postgres loaded wi
 - **Login:** Google, an emailed code, or a mobile number by SMS. Every account must verify a mobile once.
 - **Rates** in `08_rates.sql` are placeholders for Assam daily wages; set real ones in the admin Overview.
 - **Maps** use OpenStreetMap tiles, which are free for light use. At real scale, switch the tile address in `baseMap()` to a paid tile provider.
+- **Thikadars:** a verified worker can turn on "I lead a crew", apply to multi-person jobs with a crew, name the crew, do the handshake for everyone and receive the whole crew's pay to share. Crew members don't need accounts. Aggregator/agency accounts are not built.
 - **ID verification through DigiLocker** is a possible later step (DigiLocker's partner API can confirm Aadhaar/driving licence without storing the document). Not built.
 - **The six pilot areas** are Tinsukia Town, Hijuguri, Borguri, Rangagora Road, Bordoloi Nagar and Chandmari. Change them in `valid_area()` in `sql/01_schema.sql` and `AREAS` plus the `area_*` texts in `web/index.html`.
 - **Platform fee** is 10%, set in one place: `platform_fee_pct()` in `sql/03_functions.sql`.
