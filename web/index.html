@@ -488,7 +488,7 @@ const T = {
     google: 'Continue with Google', or: 'or', emailLabel: 'Email', sendCode: 'Email me a code',
     codeLabel: 'Enter the code we emailed to {email}', checkSpam: 'Can’t find it? Check your spam folder.',
     verify: 'Verify', resendIn: 'Resend in {s}s', resend: 'Send code again', changeEmail: 'Change email',
-    badEmail: 'Enter a valid email address', badCode: 'Enter the code from the email',
+    badEmail: 'Enter a valid email address', badCode: 'Enter the code from the email', badSms: 'Enter the 6-digit code from the SMS',
     phoneLabel: 'Mobile number', phoneHint: 'Shown to the other person only after a hire.',
     loginPhone: 'Continue with mobile number', sendSms: 'Send code by SMS', smsCodeLabel: 'Enter the 6-digit code sent to {phone}',
     changeNumber: 'Change number', useEmail: 'Use email or Google instead', verifyTitle: 'Verify your mobile number',
@@ -597,7 +597,7 @@ const T = {
     google: 'Google-ৰে আগবাঢ়ক', or: 'নতুবা', emailLabel: 'ইমেইল', sendCode: 'ইমেইলত ক’ড পঠিয়াওক',
     codeLabel: '{email}লৈ পঠোৱা ক’ডটো দিয়ক', checkSpam: 'পোৱা নাই নেকি? স্পাম ফ’ল্ডাৰ চাওক।',
     verify: 'নিশ্চিত কৰক', resendIn: '{s} ছেকেণ্ডত পুনৰ পঠিয়াব পাৰিব', resend: 'ক’ড পুনৰ পঠিয়াওক', changeEmail: 'ইমেইল সলনি কৰক',
-    badEmail: 'শুদ্ধ ইমেইল ঠিকনা দিয়ক', badCode: 'ইমেইলৰ ক’ডটো দিয়ক',
+    badEmail: 'শুদ্ধ ইমেইল ঠিকনা দিয়ক', badCode: 'ইমেইলৰ ক’ডটো দিয়ক', badSms: 'SMS ত অহা ৬ অংকৰ ক’ডটো দিয়ক',
     phoneLabel: 'মবাইল নম্বৰ', phoneHint: 'কামত লোৱাৰ পিছতহে আনজনে দেখা পাব।',
     loginPhone: 'মবাইল নম্বৰেৰে আগবাঢ়ক', sendSms: 'SMSত ক’ড পঠিয়াওক', smsCodeLabel: '{phone}লৈ পঠোৱা ৬-অংকৰ ক’ডটো দিয়ক',
     changeNumber: 'নম্বৰ সলনি কৰক', useEmail: 'তাৰ সলনি ইমেইল বা Google ব্যৱহাৰ কৰক', verifyTitle: 'আপোনাৰ মবাইল নম্বৰ নিশ্চিত কৰক',
@@ -693,7 +693,7 @@ const T = {
     google: 'Google से जारी रखें', or: 'या', emailLabel: 'ईमेल', sendCode: 'ईमेल पर कोड भेजें',
     codeLabel: '{email} पर भेजा गया कोड डालें', checkSpam: 'नहीं मिला? स्पैम फ़ोल्डर देखें।',
     verify: 'पुष्टि करें', resendIn: '{s} सेकंड में दोबारा भेज सकेंगे', resend: 'कोड दोबारा भेजें', changeEmail: 'ईमेल बदलें',
-    badEmail: 'सही ईमेल पता डालें', badCode: 'ईमेल वाला कोड डालें',
+    badEmail: 'सही ईमेल पता डालें', badCode: 'ईमेल वाला कोड डालें', badSms: 'SMS में आया 6 अंकों का कोड डालें',
     phoneLabel: 'मोबाइल नंबर', phoneHint: 'काम पर रखने के बाद ही दूसरे व्यक्ति को दिखेगा।',
     loginPhone: 'मोबाइल नंबर से जारी रखें', sendSms: 'SMS से कोड भेजें', smsCodeLabel: '{phone} पर भेजा गया 6 अंकों का कोड डालें',
     changeNumber: 'नंबर बदलें', useEmail: 'इसके बजाय ईमेल या Google इस्तेमाल करें', verifyTitle: 'अपना मोबाइल नंबर सत्यापित करें',
@@ -2252,7 +2252,7 @@ const FORMS = {
   },
   async verifySms(f, btn) {
     const code = f.querySelector('#code').value.replace(/\D/g, '');
-    if (code.length !== 6) return toast(t('badCode'), 'err');
+    if (code.length !== 6) return toast(t('badSms'), 'err');
     await busy(btn, async () => {
       const { user } = await api.verifyPhoneCode('+91' + S.login.phone, code);
       await loadMe(user);
@@ -2270,7 +2270,7 @@ const FORMS = {
   },
   async vpCode(f, btn) {
     const code = f.querySelector('#vcode').value.replace(/\D/g, '');
-    if (code.length !== 6) return toast(t('badCode'), 'err');
+    if (code.length !== 6) return toast(t('badSms'), 'err');
     await busy(btn, async () => {
       const { user } = await api.confirmPhoneChange('+91' + S.verify.phone, code);
       const changing = !!S.profile;
