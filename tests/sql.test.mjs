@@ -223,6 +223,16 @@ await test('admin: verify, fees owed, settle, payouts, stats; non-admin refused'
   assert.equal(s.workers_verified, 1); assert.equal(s.paid_total, 650);
 });
 
+await test('06: caretaker, healthcare and others; others needs a description', async () => {
+  for (const s of ['care', 'health']) {
+    await as('house', `insert into jobs (household_id, service, area, job_date, hours, pay) values ('${ids.house}', '${s}', 'town', current_date + 1, 4, 600)`);
+  }
+  await fails('house', `insert into jobs (household_id, service, area, job_date, hours, pay) values ('${ids.house}', 'other', 'town', current_date + 1, 4, 600)`, /jobs_other_needs_notes/);
+  await as('house', `insert into jobs (household_id, service, area, job_date, hours, pay, notes) values ('${ids.house}', 'other', 'town', current_date + 1, 4, 600, 'Move furniture upstairs')`);
+  await as('w2', `update worker_profiles set skills = '{clean,care,health,other}' where user_id = '${ids.w2}'`);
+  await fails('w2', `update worker_profiles set skills = '{babysit}' where user_id = '${ids.w2}'`);
+});
+
 await test('anon has no access', async () => {
   await assert.rejects(() => db.transaction(async (tx) => {
     await tx.exec('set local role anon');

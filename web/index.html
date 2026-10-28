@@ -462,6 +462,8 @@ const T = {
     error: 'Something went wrong', yes: 'Yes', no: 'No', hoursN: '{n} hrs', fileTooBig: 'File is too large (max 5 MB)',
     skill_clean: 'Cleaning', skill_cook: 'Cooking', skill_garden: 'Gardening', skill_paint: 'Painting',
     skill_helper: 'Helper', skill_plumb: 'Plumbing', skill_elec: 'Electrical',
+    skill_care: 'Caretaker', skill_health: 'Healthcare', skill_other: 'Others',
+    notesOther: 'Describe the work (required)', needNotes: 'Please describe the work',
     area_town: 'Tinsukia Town', area_hijuguri: 'Hijuguri', area_borguri: 'Borguri', area_rangagora: 'Rangagora Road',
     area_bordoloi: 'Bordoloi Nagar', area_chandmari: 'Chandmari',
     // admin (English only)
@@ -532,6 +534,8 @@ const T = {
     error: 'কিবা ভুল হ’ল', yes: 'হয়', no: 'নহয়', hoursN: '{n} ঘণ্টা', fileTooBig: 'ফাইলটো বেছি ডাঙৰ (সৰ্বাধিক 5 MB)',
     skill_clean: 'ঘৰ চাফা', skill_cook: 'ৰন্ধা-বঢ়া', skill_garden: 'বাগিচাৰ কাম', skill_paint: 'ৰং কৰা',
     skill_helper: 'সহায়কাৰী', skill_plumb: 'প্লাম্বিং', skill_elec: 'বিজুলীৰ কাম',
+    skill_care: 'যত্নকাৰী', skill_health: 'স্বাস্থ্যকৰ্মী', skill_other: 'অন্যান্য',
+    notesOther: 'কামটোৰ বিৱৰণ দিয়ক (আৱশ্যক)', needNotes: 'অনুগ্ৰহ কৰি কামটো বুজাই লিখক',
     area_town: 'তিনিচুকীয়া চহৰ', area_hijuguri: 'হিজুগুৰি', area_borguri: 'বৰগুৰি', area_rangagora: 'ৰঙাগড়া ৰোড',
     area_bordoloi: 'বৰদলৈ নগৰ', area_chandmari: 'চান্দমাৰী',
   },
@@ -591,15 +595,17 @@ const T = {
     error: 'कुछ गड़बड़ हो गई', yes: 'हाँ', no: 'नहीं', hoursN: '{n} घंटे', fileTooBig: 'फ़ाइल बहुत बड़ी है (अधिकतम 5 MB)',
     skill_clean: 'सफ़ाई', skill_cook: 'खाना बनाना', skill_garden: 'बागवानी', skill_paint: 'पेंटिंग',
     skill_helper: 'हेल्पर', skill_plumb: 'प्लंबिंग', skill_elec: 'बिजली का काम',
+    skill_care: 'देखभाल', skill_health: 'स्वास्थ्य कर्मी', skill_other: 'अन्य',
+    notesOther: 'काम का विवरण लिखें (ज़रूरी)', needNotes: 'कृपया काम के बारे में लिखें',
     area_town: 'तिनसुकिया टाउन', area_hijuguri: 'हिजुगुड़ी', area_borguri: 'बोरगुड़ी', area_rangagora: 'रंगागोड़ा रोड',
     area_bordoloi: 'बोरदोलोई नगर', area_chandmari: 'चांदमारी',
   },
 };
 
 // Must match valid_skill() and valid_area() in sql/01_schema.sql.
-const SKILLS = ['clean', 'cook', 'garden', 'paint', 'helper', 'plumb', 'elec'];
+const SKILLS = ['clean', 'cook', 'garden', 'paint', 'helper', 'plumb', 'elec', 'care', 'health', 'other'];
 // Line icon and tile hue for each kind of work.
-const SKILL_ICON = { clean: ['sparkles', 205], cook: ['pot', 22], garden: ['sprout', 135], paint: ['roller', 330], helper: ['package', 255], plumb: ['wrench', 190], elec: ['zap', 42] };
+const SKILL_ICON = { clean: ['sparkles', 205], cook: ['pot', 22], garden: ['sprout', 135], paint: ['roller', 330], helper: ['package', 255], plumb: ['wrench', 190], elec: ['zap', 42], care: ['heart', 300], health: ['medical', 0], other: ['dots', 220] };
 function skillIcon(s, size = 24, cls = '') {
   const [name, hue] = SKILL_ICON[s];
   return `<span class="sk ${cls}" style="--h:${hue}">${icon(name, size)}</span>`;
@@ -646,6 +652,9 @@ const ICONS = {
   package: '<path d="m21 7.5-9-4.5-9 4.5 9 4.5z"/><path d="M3 7.5v9l9 4.5 9-4.5v-9M12 12v9M7.5 5.2l9 4.5"/>',
   wrench: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/>',
   zap: '<path d="M13 2 3.5 13.5H12L11 22l9.5-11.5H12z"/>',
+  heart: '<path d="M12 20.5s-7.5-4.6-9.4-9.3A5.2 5.2 0 0 1 12 6.4a5.2 5.2 0 0 1 9.4 4.8C19.5 15.9 12 20.5 12 20.5z"/>',
+  medical: '<rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/>',
+  dots: '<circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/>',
 };
 function icon(name, size = 22) {
   return `<svg class="ic" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
@@ -1054,7 +1063,7 @@ async function viewPost() {
       <label class="f" for="jPay">${te('pay')}</label>
       <div class="seg even" style="margin-bottom:10px">${[300, 400, 500, 700, 1000].map((v) => `<button type="button" class="pillbtn" data-act="payPick" data-v="${v}">₹${v}</button>`).join('')}</div>
       <input id="jPay" name="pay" type="number" inputmode="numeric" min="100" step="10" placeholder="${te('payHint')}" required>
-      <label class="f" for="jNotes">${te('notes')}</label>
+      <label class="f" for="jNotes" id="jNotesLabel">${te('notes')}</label>
       <textarea id="jNotes" name="notes" maxlength="500" placeholder="${te('notesPh')}"></textarea>
       <div style="margin-top:16px"><button class="btn block">${te('postBtn')}</button></div>
     </form>`;
@@ -1526,6 +1535,7 @@ const FORMS = {
   async postJob(f, btn) {
     const pay = parseInt(f.pay.value, 10);
     if (!(pay >= 100)) return toast(t('payHint'), 'err');
+    if (f.service.value === 'other' && f.notes.value.trim().length < 5) { f.notes.focus(); return toast(t('needNotes'), 'err'); }
     await busy(btn, async () => {
       const row = await api.postJob({
         household_id: S.user.id, service: f.service.value, area: f.area.value,
@@ -1621,6 +1631,7 @@ document.addEventListener('change', async (e) => {
     await busy(null, async () => { await api.uploadIdDoc(S.user.id, blob, ext); toast(t('uploaded')); refresh(); });
   } else if (el.form && el.form.dataset.form === 'postJob' && (el.name === 'service' || el.name === 'area')) {
     updateMatchCount();
+    if (el.name === 'service') $('#jNotesLabel').textContent = t(el.value === 'other' ? 'notesOther' : 'notes');
   } else if (el.name === 'when') {
     // Today / Tomorrow fill the date; "Other day" shows the date picker.
     const date = $('#jDate');
