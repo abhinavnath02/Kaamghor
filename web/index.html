@@ -2076,26 +2076,59 @@ async function viewFees() {
 }
 
 // ===================== Live updates =====================
-let liveTimer;
+// Pages that show other people's actions; never forms like Post a job.
+const LIVE_VIEWS = { find: 1, work: 1, wjob: 1, jobs: 1, job: 1, overview: 1, person: 1 };
+const POLL_MS = 15000;
+let liveTimer, liveRetry, livePoll, liveGen = 0;
+
+// Re-draw the page soon, but not while someone is typing in it (a rating comment, say).
+function liveRefresh() {
+  clearTimeout(liveTimer);
+  liveTimer = setTimeout(function again() {
+    const v = S.view && S.view.name;
+    if (!S.profile || !LIVE_VIEWS[v]) return;
+    const f = document.activeElement;
+    if (f && main.contains(f) && /^(INPUT|TEXTAREA|SELECT)$/.test(f.tagName) && f.type !== 'checkbox') { liveTimer = setTimeout(again, 2000); return; }
+    refresh();
+  }, 500);
+}
+
 function subscribeLive() {
+  const gen = ++liveGen; // status from an older, closed channel is ignored
   api.offAll();
-  api.onJobs((ev) => {
+  clearTimeout(liveRetry);
+  S.liveOk = false;
+  api.onLive((ev) => {
+    if (gen !== liveGen) return;
     const row = ev.new && Object.keys(ev.new).length ? ev.new : ev.old || {};
-    const j = ev.table === 'assignments' ? { id: row.job_id } : row;
-    if (S.profile.role === 'worker' && ev.table !== 'assignments' && ev.eventType === 'INSERT' && S.worker && S.worker.skills.includes(j.service)
-        && (!S.onlyMyArea || j.area === S.profile.area)) {
-      toast(t('newJobToast', { service: skillName(j.service), area: areaName(j.area) }));
+    const jobId = ev.table === 'jobs' ? row.id : row.job_id; // ratings carry no job: refresh whatever is open
+    if (S.profile.role === 'worker' && ev.table === 'jobs' && ev.eventType === 'INSERT' && S.worker && S.worker.skills.includes(row.service)
+        && row.household_id !== S.user.id && (!S.onlyMyArea || row.area === S.profile.area)) {
+      toast(t('newJobToast', { service: skillName(row.service), area: areaName(row.area) }));
       if (navigator.vibrate) navigator.vibrate(200);
     }
-    // Refresh list and detail pages, never forms the user may be typing in.
     const v = S.view && S.view.name;
-    const live = { find: 1, work: 1, wjob: 1, jobs: 1, job: 1, overview: 1 };
-    if (live[v] && (!S.view.id || S.view.id === j.id)) {
-      clearTimeout(liveTimer);
-      liveTimer = setTimeout(refresh, 600);
+    if (LIVE_VIEWS[v] && (!S.view.id || !jobId || S.view.id === jobId)) liveRefresh();
+  }, (status) => {
+    if (gen !== liveGen) return;
+    S.liveOk = status === 'SUBSCRIBED';
+    // Dropped (weak network, phone asleep): join again shortly.
+    if (/ERROR|TIMED_OUT|CLOSED/.test(status) && S.profile) {
+      clearTimeout(liveRetry);
+      liveRetry = setTimeout(subscribeLive, 5000);
     }
   });
+  // Fallback while the live connection is down: re-check the open page every 15 s.
+  clearInterval(livePoll);
+  livePoll = setInterval(() => { if (!S.liveOk && document.visibilityState === 'visible') liveRefresh(); }, POLL_MS);
 }
+
+// Phones pause the connection in the background: catch up and re-join when the app comes back.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible' || !S.profile) return;
+  liveRefresh();
+  if (!S.liveOk) subscribeLive();
+});
 
 // ===================== Actions (clicks) =====================
 const ACTIONS = {
@@ -2168,6 +2201,7 @@ const ACTIONS = {
   // Leaves the page for Google; Supabase sends the user back here signed in.
   async google(el) { await busy(el, () => api.signInGoogle()); },
   async logout() {
+    liveGen++; clearInterval(livePoll); clearTimeout(liveRetry);
     api.offAll();
     await api.signOut();
     S.user = S.profile = S.worker = null;

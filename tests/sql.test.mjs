@@ -485,9 +485,9 @@ await test('anon has no access', async () => {
   }));
 });
 
-await test('jobs table is in the realtime publication', async () => {
+await test('16: everything both sides act on is in the realtime publication', async () => {
   const r = await db.query(`select tablename from pg_publication_tables where pubname = 'supabase_realtime'`);
-  assert.deepEqual(r.rows.map((x) => x.tablename).sort(), ['assignments', 'jobs']);
+  assert.deepEqual(r.rows.map((x) => x.tablename).sort(), ['applications', 'assignments', 'jobs', 'payments', 'ratings']);
 });
 
 console.log(`\n${passed} tests passed`);
