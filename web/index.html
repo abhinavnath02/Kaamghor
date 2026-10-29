@@ -273,6 +273,8 @@ textarea { min-height: 88px; resize: vertical; }
 .note.warn { background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent-soft); }
 .note.err { background: var(--danger-soft); color: var(--danger); box-shadow: none; }
 a.note { color: inherit; text-decoration: none; }
+button.note { width: 100%; border: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.note.between b { flex: none; }
 .empty { text-align: center; color: var(--muted); padding: 40px 16px; }
 .empty b { display: grid; place-items: center; width: 92px; height: 92px; margin: 0 auto 16px; border-radius: 50%; font-size: 42px; background: var(--glass); box-shadow: var(--hi), var(--shadow); }
 .stat { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
@@ -539,7 +541,8 @@ const T = {
     rateWorker: 'Rate the worker', thanksRating: 'Thanks for rating!', yourRating: 'Your rating', refresh: 'Refresh', back: 'Back',
     getVerified: 'Upload your ID to get verified. Households choose verified workers first.',
     underReview: 'Your ID is being checked.', onlyMyArea: 'Only my area',
-    noOpenJobs: 'No jobs right now. New jobs appear here live.', apply: 'Apply', applied: 'Applied', withdraw: 'Withdraw',
+    noOpenJobs: 'No jobs right now. New jobs appear here live.', hiddenArea: 'Jobs for you in other areas: {n}', showAllAreas: 'Show all areas',
+    hiddenSkill: 'Jobs needing other skills ({n}): {s}', addSkills: 'Add skills', noPinJobs: 'Jobs without a map location: {n}. See the list.', apply: 'Apply', applied: 'Applied', withdraw: 'Withdraw',
     appliedToast: 'Applied. The household will see you.', newJobToast: 'New job: {service} in {area}',
     unavailableNote: 'You are marked as not available. Turn it on in Profile.',
     household: 'Household', markDone: 'Mark job done', confirmDone: 'Is the job finished?', markedDone: 'Sent. Waiting for the household to confirm.',
@@ -648,7 +651,8 @@ const T = {
     rateWorker: 'কৰ্মীক ৰেটিং দিয়ক', thanksRating: 'ৰেটিঙৰ বাবে ধন্যবাদ!', yourRating: 'আপোনাৰ ৰেটিং', refresh: 'ৰিফ্ৰেশ', back: 'উভতি যাওক',
     getVerified: 'পৰীক্ষিত হ’বলৈ আপোনাৰ পৰিচয়পত্ৰ আপলোড কৰক। ঘৰৰ মানুহে প্ৰথমে পৰীক্ষিত কৰ্মী বাছে।',
     underReview: 'আপোনাৰ পৰিচয়পত্ৰ পৰীক্ষা কৰি থকা হৈছে।', onlyMyArea: 'কেৱল মোৰ অঞ্চল',
-    noOpenJobs: 'এতিয়া কোনো কাম নাই। নতুন কাম ইয়াতে লগে লগে ওলাব।', apply: 'আবেদন কৰক', applied: 'আবেদন কৰা হ’ল', withdraw: 'উঠাই লওক',
+    noOpenJobs: 'এতিয়া কোনো কাম নাই। নতুন কাম ইয়াতে লগে লগে ওলাব।', hiddenArea: 'আন অঞ্চলত মিলা {n} টা কাম আছে', showAllAreas: 'সকলো অঞ্চল চাওক',
+    hiddenSkill: '{n} টা কামত আন দক্ষতা লাগে: {s}', addSkills: 'দক্ষতা যোগ কৰক', noPinJobs: '{n} টা কামৰ মেপত ঠাই নাই; তালিকাত চাওক।', apply: 'আবেদন কৰক', applied: 'আবেদন কৰা হ’ল', withdraw: 'উঠাই লওক',
     appliedToast: 'আবেদন কৰা হ’ল। ঘৰৰ মানুহে আপোনাক দেখা পাব।', newJobToast: 'নতুন কাম: {area}ত {service}',
     unavailableNote: 'আপুনি “উপলব্ধ নহয়” বুলি দিয়া আছে। প্ৰফাইলত সলনি কৰক।',
     household: 'ঘৰ', markDone: 'কাম সম্পূৰ্ণ বুলি দিয়ক', confirmDone: 'কামটো শেষ হ’লনে?', markedDone: 'পঠোৱা হ’ল। ঘৰৰ মানুহে নিশ্চিত কৰাৰ বাবে অপেক্ষা।',
@@ -744,7 +748,8 @@ const T = {
     rateWorker: 'कामगार को रेटिंग दें', thanksRating: 'रेटिंग के लिए धन्यवाद!', yourRating: 'आपकी रेटिंग', refresh: 'रिफ्रेश', back: 'वापस',
     getVerified: 'सत्यापन के लिए अपना ID अपलोड करें। घर वाले पहले सत्यापित कामगार चुनते हैं।',
     underReview: 'आपका ID जाँचा जा रहा है।', onlyMyArea: 'सिर्फ़ मेरा इलाका',
-    noOpenJobs: 'अभी कोई काम नहीं। नए काम यहाँ तुरंत दिखेंगे।', apply: 'आवेदन करें', applied: 'आवेदन किया', withdraw: 'वापस लें',
+    noOpenJobs: 'अभी कोई काम नहीं। नए काम यहाँ तुरंत दिखेंगे।', hiddenArea: 'दूसरे इलाकों में {n} मिलते-जुलते काम हैं', showAllAreas: 'सभी इलाके दिखाएँ',
+    hiddenSkill: '{n} कामों में दूसरे हुनर चाहिए: {s}', addSkills: 'हुनर जोड़ें', noPinJobs: '{n} कामों की मैप पर जगह नहीं है; सूची देखें।', apply: 'आवेदन करें', applied: 'आवेदन किया', withdraw: 'वापस लें',
     appliedToast: 'आवेदन हो गया। घर वाले आपको देखेंगे।', newJobToast: 'नया काम: {area} में {service}',
     unavailableNote: 'आप “उपलब्ध नहीं” हैं। प्रोफ़ाइल में बदलें।',
     household: 'घर', markDone: 'काम पूरा मार्क करें', confirmDone: 'क्या काम पूरा हो गया?', markedDone: 'भेज दिया। घर वालों की पुष्टि का इंतज़ार।',
@@ -1751,22 +1756,36 @@ async function viewFind() {
     <button type="button" class="pillbtn ${S.nearFirst ? 'on' : ''}" data-act="nearFirst">${icon('locate', 16)}${te('nearFirst')}</button></div>`;
   const [jobs, applied] = await Promise.all([api.openJobs(w.skills, S.onlyMyArea ? S.profile.area : null), api.myApplications(S.user.id)]);
   const mine = new Set(applied);
-  if (!jobs.length) return html + empty('search', t('noOpenJobs'));
-  const homes = Object.fromEntries((await api.publicProfilesByIds([...new Set(jobs.map((j) => j.household_id))])).map((p) => [p.id, p]));
+  // Nothing matched: say which filter hid the open jobs, with a one-tap way round it.
+  let hint = '';
+  if (!jobs.length) {
+    const all = await api.openJobServices();
+    const other = all.filter((j) => j.household_id !== S.user.id);
+    const farAway = S.onlyMyArea ? other.filter((j) => w.skills.includes(j.service) && j.area !== S.profile.area).length : 0;
+    const otherSkills = other.filter((j) => !w.skills.includes(j.service) && (!S.onlyMyArea || j.area === S.profile.area));
+    if (farAway) hint += `<button type="button" class="note row between nowrap" data-act="allAreas"><span>${te('hiddenArea', { n: farAway })}</span><b>${te('showAllAreas')} →</b></button>`;
+    if (otherSkills.length) {
+      const names = [...new Set(otherSkills.map((j) => skillName(j.service)))].join(', ');
+      hint += `<a class="note row between nowrap" href="#profile"><span>${te('hiddenSkill', { n: otherSkills.length, s: names })}</span><b>${te('addSkills')} →</b></a>`;
+    }
+  }
+  const homes = jobs.length ? Object.fromEntries((await api.publicProfilesByIds([...new Set(jobs.map((j) => j.household_id))])).map((p) => [p.id, p])) : {};
   // Distance from me to the job's rough area (about 1 km accurate).
   const distOf = (j) => (S.myPos && j.approx_lat != null ? kmBetween(S.myPos, [j.approx_lat, j.approx_lng]) : null);
   if (S.nearFirst && S.myPos) jobs.sort((a, b) => (distOf(a) ?? 1e9) - (distOf(b) ?? 1e9));
   S.findJobs = jobs; S.findMine = mine;
   if (S.findView === 'map') {
-    return html + `<div class="mapwrap"><div id="findMap" class="bigmap"></div>
+    const noPin = jobs.filter((j) => j.approx_lat == null).length;
+    return html + hint + `<div class="mapwrap"><div id="findMap" class="bigmap"></div>
       <div class="mapctl">
         <button class="iconbtn" data-act="mapZoom" data-d="1" aria-label="${te('zoomIn')}">${icon('plus', 20)}</button>
         <button class="iconbtn" data-act="mapZoom" data-d="-1" aria-label="${te('zoomOut')}">${icon('minus', 20)}</button>
         <button class="iconbtn" data-act="mapMe" aria-label="${te('useMyLoc')}">${icon('locate', 20)}</button>
       </div>
       <div id="mapCard" class="mapcard" hidden></div></div>
-      <p class="muted small" style="margin-top:10px">${te('approxLoc')}</p>`;
+      <p class="muted small" style="margin-top:10px">${!jobs.length ? te('noOpenJobs') + ' ' : ''}${noPin ? te('noPinJobs', { n: noPin }) + ' ' : ''}${te('approxLoc')}</p>`;
   }
+  if (!jobs.length) return html + hint + empty('search', t('noOpenJobs'));
   return html + jobs.map((j) => `<div class="card job">
       ${skillIcon(j.service, 26, 'job-ic')}
       <div class="job-body">
@@ -2114,6 +2133,7 @@ const ACTIONS = {
   mapCardClose() { selectJobOnMap(null); },
   mapCancel() { closeMapPicker(); },
   findView(el) { S.findView = el.dataset.v; refresh(); },
+  allAreas() { S.onlyMyArea = false; store.set('onlyMyArea', '0'); refresh(); },
   async nearFirst(el) {
     if (!S.nearFirst && !S.myPos) {
       toast(t('locating'));
