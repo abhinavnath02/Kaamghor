@@ -120,6 +120,8 @@ const api = {
     if (area) req = req.eq('area', area);
     return q(req.order('job_date', { ascending: true }).limit(100));
   },
+  // Every open job's service and area: tells a worker which filter is hiding jobs.
+  openJobServices: () => q(sb.from('jobs').select('household_id, service, area').eq('status', 'open').limit(500)),
   myApplications: async (uid) => (await q(sb.from('applications').select('job_id').eq('worker_id', uid))).map((a) => a.job_id),
   // crew > 1: a Thikadar applying with their crew.
   apply: (jobId, uid, crew = 1) => q(sb.from('applications').insert({ job_id: jobId, worker_id: uid, crew_size: crew })),
