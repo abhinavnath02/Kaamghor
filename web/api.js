@@ -143,10 +143,17 @@ const api = {
   },
 
   // ---------- live updates ----------
-  onJobs: (cb) => sb.channel('jobs')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'jobs' }, cb)
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'assignments' }, cb)
-    .subscribe(),
+  // Every table either side acts on. onStatus gets 'SUBSCRIBED', 'CHANNEL_ERROR', 'TIMED_OUT' or 'CLOSED'.
+  onLive: async (cb, onStatus) => {
+    // Join with the signed-in user's token, or RLS lets nothing through.
+    const { data } = await sb.auth.getSession();
+    if (data.session && sb.realtime.setAuth) sb.realtime.setAuth(data.session.access_token);
+    let ch = sb.channel('live');
+    for (const table of ['jobs', 'assignments', 'applications', 'payments', 'ratings']) {
+      ch = ch.on('postgres_changes', { event: '*', schema: 'public', table }, cb);
+    }
+    return ch.subscribe(onStatus);
+  },
   offAll: () => sb.removeAllChannels(),
 
   // ---------- admin ----------

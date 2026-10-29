@@ -29,6 +29,7 @@ sql/                         Run every file in name order in the Supabase SQL ed
   13_location.sql            Exact pin for hired people only; a ~1 km point for everyone else
   14_thikadar.sql            Verified Thikadars apply with a crew; the crew fills places and is paid as one
   15_half_days.sql           Jobs can be booked in half days (0.5, 1, 1.5 ...); pay rounds to whole rupees
+  16_live_updates.sql        Applications, payments and ratings update live on both sides (Realtime)
 supabase/functions/
   create-order/              Creates the Razorpay order (holds the Razorpay secret)
   razorpay-webhook/          The only thing that marks an online payment paid (checks signature and amount)

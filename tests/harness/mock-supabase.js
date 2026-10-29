@@ -88,7 +88,8 @@
 
   // ---------- realtime ----------
   let listeners = [];
-  const emit = (eventType, row) => setTimeout(() => listeners.forEach((cb) => cb({ eventType, new: row, table: 'jobs' })), 50);
+  const emit = (eventType, row, table = 'jobs') => setTimeout(() => listeners.forEach((cb) => cb({ eventType, new: row, table })), 50);
+  const LIVE_TABLES = { applications: 1, payments: 1, ratings: 1, assignments: 1 };
   async function emitJob(id) {
     const db = await ready;
     const { rows } = await db.query('select * from public.jobs where id = $1', [id]);
@@ -146,12 +147,16 @@
           const vals = keys.map((k) => this.p(this.val(this.row[k])));
           res = await asUser(`insert into public.${ident(this.table)} (${keys.map(ident).join(', ')}) values (${vals.join(', ')})${this.ret || this.table === 'jobs' ? ' returning *' : ''}`, this.params);
           if (this.table === 'jobs') emit('INSERT', res.rows[0]);
+          else if (LIVE_TABLES[this.table]) emit('INSERT', { ...this.row }, this.table);
         }
         if (this.op === 'update') {
           const sets = Object.entries(this.row).map(([k, v]) => `${ident(k)} = ${this.p(this.val(v))}`);
           res = await asUser(`update ${T} set ${sets.join(', ')}${W}${this.ret ? ' returning *' : ''}`, this.params);
         }
-        if (this.op === 'delete') res = await asUser(`delete from ${T}${W}`, this.params);
+        if (this.op === 'delete') {
+          res = await asUser(`delete from ${T}${W}`, this.params);
+          if (LIVE_TABLES[this.table]) emit('DELETE', {}, this.table);
+        }
         const rows = res.rows;
         if (this.one === 1) return { data: rows[0] ?? null, error: null };
         if (this.one === 2) return rows.length === 1 ? { data: rows[0], error: null } : { data: null, error: { message: 'JSON object requested, multiple (or no) rows returned' } };
@@ -261,10 +266,11 @@
           },
         },
         channel() {
-          const ch = { on(_e, _f, cb) { listeners.push(cb); return ch; }, subscribe() { return ch; } };
+          const ch = { on(_e, _f, cb) { listeners.push(cb); return ch; }, subscribe(onStatus) { if (onStatus) setTimeout(() => onStatus('SUBSCRIBED'), 0); return ch; } };
           return ch;
         },
         removeAllChannels() { listeners = []; },
+        realtime: { setAuth() {} },
       };
     },
   };
