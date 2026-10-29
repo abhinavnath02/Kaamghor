@@ -3,7 +3,7 @@
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: geolocation=(), microphone=()
+  Permissions-Policy: geolocation=(self), microphone=()
 
 # The service worker must never be cached by the browser, or updates stall.
 /sw.js

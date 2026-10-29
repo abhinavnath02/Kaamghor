@@ -1,4 +1,4 @@
-// create-order: makes (or reuses) a Razorpay order for a finished job's payment.
+// create-order: makes (or reuses) a Razorpay order for one person's payment on a finished job.
 // Called by the household's browser with their login token. Razorpay secrets stay here.
 // Secrets: RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET (SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are built in).
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
@@ -25,15 +25,14 @@ Deno.serve(async (req) => {
     const { data: { user } } = await db.auth.getUser(token);
     if (!user) return json({ error: 'Not signed in' }, 401);
 
-    const { job_id } = await req.json().catch(() => ({}));
-    if (typeof job_id !== 'string') return json({ error: 'job_id is required' }, 400);
+    const { payment_id } = await req.json().catch(() => ({}));
+    if (typeof payment_id !== 'string') return json({ error: 'payment_id is required' }, 400);
 
-    const { data: job } = await db.from('jobs').select('id, household_id, status').eq('id', job_id).maybeSingle();
-    if (!job || job.household_id !== user.id) return json({ error: 'Job not found' }, 404);
-    if (job.status !== 'done') return json({ error: 'Job is not done yet' }, 400);
-
-    const { data: pm } = await db.from('payments').select('id, amount, status, razorpay_order_id').eq('job_id', job_id).maybeSingle();
-    if (!pm) return json({ error: 'No payment for this job' }, 400);
+    // A payment row exists only once that person's work is done.
+    const { data: pm } = await db.from('payments').select('id, job_id, amount, status, razorpay_order_id').eq('id', payment_id).maybeSingle();
+    if (!pm) return json({ error: 'Payment not found' }, 404);
+    const { data: job } = await db.from('jobs').select('id, household_id').eq('id', pm.job_id).maybeSingle();
+    if (!job || job.household_id !== user.id) return json({ error: 'Payment not found' }, 404);
     if (pm.status === 'paid') return json({ error: 'Already paid' }, 409);
 
     const keyId = Deno.env.get('RAZORPAY_KEY_ID')!;
@@ -47,7 +46,7 @@ Deno.serve(async (req) => {
           'Authorization': 'Basic ' + btoa(`${keyId}:${Deno.env.get('RAZORPAY_KEY_SECRET')}`),
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ amount, currency: 'INR', receipt: pm.id, notes: { job_id } }),
+        body: JSON.stringify({ amount, currency: 'INR', receipt: pm.id, notes: { job_id: pm.job_id, payment_id: pm.id } }),
       });
       const order = await res.json();
       if (!res.ok) {

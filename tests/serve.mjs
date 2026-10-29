@@ -1,7 +1,7 @@
 // Serves the app with the local harness instead of real Supabase. Usage: node serve.mjs, then open http://localhost:5173
 // Pass --real to serve web/ exactly as it will be deployed (no harness).
 import { createServer } from 'node:http';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -15,6 +15,12 @@ const CDN = '<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.4
 createServer(async (req, res) => {
   let path = decodeURIComponent(new URL(req.url, 'http://x').pathname);
   if (path === '/') path = '/index.html';
+  // The harness asks which SQL files exist, so new migrations are applied automatically.
+  if (!real && path === '/__mock/sql-list') {
+    const names = (await readdir(join(root, 'sql'))).filter((n) => n.endsWith('.sql')).sort();
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }).end(JSON.stringify(names));
+    return;
+  }
   let file;
   if (!real && path.startsWith('/node_modules/')) file = join(root, 'tests', path);
   else if (!real && path.startsWith('/sql/')) file = join(root, path);

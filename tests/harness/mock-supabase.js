@@ -6,12 +6,12 @@
 // Helpers in the console: __sql('select ...') runs as superuser, __reset() wipes the database.
 (function () {
   'use strict';
-  const DB_NAME = 'idb://kaamghor-harness-v2';
+  const DB_NAME = 'idb://kaamghor-harness-v3';
   const STUBS = `
     create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
     create schema auth; create schema storage;
     grant usage on schema public, auth, storage to anon, authenticated, service_role;
-    create table auth.users (id uuid primary key, email text);
+    create table auth.users (id uuid primary key, email text, phone text, phone_confirmed_at timestamptz);
     create function auth.uid() returns uuid language sql stable as
       $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
     create table storage.buckets (id text primary key, name text, public boolean, file_size_limit bigint, allowed_mime_types text[]);
@@ -28,13 +28,16 @@
   const isoTz = (v) => v.replace(' ', 'T').replace(/([+-]\d\d)$/, '$1:00');
   const ready = (async () => {
     const { PGlite } = await import('/node_modules/@electric-sql/pglite/dist/index.js');
-    const db = new PGlite(DB_NAME, { parsers: { 1082: (v) => v, 1114: (v) => v, 1184: isoTz } });
-    const { rows } = await db.query(`select to_regclass('public.jobs') as t`);
-    if (!rows[0].t) {
-      await db.exec(STUBS);
-      for (const f of ['01_schema.sql', '02_security.sql', '03_functions.sql', '04_storage.sql', '05_realtime_admin.sql']) {
-        await db.exec(await (await fetch('/sql/' + f)).text());
-      }
+    const db = new PGlite(DB_NAME, { parsers: { 1082: (v) => v, 1114: (v) => v, 1184: isoTz, 1700: (v) => Number(v) } });
+    const { rows } = await db.query(`select to_regclass('auth.users') as t`);
+    if (!rows[0].t) await db.exec(STUBS + ' create schema harness; create table harness.applied (name text primary key);');
+    // Apply any SQL file not applied yet, in order, like running new migrations on Supabase.
+    const done = new Set((await db.query('select name from harness.applied')).rows.map((r) => r.name));
+    for (const f of await (await fetch('/__mock/sql-list')).json()) {
+      if (done.has(f)) continue;
+      await db.exec(await (await fetch('/sql/' + f)).text());
+      await db.query('insert into harness.applied values ($1)', [f]);
+      console.log('[mock] applied', f);
     }
     return db;
   })();
@@ -53,7 +56,18 @@
     const id = await uuidFor(email);
     const db = await ready;
     await db.query('insert into auth.users (id, email) values ($1, $2) on conflict do nothing', [id, email]);
-    const user = { id, email, user_metadata: meta };
+    const { rows } = await db.query('select phone, phone_confirmed_at from auth.users where id = $1', [id]);
+    const user = { id, email, user_metadata: meta, phone: rows[0].phone || '', phone_confirmed_at: rows[0].phone_confirmed_at };
+    save({ user, access_token: 'mock' });
+    return user;
+  }
+  // Phone numbers arrive as +91...; Supabase stores them without the plus.
+  async function signInPhone(phone) {
+    const p = phone.replace('+', '');
+    const id = await uuidFor('phone:' + p);
+    const db = await ready;
+    await db.query('insert into auth.users (id, phone, phone_confirmed_at) values ($1, $2, now()) on conflict do nothing', [id, p]);
+    const user = { id, email: '', user_metadata: {}, phone: p, phone_confirmed_at: new Date().toISOString() };
     save({ user, access_token: 'mock' });
     return user;
   }
@@ -84,16 +98,19 @@
   // ---------- query builder (the subset api.js uses) ----------
   const ident = (c) => '"' + c.trim().replace(/"/g, '') + '"';
   const pgArray = (arr) => '{' + arr.map((x) => '"' + String(x).replace(/["\\]/g, '\\$&') + '"').join(',') + '}';
-  const EMBED = { worker_profiles: { profiles: 'id = t.user_id' } };
+  const EMBED = { worker_profiles: { profiles: 'id = t.user_id' }, assignments: { jobs: 'id = t.job_id' } };
 
   class Query {
     constructor(table) { Object.assign(this, { table, op: 'select', cols: '*', where: [], params: [], orderBy: '', lim: '', one: 0, ret: false, opts: {} }); }
     p(v) { this.params.push(v); return '$' + this.params.length; }
+    // Like JSON from supabase-js: arrays become Postgres arrays; booleans and numbers stay typed.
+    val(v) { return Array.isArray(v) ? pgArray(v) : v === null || typeof v === 'boolean' || typeof v === 'number' ? v : String(v); }
     select(cols = '*', opts = {}) { if (this.op === 'select') { this.cols = cols; this.opts = opts; } else this.ret = true; return this; }
     insert(row) { this.op = 'insert'; this.row = row; return this; }
     update(row) { this.op = 'update'; this.row = row; return this; }
     delete() { this.op = 'delete'; return this; }
     eq(c, v) { this.where.push(`t.${ident(c)}::text = ${this.p(String(v))}`); return this; }
+    neq(c, v) { this.where.push(`t.${ident(c)}::text <> ${this.p(String(v))}`); return this; }
     is(c, v) { this.where.push(`t.${ident(c)} is ${v === null ? 'null' : v}`); return this; }
     in(c, arr) { this.where.push(`t.${ident(c)}::text = any(${this.p(pgArray(arr))}::text[])`); return this; }
     contains(c, arr) { this.where.push(`t.${ident(c)} @> ${this.p(pgArray(arr))}::text[]`); return this; }
@@ -108,7 +125,8 @@
         const m = part.trim().match(/^(\w+)\((.*)\)$/);
         if (m) {
           const on = EMBED[this.table][m[1]];
-          return `(select row_to_json(e) from (select ${m[2].split(',').map(ident).join(', ')} from public.${m[1]} where ${on}) e) as ${ident(m[1])}`;
+          const cols = m[2].trim() === '*' ? '*' : m[2].split(',').map(ident).join(', ');
+          return `(select row_to_json(e) from (select ${cols} from public.${m[1]} where ${on}) e) as ${ident(m[1])}`;
         }
         return part.trim() === '*' ? 't.*' : 't.' + ident(part);
       }).join(', ');
@@ -125,12 +143,12 @@
         if (this.op === 'select') res = await asUser(`select ${this.selectList()} from ${T}${W}${this.orderBy}${this.lim}`, this.params);
         if (this.op === 'insert') {
           const keys = Object.keys(this.row);
-          const vals = keys.map((k) => { const v = this.row[k]; return Array.isArray(v) ? this.p(pgArray(v)) : this.p(v === null ? null : String(v)); });
+          const vals = keys.map((k) => this.p(this.val(this.row[k])));
           res = await asUser(`insert into public.${ident(this.table)} (${keys.map(ident).join(', ')}) values (${vals.join(', ')})${this.ret || this.table === 'jobs' ? ' returning *' : ''}`, this.params);
           if (this.table === 'jobs') emit('INSERT', res.rows[0]);
         }
         if (this.op === 'update') {
-          const sets = Object.entries(this.row).map(([k, v]) => `${ident(k)} = ${Array.isArray(v) ? this.p(pgArray(v)) : this.p(v === null ? null : String(v))}`);
+          const sets = Object.entries(this.row).map(([k, v]) => `${ident(k)} = ${this.p(this.val(v))}`);
           res = await asUser(`update ${T} set ${sets.join(', ')}${W}${this.ret ? ' returning *' : ''}`, this.params);
         }
         if (this.op === 'delete') res = await asUser(`delete from ${T}${W}`, this.params);
@@ -145,15 +163,15 @@
     }
   }
 
-  const ARG_TYPES = { p_job: 'uuid', p_worker: 'uuid', p_payment: 'uuid', p_rating: 'int', p_verified: 'boolean', p_ref: 'text' };
-  const SET_RETURNING = { get_pay_target: 1, admin_payouts: 1, admin_fees_owed: 1 };
+  const ARG_TYPES = { p_job: 'uuid', p_worker: 'uuid', p_payment: 'uuid', p_rating: 'int', p_verified: 'boolean', p_ref: 'text', p_service: 'text', p_daily: 'int', p_min: 'int', p_assignment: 'uuid', p_problem: 'text', p_completed: 'boolean', p_stars: 'int', p_tags: 'text[]', p_comment: 'text', p_lat: 'double precision', p_lng: 'double precision', p_landmark: 'text', p_names: 'text[]' };
+  const SET_RETURNING = { get_pay_target: 1, admin_payouts: 1, admin_fees_owed: 1, admin_disputes: 1 };
   // Functions that update the jobs table, so realtime would send an event.
-  const JOB_CHANGING = { hire_worker: 1, complete_job: 1, rate_job: 1 };
+  const JOB_CHANGING = { hire_worker: 1, complete_job: 1, stop_hiring: 1 };
   async function rpc(name, args = {}) {
     const keys = Object.keys(args);
     const call = `public.${ident(name)}(${keys.map((k, i) => `${k} => $${i + 1}::${ARG_TYPES[k]}`).join(', ')})`;
     const r = await wrap(async () => {
-      const res = await asUser(SET_RETURNING[name] ? `select * from ${call}` : `select ${call} as v`, keys.map((k) => args[k]));
+      const res = await asUser(SET_RETURNING[name] ? `select * from ${call}` : `select ${call} as v`, keys.map((k) => (Array.isArray(args[k]) ? pgArray(args[k]) : args[k])));
       return SET_RETURNING[name] ? res.rows : res.rows[0].v;
     });
     if (!r.error && JOB_CHANGING[name]) emitJob(args.p_job);
@@ -184,12 +202,22 @@
     createClient() {
       return {
         auth: {
-          signInWithOtp: async ({ email }) => (/@/.test(email || '') ? { data: {}, error: null } : { data: null, error: { message: 'Invalid email' } }),
-          verifyOtp: async ({ email, token }) => {
+          signInWithOtp: async ({ email, phone }) => (/@/.test(email || '') || /^\+91[6-9]\d{9}$/.test(phone || '')
+            ? { data: {}, error: null } : { data: null, error: { message: 'Invalid email or phone' } }),
+          verifyOtp: async ({ email, phone, token, type }) => {
             if (token !== '123456') return { data: null, error: { message: 'Token has expired or is invalid' } };
-            const user = await signIn(email, {});
+            if (type === 'phone_change') {
+              const db = await ready;
+              const p = phone.replace('+', '');
+              await db.query('update auth.users set phone = $1, phone_confirmed_at = now() where id = $2', [p, session.user.id]);
+              save({ ...session, user: { ...session.user, phone: p, phone_confirmed_at: new Date().toISOString() } });
+              return { data: { user: session.user, session }, error: null };
+            }
+            const user = type === 'sms' ? await signInPhone(phone) : await signIn(email, {});
             return { data: { user, session }, error: null };
           },
+          updateUser: async ({ phone }) => (/^\+91[6-9]\d{9}$/.test(phone || '')
+            ? { data: { user: session.user }, error: null } : { data: null, error: { message: 'Invalid phone' } }),
           // Real Google leaves the page and comes back with ?code=; here we sign in a fixed Google user and reload.
           signInWithOAuth: async () => {
             await signIn('google.tester@gmail.com', { full_name: 'Google Tester' });
@@ -221,12 +249,11 @@
           invoke: async (name, { body }) => {
             if (name !== 'create-order') return { data: null, error: { message: 'Unknown function' } };
             const db = await ready;
-            const { rows } = await db.query(`select j.household_id, j.status, p.id, p.amount, p.status as pstatus, p.razorpay_order_id
-              from public.jobs j join public.payments p on p.job_id = j.id where j.id = $1`, [body.job_id]);
+            const { rows } = await db.query(`select j.household_id, p.id, p.amount, p.status as pstatus, p.razorpay_order_id
+              from public.payments p join public.jobs j on j.id = p.job_id where p.id = $1`, [body.payment_id]);
             const r = rows[0];
             const fail = (m) => ({ data: null, error: { message: m, context: { json: async () => ({ error: m }) } } });
-            if (!r || r.household_id !== session?.user.id) return fail('Job not found');
-            if (r.status !== 'done') return fail('Job is not done yet');
+            if (!r || r.household_id !== session?.user.id) return fail('Payment not found');
             if (r.pstatus === 'paid') return fail('Already paid');
             const orderId = r.razorpay_order_id || 'order_mock_' + r.id.slice(0, 8);
             await db.query('update public.payments set razorpay_order_id = $1 where id = $2', [orderId, r.id]);
