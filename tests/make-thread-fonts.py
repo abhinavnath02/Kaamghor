@@ -683,7 +683,7 @@ def glyph(path):
 # Colour layers sit around the text colour: a translucent dark shadow below, a translucent light sheen above,
 # so the threads look round in any colour set with CSS. Browsers without colour fonts show the textured thread alone.
 LAYERS = [('shadow', 0), ('base', 0xFFFF), ('sheen', 1)]
-PALETTE = [(0.0, 0.0, 0.0, 0.34), (1.0, 1.0, 1.0, 0.30)]
+PALETTE = [(0.0, 0.0, 0.0, 0.26), (1.0, 1.0, 1.0, 0.15)]   # softer sheen keeps the thread colour rich
 
 def build(family, render, file):
     glyphs, widths, cmap, colr = {}, {}, {}, {}

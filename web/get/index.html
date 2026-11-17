@@ -16,6 +16,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&display=swap" rel="stylesheet">
+<!-- Service icons: Phosphor (MIT), duotone, in gamosa red. Stand-ins until custom icons are drawn. -->
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css">
 <script>
   // Which side: ?for=workers (for posters and QR codes), else the last choice here.
   try {
@@ -85,11 +87,13 @@ img { display: block; max-width: 100%; }
 .btn img { width: 26px; height: 26px; border-radius: 7px; }
 
 /* the switch */
-.seg { display: inline-grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 16px; background: rgba(43,26,18,.07); }
-.seg button { min-height: 44px; padding: 0 16px; border: 0; border-radius: 12px; background: transparent; font: inherit; font-weight: 700; font-size: 15px; color: var(--muted); cursor: pointer; white-space: nowrap;
-  transition: background .3s var(--ease), color .2s, box-shadow .3s; }
-.seg button[aria-pressed="true"] { background: var(--paper); color: var(--red); box-shadow: 0 1px 2px rgba(43,26,18,.1), 0 4px 12px -6px rgba(43,26,18,.3); }
-[data-for="workers"] .seg button[aria-pressed="true"] { color: var(--gold-d); }
+.seg { display: inline-grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.seg button { position: relative; min-height: 46px; padding: 0 18px; border: 0; border-radius: 12px; background: var(--paper); font: inherit; font-weight: 700; font-size: 15px; color: var(--muted);
+  cursor: pointer; white-space: nowrap; box-shadow: inset 0 0 0 1.5px var(--line-2); transition: background .25s var(--ease), color .2s; }
+.seg button::after { content: ""; position: absolute; inset: 4px; border-radius: 9px; border: 1.5px dashed transparent; pointer-events: none; }
+.seg button[aria-pressed="true"] { background: var(--red); color: #fff8ee; box-shadow: 0 8px 18px -10px rgba(143,16,36,.7); }
+.seg button[aria-pressed="true"]::after { border-color: rgba(255,255,255,.45); }
+[data-for="workers"] .seg button[aria-pressed="true"] { background: var(--gold-d); box-shadow: 0 8px 18px -10px rgba(166,90,22,.7); }
 @media (max-width: 480px) { .seg { display: grid; width: 100%; } .seg button { padding: 6px 8px; white-space: normal; line-height: 1.2; font-size: 14px; } }
 
 /* ---------- hero: the end of a gamosa ---------- */
@@ -146,11 +150,11 @@ h2 em { font-style: normal; color: var(--red); }
 .rates { display: grid; grid-template-columns: 1fr 1fr; gap: 0 56px; margin-top: 34px; padding: 10px 26px 12px; border-radius: 18px; background: var(--paper); box-shadow: var(--shadow), inset 0 0 0 1px var(--line); }
 .rate { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px dashed var(--line-2); }
 .rate:nth-last-child(-n+2) { border-bottom: 0; }
-.rate img { flex: none; width: 34px; height: 34px; }
+.rate i { flex: none; font-size: 32px; color: var(--red); }
 .rate .name { font-weight: 650; }
 .rate .dots { flex: 1; align-self: flex-end; margin-bottom: 8px; border-bottom: 2px dotted var(--line-2); }
-.rate .amt { font: 26px/1 var(--woven); color: var(--red); letter-spacing: .02em; white-space: nowrap; }
-.rate .amt small { font: 500 14px system-ui, sans-serif; color: var(--muted); letter-spacing: 0; }
+.rate .amt { font-weight: 800; font-size: 21px; color: var(--red); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.rate .amt small { font-weight: 500; font-size: 14px; color: var(--muted); }
 .fine { margin: 18px 0 0; max-width: 64ch; font-size: 15px; color: var(--muted); }
 @media (max-width: 760px) { .rates { grid-template-columns: 1fr; padding: 6px 18px; } .rate:nth-last-child(2) { border-bottom: 1px dashed var(--line-2); } }
 
@@ -289,16 +293,16 @@ footer a { text-decoration: none; } footer a:hover { color: var(--red); }
       <h2 class="w-only">What a day's work <em>pays.</em></h2>
       <p class="intro">These are the rates the app suggests when a job is posted. Half a day is paid half.</p>
       <div class="rates">
-        <div class="rate"><img src="../assets/tools/clean.svg" alt=""><span class="name">Cleaning</span><span class="dots"></span><span class="amt">₹450 <small>/ day</small></span></div>
-        <div class="rate"><img src="../assets/tools/cook.svg" alt=""><span class="name">Cooking</span><span class="dots"></span><span class="amt">₹500 <small>/ day</small></span></div>
-        <div class="rate"><img src="../assets/tools/garden.svg" alt=""><span class="name">Gardening</span><span class="dots"></span><span class="amt">₹450 <small>/ day</small></span></div>
-        <div class="rate"><img src="../assets/tools/paint.svg" alt=""><span class="name">Painting</span><span class="dots"></span><span class="amt">₹700 <small>/ day</small></span></div>
-        <div class="rate"><img src="../assets/tools/helper.svg" alt=""><span class="name">Helper</span><span class="dots"></span><span class="amt">₹450 <small>/ day</small></span></div>
-        <div class="rate"><img src="../assets/tools/plumb.svg" alt=""><span class="name">Plumbing</span><span class="dots"></span><span class="amt">₹800 <small>/ day</small></span></div>
-        <div class="rate"><img src="../assets/tools/elec.svg" alt=""><span class="name">Electrical</span><span class="dots"></span><span class="amt">₹800 <small>/ day</small></span></div>
-        <div class="rate"><img src="../assets/tools/care.svg" alt=""><span class="name">Caretaker</span><span class="dots"></span><span class="amt">₹600 <small>/ day</small></span></div>
-        <div class="rate"><img src="../assets/tools/health.svg" alt=""><span class="name">Healthcare</span><span class="dots"></span><span class="amt">₹900 <small>/ day</small></span></div>
-        <div class="rate"><img src="../assets/tools/other.svg" alt=""><span class="name">Anything else</span><span class="dots"></span><span class="amt">₹500 <small>/ day</small></span></div>
+        <div class="rate"><i class="ph-duotone ph-broom" aria-hidden="true"></i><span class="name">Cleaning</span><span class="dots"></span><span class="amt">₹450 <small>/ day</small></span></div>
+        <div class="rate"><i class="ph-duotone ph-cooking-pot" aria-hidden="true"></i><span class="name">Cooking</span><span class="dots"></span><span class="amt">₹500 <small>/ day</small></span></div>
+        <div class="rate"><i class="ph-duotone ph-plant" aria-hidden="true"></i><span class="name">Gardening</span><span class="dots"></span><span class="amt">₹450 <small>/ day</small></span></div>
+        <div class="rate"><i class="ph-duotone ph-paint-roller" aria-hidden="true"></i><span class="name">Painting</span><span class="dots"></span><span class="amt">₹700 <small>/ day</small></span></div>
+        <div class="rate"><i class="ph-duotone ph-package" aria-hidden="true"></i><span class="name">Helper</span><span class="dots"></span><span class="amt">₹450 <small>/ day</small></span></div>
+        <div class="rate"><i class="ph-duotone ph-wrench" aria-hidden="true"></i><span class="name">Plumbing</span><span class="dots"></span><span class="amt">₹800 <small>/ day</small></span></div>
+        <div class="rate"><i class="ph-duotone ph-lightning" aria-hidden="true"></i><span class="name">Electrical</span><span class="dots"></span><span class="amt">₹800 <small>/ day</small></span></div>
+        <div class="rate"><i class="ph-duotone ph-hand-heart" aria-hidden="true"></i><span class="name">Caretaker</span><span class="dots"></span><span class="amt">₹600 <small>/ day</small></span></div>
+        <div class="rate"><i class="ph-duotone ph-first-aid-kit" aria-hidden="true"></i><span class="name">Healthcare</span><span class="dots"></span><span class="amt">₹900 <small>/ day</small></span></div>
+        <div class="rate"><i class="ph-duotone ph-toolbox" aria-hidden="true"></i><span class="name">Anything else</span><span class="dots"></span><span class="amt">₹500 <small>/ day</small></span></div>
       </div>
       <p class="fine h-only">You can offer more than the suggested rate, but not less than the minimum for that kind of work. For two people, it's twice the rate.</p>
       <p class="fine w-only">A home can offer more than this, never less than the minimum. A Thikadar bringing a crew is paid the rate for each person in it.</p>

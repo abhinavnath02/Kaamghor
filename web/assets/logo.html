@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logo concepts</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&display=swap" rel="stylesheet">
+<style>
+  :root { --cloth: #f8f2e6; --paper: #fffaf1; --ink: #2b1a12; --muted: #6f5a4a; --red: #b3172e; --gold: #c87326; --line: rgba(43,26,18,.13); }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px 24px 80px; color: var(--ink); background: var(--cloth) url(gamosa-cloth.svg) repeat 0 0 / 104px; font: 16px/1.55 system-ui, sans-serif; }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  h1 { font-size: 30px; margin: 0 0 8px; } h2 { font-size: 22px; margin: 0; }
+  p { color: var(--muted); max-width: 70ch; margin: 6px 0 0; }
+  .concept { margin-top: 30px; padding: 26px; border-radius: 20px; background: var(--paper); box-shadow: inset 0 0 0 1px var(--line), 0 12px 28px -16px rgba(43,26,18,.35); }
+  .row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 26px; margin-top: 20px; }
+  .icons img { border-radius: 22%; box-shadow: 0 10px 24px -12px rgba(43,26,18,.5); }
+  .lockup { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border-radius: 14px; background: var(--cloth) url(gamosa-cloth.svg) repeat 0 0 / 104px; box-shadow: inset 0 0 0 1px var(--line); }
+  .lockup.red { background: var(--red); color: #fff8ee; }
+  .lockup .name { font-weight: 900; font-size: 30px; letter-spacing: -.02em; line-height: 1; }
+  .lockup .as { font: 24px/1 "Tiro Bangla", serif; color: var(--red); }
+  .lockup.red .as { color: #ffd9a8; }
+  .lockup img.mark { height: 40px; width: auto; }
+  .label { font-size: 13px; color: var(--muted); margin-top: 6px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Logo concepts</h1>
+<p>Your K mark, brought into the gamosa. In A and B the K is traced onto the thread grid and woven as red (or cream) yarn; C keeps the solid K and lays a gamosa's woven end beneath it. Each is shown as the app icon at three sizes and as the header lockup with কামঘৰ. Rebuild with <code>node tests/make-logo.mjs</code>.</p>
+
+<div class="concept">
+  <h2>A · Woven K on cotton</h2>
+  <p>The K is woven in red thread into cream cotton, with a thin gamosa trim below. Closest to the woven lettering.</p>
+  <div class="row icons">
+    <div><img src="logo/a-icon.svg" width="180" height="180" alt=""><div class="label">App icon</div></div>
+    <div><img src="logo/a-icon.svg" width="64" height="64" alt=""><div class="label">64</div></div>
+    <div><img src="logo/a-icon.svg" width="32" height="32" alt=""><div class="label">32</div></div>
+  </div>
+  <div class="row">
+    <div class="lockup"><img class="mark" src="logo/k-woven.svg" alt=""><span class="name">Kaamghor</span><span class="as" lang="as">কামঘৰ</span></div>
+  </div>
+</div>
+
+<div class="concept">
+  <h2>B · Cream K woven into a red panel</h2>
+  <p>The icon is a piece of the gamosa's red border with the K woven into it in cream. Strongest at small sizes and on a phone's home screen.</p>
+  <div class="row icons">
+    <div><img src="logo/b-icon.svg" width="180" height="180" alt=""><div class="label">App icon</div></div>
+    <div><img src="logo/b-icon.svg" width="64" height="64" alt=""><div class="label">64</div></div>
+    <div><img src="logo/b-icon.svg" width="32" height="32" alt=""><div class="label">32</div></div>
+  </div>
+  <div class="row">
+    <div class="lockup red"><img class="mark" src="logo/k-woven-cream.svg" alt=""><span class="name">Kaamghor</span><span class="as" lang="as">কামঘৰ</span></div>
+    <div class="lockup"><img class="mark" src="logo/k-woven.svg" alt=""><span class="name" style="color:var(--red)">Kaamghor</span><span class="as" lang="as">কামঘৰ</span></div>
+  </div>
+</div>
+
+<div class="concept">
+  <h2>C · Solid K on a gamosa end</h2>
+  <p>Your K as it is, in gamosa red, sitting on the cloth with the red woven border folded along the bottom, the way a gamosa is presented.</p>
+  <div class="row icons">
+    <div><img src="logo/c-icon.svg" width="180" height="180" alt=""><div class="label">App icon</div></div>
+    <div><img src="logo/c-icon.svg" width="64" height="64" alt=""><div class="label">64</div></div>
+    <div><img src="logo/c-icon.svg" width="32" height="32" alt=""><div class="label">32</div></div>
+  </div>
+  <div class="row">
+    <div class="lockup"><svg class="mark" viewBox="0 0 849 599" style="height:34px;width:auto"><path fill="#b3172e" fill-rule="evenodd" d="M340 0 135 279 105 325 101 324 101 18 0 18 0 598 101 598 101 452 215 301 219 302 222 309 340 597 454 598 292 210 294 204 379 87 553 123 741 596 849 596 633 59Z M395 119 333 202 329 212 487 595 711 596 525 150Z"/></svg><span class="name">Kaamghor</span><span class="as" lang="as">কামঘৰ</span></div>
+  </div>
+</div>
+</div>
+</body>
+</html>
