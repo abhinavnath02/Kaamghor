@@ -3,21 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Kaamghor — Trusted help at home, daily work nearby</title>
-<meta name="description" content="Kaamghor connects homes in Tinsukia, Assam with trusted, SMS-verified daily-wage workers. Get Kaamghor for your home, or Kaamghor Partner to find work. Installs from your browser, free.">
+<title>Kaamghor: find help at home or a day's work in Tinsukia</title>
+<meta name="description" content="Post a cleaning, cooking, painting or caretaking job in Tinsukia and hire someone nearby. Or find a day's work with the rate shown before you apply. Free, installs from the browser.">
 <meta name="theme-color" content="#f2f2f6" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0a0a0c" media="(prefers-color-scheme: dark)">
-<meta property="og:title" content="Kaamghor — Trusted help at home, daily work nearby">
-<meta property="og:description" content="Homes find SMS-verified workers nearby. Workers find daily work and get paid fairly. Tinsukia, Assam.">
+<meta property="og:title" content="Kaamghor: help at home and daily work in Tinsukia">
+<meta property="og:description" content="Homes post the work and the daily rate. People nearby apply. Both sides confirm when it's done.">
 <meta property="og:image" content="../icon-512.png">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../icon-192.png">
-<link rel="preload" as="image" href="shots/home-hire-light.webp" media="(prefers-color-scheme: light)">
-<link rel="preload" as="image" href="shots/home-hire-dark.webp" media="(prefers-color-scheme: dark)">
 <script>
   // Same theme choice as the app (it shares this site's storage); otherwise follow the phone.
   try { const t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (_) {}
-  // Which audience: ?for=workers (for posters and QR codes), else the last choice here.
+  // Which side: ?for=workers (for posters and QR codes), else the last choice here.
   try {
     const q = new URLSearchParams(location.search).get('for');
     const f = q === 'workers' || q === 'homes' ? q : localStorage.getItem('landing-for');
@@ -25,261 +23,223 @@
   } catch (_) { document.documentElement.dataset.for = 'homes'; }
 </script>
 <style>
-/* ---------- Tokens: the app's own, so the site and the app look like one product ---------- */
+/* The app's own tokens, so the site and the app read as one product. */
 :root {
   color-scheme: light;
-  --bg: #f2f2f6; --solid: #fbfbfd; --text: #1c1c1e; --muted: #6c6c74; --line: rgba(0,0,0,.09);
-  --brand: #1c1c1e; --brand-2: #48484a; --brand-ink: #ffffff; --brand-soft: rgba(28,28,30,.07);
-  --amber: #c25e00; --amber-2: #e0821c; --amber-soft: rgba(255,149,0,.14); --ok: #248a3d; --star: #f5a300; --info: #0a6cff;
-  --glass: rgba(255,255,255,.55); --glass-strong: rgba(255,255,255,.82);
+  --bg: #f2f2f6; --solid: #fbfbfd; --text: #1c1c1e; --muted: #6c6c74; --line: rgba(0,0,0,.09); --line-2: rgba(0,0,0,.16);
+  --brand: #1c1c1e; --brand-2: #48484a; --brand-ink: #ffffff; --brand-soft: rgba(28,28,30,.06);
+  --amber: #c25e00; --amber-soft: rgba(255,149,0,.12); --ok: #248a3d;
+  --glass: rgba(242,242,246,.72); --glass-strong: rgba(255,255,255,.86);
   --hi: inset 0 1px 0 rgba(255,255,255,.95), inset 0 0 0 1px rgba(255,255,255,.45);
   --shadow: 0 1px 2px rgba(0,0,0,.05), 0 10px 26px -12px rgba(0,0,0,.18);
-  --shadow-lg: 0 30px 70px -24px rgba(0,0,0,.35);
+  --phone: 0 30px 60px -30px rgba(0,0,0,.45);
   --blur: saturate(180%) blur(22px);
-  --blob1: rgba(110,140,255,.34); --blob2: rgba(255,160,120,.32); --blob3: rgba(180,130,255,.28);
   --status: #f4f4f8; --frame: #1c1c1e;
   --ease: cubic-bezier(.22,1,.36,1);
-  --gutter: clamp(16px, 4vw, 40px);
+  --gutter: clamp(18px, 4vw, 40px);
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0a0a0c; --solid: #1a1a1e; --text: #f2f2f7; --muted: #98989f; --line: rgba(255,255,255,.10);
-  --brand: #f2f2f7; --brand-2: #ffffff; --brand-ink: #0a0a0c; --brand-soft: rgba(255,255,255,.10);
-  --amber: #ff9f0a; --amber-2: #ffb340; --amber-soft: rgba(255,159,10,.16); --ok: #30d158; --star: #ffd60a; --info: #4c9dff;
-  --glass: rgba(44,44,50,.50); --glass-strong: rgba(40,40,46,.84);
+  --bg: #0a0a0c; --solid: #151518; --text: #f2f2f7; --muted: #98989f; --line: rgba(255,255,255,.09); --line-2: rgba(255,255,255,.18);
+  --brand: #f2f2f7; --brand-2: #ffffff; --brand-ink: #0a0a0c; --brand-soft: rgba(255,255,255,.08);
+  --amber: #ff9f0a; --amber-soft: rgba(255,159,10,.14); --ok: #30d158;
+  --glass: rgba(10,10,12,.7); --glass-strong: rgba(40,40,46,.88);
   --hi: inset 0 1px 0 rgba(255,255,255,.12), inset 0 0 0 1px rgba(255,255,255,.06);
   --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 30px -12px rgba(0,0,0,.65);
-  --shadow-lg: 0 30px 80px -24px rgba(0,0,0,.9);
-  --blob1: rgba(70,100,255,.30); --blob2: rgba(255,120,80,.16); --blob3: rgba(150,90,255,.24);
+  --phone: 0 30px 70px -30px rgba(0,0,0,.95);
   --status: #141418; --frame: #2a2a30;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --bg: #0a0a0c; --solid: #1a1a1e; --text: #f2f2f7; --muted: #98989f; --line: rgba(255,255,255,.10);
-    --brand: #f2f2f7; --brand-2: #ffffff; --brand-ink: #0a0a0c; --brand-soft: rgba(255,255,255,.10);
-    --amber: #ff9f0a; --amber-2: #ffb340; --amber-soft: rgba(255,159,10,.16); --ok: #30d158; --star: #ffd60a; --info: #4c9dff;
-    --glass: rgba(44,44,50,.50); --glass-strong: rgba(40,40,46,.84);
+    --bg: #0a0a0c; --solid: #151518; --text: #f2f2f7; --muted: #98989f; --line: rgba(255,255,255,.09); --line-2: rgba(255,255,255,.18);
+    --brand: #f2f2f7; --brand-2: #ffffff; --brand-ink: #0a0a0c; --brand-soft: rgba(255,255,255,.08);
+    --amber: #ff9f0a; --amber-soft: rgba(255,159,10,.14); --ok: #30d158;
+    --glass: rgba(10,10,12,.7); --glass-strong: rgba(40,40,46,.88);
     --hi: inset 0 1px 0 rgba(255,255,255,.12), inset 0 0 0 1px rgba(255,255,255,.06);
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 30px -12px rgba(0,0,0,.65);
-    --shadow-lg: 0 30px 80px -24px rgba(0,0,0,.9);
-    --blob1: rgba(70,100,255,.30); --blob2: rgba(255,120,80,.16); --blob3: rgba(150,90,255,.24);
+    --phone: 0 30px 70px -30px rgba(0,0,0,.95);
     --status: #141418; --frame: #2a2a30;
   }
 }
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-html { -webkit-text-size-adjust: 100%; background: var(--bg); scroll-padding-top: 80px; }
+html { -webkit-text-size-adjust: 100%; background: var(--bg); scroll-padding-top: 76px; }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 html, body { overflow-x: clip; }
-body { margin: 0; color: var(--text); font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Sans Bengali", "Noto Sans Devanagari", sans-serif;
+body { margin: 0; color: var(--text); background: var(--bg); font: 17px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Sans Bengali", "Noto Sans Devanagari", sans-serif;
   -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
-body::before { content: ""; position: fixed; inset: -10vmax; z-index: -1; pointer-events: none;
-  background: radial-gradient(36vmax 30vmax at 18% 18%, var(--blob1), transparent 65%), radial-gradient(30vmax 28vmax at 88% 40%, var(--blob2), transparent 65%),
-    radial-gradient(40vmax 32vmax at 35% 95%, var(--blob3), transparent 65%); }
 a { color: inherit; }
 img { display: block; max-width: 100%; }
-.ic { flex: none; display: block; }
-.wrap { max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter); }
-.glass { background: var(--glass); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); box-shadow: var(--hi), var(--shadow); }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 var(--gutter); }
 .muted { color: var(--muted); }
 
-/* Audience: each block marked for homes or workers shows only when that audience is chosen. */
+/* Each side's content shows only when that side is chosen. */
 [data-for="homes"] .w-only, [data-for="workers"] .h-only { display: none !important; }
-
-/* Screenshots: a light and a dark version, the right one for the theme. */
+/* Screenshots come in light and dark. */
 .sd { display: none; }
 :root[data-theme="dark"] .sl { display: none; } :root[data-theme="dark"] .sd { display: block; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .sl { display: none; } :root:not([data-theme="light"]) .sd { display: block; } }
 
-/* ---------- header ---------- */
+/* ---------- header (glass, like the app's) ---------- */
 .top { position: sticky; top: 0; z-index: 30; padding: calc(10px + env(safe-area-inset-top)) 0 10px; background: var(--glass);
-  -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); border-bottom: 1px solid transparent; transition: border-color .3s, box-shadow .3s; }
-.top.scrolled { border-bottom-color: var(--line); box-shadow: 0 8px 24px -16px rgba(0,0,0,.25); }
+  -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); border-bottom: 1px solid transparent; transition: border-color .3s; }
+.top.scrolled { border-bottom-color: var(--line); }
 .top .wrap { display: flex; align-items: center; gap: 12px; }
 .brand { display: flex; align-items: center; gap: 10px; margin-right: auto; font-weight: 800; font-size: 20px; letter-spacing: -.01em; text-decoration: none; }
 .brand svg { width: 34px; height: 24px; }
-.top nav { display: flex; gap: 6px; }
-.top nav a { padding: 8px 14px; border-radius: 999px; text-decoration: none; font-size: 15px; font-weight: 600; color: var(--muted); transition: background .2s, color .2s; }
-.top nav a:hover { background: var(--brand-soft); color: var(--text); }
+.top nav { display: flex; gap: 22px; margin-right: 8px; font-size: 15px; }
+.top nav a { text-decoration: none; color: var(--muted); }
+.top nav a:hover { color: var(--text); text-decoration: underline; text-underline-offset: 4px; }
 .iconbtn { display: grid; place-items: center; width: 40px; height: 40px; flex: none; border: 0; border-radius: 50%; cursor: pointer; color: var(--text);
   background: var(--glass-strong); box-shadow: var(--hi), var(--shadow); }
-@media (max-width: 860px) { .top nav { display: none; } }
+@media (max-width: 880px) { .top nav { display: none; } }
 
 /* ---------- buttons ---------- */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 24px; border: 0; border-radius: 16px;
-  font: 700 17px/1 inherit; font-family: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;
-  transition: transform .15s var(--ease), filter .2s, box-shadow .2s; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 22px; border: 0; border-radius: 16px;
+  font: inherit; font-weight: 700; font-size: 17px; line-height: 1; text-decoration: none; cursor: pointer; white-space: nowrap; transition: transform .15s var(--ease); }
 .btn:active { transform: scale(.97); }
-.btn.main { color: var(--brand-ink); background: linear-gradient(180deg, var(--brand-2), var(--brand)); box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 10px 24px -10px rgba(0,0,0,.45); }
-.btn.partner { color: #fff; background: linear-gradient(180deg, #e0821c, #c25e00); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 10px 24px -10px rgba(194,94,0,.6); }
-.btn.ghost { color: var(--text); background: var(--glass-strong); box-shadow: var(--hi), var(--shadow); }
-.btn.sm { min-height: 42px; padding: 0 16px; font-size: 15px; border-radius: 13px; }
+.btn.main { color: var(--brand-ink); background: linear-gradient(180deg, var(--brand-2), var(--brand)); box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 10px 24px -12px rgba(0,0,0,.45); }
+.btn.partner { color: #fff; background: linear-gradient(180deg, #e0821c, #c25e00); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 10px 24px -12px rgba(194,94,0,.6); }
+.btn.plain { color: var(--text); background: transparent; box-shadow: inset 0 0 0 1.5px var(--line-2); }
+.btn.sm { min-height: 40px; padding: 0 16px; font-size: 15px; border-radius: 12px; }
 .btn img { width: 26px; height: 26px; border-radius: 7px; }
 
-/* ---------- segmented switch (same as the app's) ---------- */
-.seg { display: inline-grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 5px; border-radius: 18px; }
-.seg button { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 18px; border: 0; border-radius: 14px; background: transparent;
-  font: inherit; font-weight: 700; font-size: 16px; color: var(--muted); cursor: pointer; white-space: nowrap; transition: background .3s var(--ease), color .2s, box-shadow .3s; }
-.seg button[aria-pressed="true"] { background: var(--glass-strong); color: var(--text); box-shadow: var(--hi), 0 4px 12px -4px rgba(0,0,0,.18); }
-[data-for="workers"] .seg button[aria-pressed="true"] { color: var(--amber); }
+/* ---------- the switch: the app's segmented control ---------- */
+.seg { display: inline-grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 16px; background: var(--brand-soft); }
+.seg button { min-height: 42px; padding: 0 16px; border: 0; border-radius: 12px; background: transparent; font: inherit; font-weight: 700; font-size: 15px; color: var(--muted); cursor: pointer;
+  white-space: nowrap; transition: background .3s var(--ease), color .2s, box-shadow .3s; }
+@media (max-width: 480px) { .seg { display: grid; width: 100%; } .seg button { padding: 6px 8px; white-space: normal; line-height: 1.2; font-size: 14px; } }
+.seg button[aria-pressed="true"] { background: var(--solid); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 4px 12px -6px rgba(0,0,0,.2); }
 
 /* ---------- hero ---------- */
-.hero { padding: clamp(28px, 6vw, 72px) 0 clamp(40px, 6vw, 80px); }
-.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); align-items: center; gap: clamp(24px, 4vw, 60px); }
-.where { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--muted); margin-bottom: 18px; }
-.where i { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 22%, transparent); }
-h1 { margin: 22px 0 14px; font-size: clamp(40px, 6.2vw, 72px); line-height: 1.02; letter-spacing: -.035em; font-weight: 800; }
-h1 em { font-style: normal; background: linear-gradient(90deg, var(--text), var(--muted)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-[data-for="workers"] h1 em { background: linear-gradient(90deg, var(--amber), var(--amber-2)); -webkit-background-clip: text; background-clip: text; }
-.lede { margin: 0 0 26px; max-width: 34ch; font-size: clamp(17px, 1.7vw, 20px); color: var(--muted); }
-.install { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
-.perks { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 18px; font-size: 14px; font-weight: 600; color: var(--muted); }
-.perks span { display: inline-flex; align-items: center; gap: 6px; }
-.perks svg { color: var(--ok); }
-.qr { display: none; align-items: center; gap: 14px; margin-top: 22px; padding: 12px 16px 12px 12px; border-radius: 20px; width: fit-content; font-size: 14px; font-weight: 600; color: var(--muted); }
-.qr .code { width: 92px; height: 92px; padding: 6px; border-radius: 12px; background: #fff; }
-.qr .code img, .qr .code canvas { width: 80px !important; height: 80px !important; }
-.qr b { display: block; color: var(--text); font-size: 15px; }
+.hero { padding: clamp(26px, 5vw, 60px) 0 0; }
+.hero h1 { margin: 22px 0 16px; max-width: 15ch; font-size: clamp(40px, 6.4vw, 76px); line-height: 1; letter-spacing: -.04em; font-weight: 800; }
+.hero .lede { margin: 0 0 26px; max-width: 44ch; font-size: clamp(18px, 1.8vw, 21px); color: var(--muted); }
+.cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.small { font-size: 15px; color: var(--muted); }
+.cta + .small { margin: 16px 0 0; max-width: 52ch; }
+.qr { display: none; margin-top: 22px; align-items: center; gap: 14px; font-size: 15px; color: var(--muted); }
+.qr .code { flex: none; padding: 6px; border-radius: 10px; background: #fff; box-shadow: inset 0 0 0 1px var(--line); }
+.qr .code img, .qr .code canvas { width: 76px !important; height: 76px !important; }
 .desktop .qr { display: flex; }
-@media (max-width: 860px) {
-  .hero .wrap { grid-template-columns: 1fr; }
-  .hero .stage { order: 2; }
-  h1 { margin-top: 18px; }
-  .install .btn { flex: 1 1 auto; }
+@media (max-width: 700px) { .cta .btn { flex: 1 1 auto; } }
+
+/* The same job, seen from both sides: the household's phone and the worker's phone. */
+.both { position: relative; margin-top: clamp(40px, 6vw, 72px); padding: clamp(28px, 4vw, 48px) 0 0; border-top: 1px solid var(--line); }
+.both .label { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
+.both .label p { margin: 0; max-width: 46ch; color: var(--muted); }
+.both .label b { color: var(--text); }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 5vw, 70px); justify-items: center; }
+.side { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; }
+.side figcaption { max-width: 300px; font-size: 15px; color: var(--muted); text-align: center; }
+.side figcaption b { display: block; color: var(--text); font-size: 16px; }
+[data-for="workers"] .side.home { order: 2; } [data-for="workers"] .side.work { order: 1; }
+@media (max-width: 700px) {
+  .pair { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter) 8px; scrollbar-width: none; justify-items: initial; }
+  .pair::-webkit-scrollbar { display: none; }
+  .side { flex: 0 0 78%; scroll-snap-align: center; }
 }
 
-/* ---------- phone mockups ---------- */
-.stage { position: relative; display: grid; place-items: center; min-height: 560px; perspective: 1600px; }
-.phone { --w: 290px; position: relative; width: var(--w); padding: 9px; border-radius: 50px; background: var(--frame);
-  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.12), 0 0 0 1px rgba(0,0,0,.25), var(--shadow-lg); transform-style: preserve-3d; will-change: transform; }
-.phone .screen { position: relative; aspect-ratio: 390 / 884; border-radius: 41px; overflow: hidden; background: var(--bg); container-type: inline-size; }
+.phone { --w: 290px; width: min(var(--w), 100%); padding: 8px; border-radius: 48px; background: var(--frame); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.1), var(--phone); }
+.phone .screen { position: relative; aspect-ratio: 390 / 884; border-radius: 40px; overflow: hidden; background: var(--bg); container-type: inline-size; }
 .phone .status { position: absolute; inset: 0 0 auto; z-index: 2; height: 10.3cqw; display: flex; align-items: center; justify-content: space-between; padding: 0 8.5cqw;
   background: var(--status); font-size: 3.9cqw; font-weight: 700; }
 .phone .status::after { content: ""; position: absolute; left: 50%; top: 2.4cqw; width: 26cqw; height: 6.6cqw; transform: translateX(-50%); border-radius: 99px; background: #000; }
 .phone .status svg { width: 15cqw; height: 3.6cqw; }
 .phone .shots { position: absolute; inset: 10.3cqw 0 0; }
-.phone .shots img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; transition: opacity .5s var(--ease); }
+.phone .shots img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; transition: opacity .45s var(--ease); }
 .phone .shots img.on { opacity: 1; }
-.stage .front { z-index: 2; transform: rotateY(-16deg) rotateX(5deg) rotateZ(1deg); }
-.stage .back { position: absolute; --w: 250px; z-index: 1; right: 0; top: 9%; opacity: .92; transform: rotateY(-22deg) rotateX(6deg) translateZ(-120px) translateX(18%); filter: saturate(.9); }
-@media (max-width: 1080px) { .stage .back { display: none; } }
-@media (max-width: 860px) { .stage { min-height: 0; padding: 12px 0 30px; } .stage .front { transform: none; } }
-
-/* Notification bubbles, styled like the app's toasts. */
-.chip { position: absolute; z-index: 3; display: flex; align-items: center; gap: 10px; padding: 10px 14px 10px 10px; border-radius: 18px; font-size: 14px; line-height: 1.25; max-width: 250px;
-  animation: float 6s ease-in-out infinite; }
-.chip b { display: block; font-size: 14px; }
-.chip span { color: var(--muted); font-size: 13px; }
-.chip .dot { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 11px; color: #fff; background: var(--brand); }
-.chip .dot.ok { background: var(--ok); } .chip .dot.amber { background: var(--amber); } .chip .dot.star { background: var(--star); color: #1c1c1e; }
-.chip.c1 { left: -4%; top: 16%; } .chip.c2 { right: -6%; top: 52%; animation-delay: -2s; } .chip.c3 { left: 2%; bottom: 10%; animation-delay: -4s; }
-@keyframes float { 50% { transform: translateY(-10px); } }
-@media (max-width: 860px) { .chip.c1 { left: 0; top: 8%; } .chip.c2 { right: 0; top: 46%; } .chip.c3 { left: 4%; bottom: 14%; } .chip { max-width: 210px; padding: 8px 12px 8px 8px; } .chip .dot { width: 30px; height: 30px; } }
-@media (max-width: 400px) { .chip.c3 { display: none; } }
 
 /* ---------- sections ---------- */
-section { padding: clamp(60px, 9vw, 120px) 0; }
-.kicker { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
-h2 { margin: 12px 0 14px; font-size: clamp(32px, 4.6vw, 52px); line-height: 1.05; letter-spacing: -.03em; font-weight: 800; }
-.sub { margin: 0; max-width: 52ch; color: var(--muted); font-size: 18px; }
+section { padding: clamp(70px, 10vw, 130px) 0 0; }
+h2 { margin: 0 0 14px; max-width: 22ch; font-size: clamp(30px, 4.2vw, 48px); line-height: 1.06; letter-spacing: -.03em; font-weight: 800; }
+.intro { margin: 0; max-width: 56ch; color: var(--muted); font-size: 18px; }
 
-/* Services, as tiles like the app's "Work needed" picker. */
-.skills { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 36px; }
-.skill { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 120px; padding: 16px 8px; border-radius: 22px; text-align: center; font-weight: 700; font-size: 16px; }
-.skill svg { width: 32px; height: 32px; }
-@media (max-width: 860px) { .skills { grid-template-columns: repeat(2, 1fr); } .skill { flex-direction: row; justify-content: flex-start; min-height: 64px; padding: 12px 16px; } .skill svg { width: 26px; height: 26px; } }
+/* Rate board: the app's suggested day rates, like a price board on a shop wall. */
+.rates { display: grid; grid-template-columns: 1fr 1fr; gap: 0 56px; margin-top: 34px; }
+.rate { display: flex; align-items: center; gap: 14px; padding: 15px 0; border-bottom: 1px solid var(--line); }
+.rate svg { flex: none; width: 26px; height: 26px; }
+.rate .name { font-weight: 650; }
+.rate .dots { flex: 1; align-self: flex-end; margin-bottom: 7px; border-bottom: 2px dotted var(--line-2); }
+.rate .amt { font-weight: 800; font-variant-numeric: tabular-nums; }
+.rate .amt small { font-weight: 500; color: var(--muted); }
+.fine { margin: 20px 0 0; max-width: 64ch; font-size: 15px; color: var(--muted); }
+@media (max-width: 760px) { .rates { grid-template-columns: 1fr; } }
 
-/* How it works: the phone stays while the steps scroll past; its screen follows the step. */
-.how { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(30px, 6vw, 90px); margin-top: 30px; }
-.how .sticky { position: sticky; top: 90px; align-self: start; display: grid; place-items: center; padding: 10px 0; }
-.how .sticky .phone { --w: 300px; }
-.steps { display: grid; }
-.step { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; padding: 20px 0; opacity: .3; transition: opacity .5s var(--ease); }
-.step.on { opacity: 1; }
-.step .n { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; font-weight: 800; color: var(--brand-ink); background: var(--brand); margin-bottom: 18px; }
-[data-for="workers"] .step .n { background: var(--amber); color: #fff; }
-.step h3 { margin: 0 0 10px; font-size: clamp(26px, 3.2vw, 38px); letter-spacing: -.025em; line-height: 1.1; }
-.step p { margin: 0; max-width: 42ch; color: var(--muted); font-size: 18px; }
-.step .mini { display: none; }
+/* How it works, told with the app's own job tracker. */
+.flow { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: clamp(30px, 7vw, 100px); margin-top: 26px; }
+.tracker { position: sticky; top: 76px; z-index: 5; display: flex; gap: 0; margin: 0 0 10px; padding: 14px 0; background: var(--bg); }
+.tracker span { flex: 1; position: relative; text-align: center; font-size: 13px; font-weight: 650; color: var(--muted); }
+.tracker i { display: grid; place-items: center; width: 28px; height: 28px; margin: 0 auto 6px; border-radius: 50%; font-style: normal; font-size: 13px; font-weight: 800;
+  border: 2px solid var(--line-2); background: var(--bg); position: relative; z-index: 1; transition: background .3s, border-color .3s, color .3s; }
+.tracker span::before { content: ""; position: absolute; top: 13px; right: 50%; width: 100%; height: 2px; background: var(--line-2); }
+.tracker span:first-child::before { display: none; }
+.tracker span.done i { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.tracker span.done { color: var(--text); }
+.tracker span.done::before { background: var(--brand); }
+[data-for="workers"] .tracker span.done i { background: var(--amber); border-color: var(--amber); color: #fff; }
+[data-for="workers"] .tracker span.done::before { background: var(--amber); }
+.stage { padding: 6vh 0 18vh; }
+.stage + .stage { border-top: 1px solid var(--line); }
+.stage h3 { margin: 0 0 10px; font-size: clamp(24px, 2.8vw, 32px); letter-spacing: -.02em; line-height: 1.15; }
+.stage p { margin: 0; max-width: 46ch; color: var(--muted); font-size: 18px; }
+.stage .mini { display: none; }
+.flow .hold { position: sticky; top: 160px; align-self: start; }
+.flow .hold .phone { --w: 280px; }
 @media (max-width: 860px) {
-  .how { grid-template-columns: 1fr; }
-  .how .sticky { display: none; }
-  .step { min-height: 0; opacity: 1; padding: 0 0 50px; }
-  .step .mini { display: block; margin-top: 22px; }
-  .step .mini .phone { --w: min(270px, 78vw); margin: 0 auto; }
+  .flow { grid-template-columns: 1fr; }
+  .flow .hold { display: none; }
+  .stage { padding: 30px 0 40px; }
+  .stage .mini { display: block; margin-top: 22px; }
+  .stage .mini .phone { --w: 250px; margin: 0 auto; }
+  .tracker { top: 64px; }
 }
 
-/* Trust */
-.trust { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 36px; }
-.tile { padding: 26px; border-radius: 24px; }
-.tile .ib { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 15px; margin-bottom: 16px; background: var(--brand-soft); }
-.tile h3 { margin: 0 0 6px; font-size: 20px; letter-spacing: -.01em; }
-.tile p { margin: 0; color: var(--muted); font-size: 16px; }
-@media (max-width: 860px) { .trust { grid-template-columns: 1fr; } }
+/* Safety: a plain two-column list, what we check and what stays private. */
+.lists { display: grid; grid-template-columns: 1fr 1fr; gap: 0 56px; margin-top: 30px; }
+.lists h3 { margin: 0 0 6px; font-size: 15px; color: var(--muted); font-weight: 650; }
+.lists ul { margin: 0 0 28px; padding: 0; list-style: none; }
+.lists li { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.lists li b { display: block; }
+.lists li span { color: var(--muted); font-size: 16px; }
+@media (max-width: 760px) { .lists { grid-template-columns: 1fr; } }
 
-/* Both apps */
-.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 36px; }
-.app { display: flex; flex-direction: column; gap: 14px; padding: clamp(24px, 3vw, 36px); border-radius: 28px; }
-.app .head { display: flex; align-items: center; gap: 14px; }
-.app .head img { width: 64px; height: 64px; border-radius: 16px; box-shadow: var(--shadow); }
-.app h3 { margin: 0; font-size: 26px; letter-spacing: -.02em; }
-.app .for { font-size: 14px; font-weight: 700; color: var(--muted); }
-.app ul { margin: 4px 0 8px; padding: 0; list-style: none; display: grid; gap: 10px; color: var(--muted); }
-.app li { display: flex; gap: 10px; }
-.app li svg { margin-top: 3px; color: var(--ok); }
-.app .row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto; }
-.app.p { box-shadow: var(--hi), var(--shadow), inset 0 0 0 2px color-mix(in srgb, var(--amber) 35%, transparent); }
-@media (max-width: 860px) { .pair { grid-template-columns: 1fr; } .app .row .btn { flex: 1 1 auto; } }
+/* The two apps as listing rows. */
+.apps { margin-top: 30px; border-top: 1px solid var(--line); }
+.listing { display: flex; align-items: center; gap: 18px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+.listing img { width: 72px; height: 72px; border-radius: 17px; box-shadow: var(--shadow); }
+.listing .t { flex: 1; min-width: 0; }
+.listing .t b { display: block; font-size: 20px; letter-spacing: -.01em; }
+.listing .t span { color: var(--muted); font-size: 16px; }
+.listing .go { display: flex; gap: 10px; }
+@media (max-width: 700px) { .listing { flex-wrap: wrap; } .listing .go { width: 100%; } .listing .go .btn { flex: 1; } }
 
-/* FAQ */
-.faq { margin-top: 30px; display: grid; gap: 10px; max-width: 820px; }
-.faq details { border-radius: 20px; padding: 0 20px; }
-.faq summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 0; cursor: pointer; font-weight: 700; font-size: 18px; list-style: none; }
-.faq summary::-webkit-details-marker { display: none; }
-.faq summary svg { transition: transform .3s var(--ease); color: var(--muted); }
-.faq details[open] summary svg { transform: rotate(45deg); }
-.faq details p { margin: 0 0 18px; color: var(--muted); }
+/* Questions, answered plainly. */
+.qa { display: grid; grid-template-columns: 1fr 1fr; gap: 26px 56px; margin-top: 30px; }
+.qa h3 { margin: 0 0 6px; font-size: 18px; }
+.qa p { margin: 0; color: var(--muted); }
+@media (max-width: 760px) { .qa { grid-template-columns: 1fr; } }
 
-footer { padding: 30px 0 calc(110px + env(safe-area-inset-bottom)); color: var(--muted); font-size: 15px; }
-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; border-top: 1px solid var(--line); padding-top: 26px; }
+footer { margin-top: clamp(70px, 10vw, 120px); padding: 26px 0 calc(110px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); color: var(--muted); font-size: 15px; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; }
 footer a { text-decoration: none; } footer a:hover { color: var(--text); }
 
-/* Sticky install bar, like the app's dock. Shows once the hero's buttons scroll away. */
-.dock { position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 40; display: flex; align-items: center; gap: 12px; width: min(560px, calc(100% - 24px));
-  padding: 8px 8px 8px 10px; border-radius: 24px; transform: translate(-50%, 140%); transition: transform .45s var(--ease); background: var(--glass-strong); }
+/* Install bar, like the app's dock. Shows once the hero's buttons scroll away. */
+.dock { position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 40; display: flex; align-items: center; gap: 12px; width: min(520px, calc(100% - 24px));
+  padding: 8px 8px 8px 10px; border-radius: 22px; transform: translate(-50%, 140%); transition: transform .45s var(--ease);
+  background: var(--glass-strong); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); box-shadow: var(--hi), var(--shadow); }
 .dock.show { transform: translate(-50%, 0); }
 .dock img { width: 42px; height: 42px; border-radius: 11px; }
-.dock .t { flex: 1; min-width: 0; line-height: 1.2; }
+.dock .t { flex: 1; min-width: 0; line-height: 1.25; }
 .dock .t b { display: block; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.dock .t span { font-size: 13px; color: var(--muted); }
-.dock .swap { flex: none; border: 0; background: none; color: var(--muted); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; padding: 6px; text-decoration: underline; text-underline-offset: 3px; }
-@media (max-width: 420px) { .dock .swap { display: none; } }
-
-/* Reveal on scroll */
-.rv { opacity: 0; transform: translateY(24px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
-.rv.in { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) {
-  .rv { opacity: 1; transform: none; transition: none; }
-  .chip { animation: none; }
-  .stage .front, .stage .back { transition: none; }
-}
+.dock .t button { padding: 0; border: 0; background: none; font: inherit; font-size: 14px; color: var(--muted); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="kg" viewBox="0 0 849 599"><path fill="currentColor" fill-rule="evenodd" d="M340 0 135 279 105 325 101 324 101 18 0 18 0 598 101 598 101 452 215 301 219 302 222 309 340 597 454 598 292 210 294 204 379 87 553 123 741 596 849 596 633 59Z M395 119 333 202 329 212 487 595 711 596 525 150Z"/></symbol>
-  <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/></symbol>
-  <symbol id="i-home" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v12h14V9"/><path d="M10 21v-6h4v6"/></g></symbol>
-  <symbol id="i-brief" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8 7V5.5A2.5 2.5 0 0 1 10.5 3h3A2.5 2.5 0 0 1 16 5.5V7M3 13h18"/></g></symbol>
-  <symbol id="i-shield" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></g></symbol>
-  <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9z"/></symbol>
-  <symbol id="i-cash" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></g></symbol>
-  <symbol id="i-pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.1 7-12a7 7 0 0 0-14 0c0 5.9 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></g></symbol>
-  <symbol id="i-lang" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></g></symbol>
-  <symbol id="i-wifi" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1" fill="currentColor"/></g></symbol>
-  <symbol id="i-plus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20.5 13.5A8.5 8.5 0 1 1 10.5 3.5a6.6 6.6 0 0 0 10 10z"/></symbol>
   <symbol id="i-status" viewBox="0 0 60 14"><g fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0.5" width="3" height="12.5" rx="1"/><rect x="34" y="1.5" width="22" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="36" y="3.5" width="15" height="7" rx="1.5"/><rect x="57.5" y="5" width="2" height="4" rx="1"/></g></symbol>
@@ -288,179 +248,158 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#top" aria-label="Kaamghor"><svg aria-hidden="true"><use href="#kg"/></svg>Kaamghor</a>
-    <nav aria-label="Sections"><a href="#how">How it works</a><a href="#services">Services</a><a href="#safety">Safety</a><a href="#apps">The apps</a></nav>
+    <nav aria-label="Sections"><a href="#rates">Rates</a><a href="#how">How it works</a><a href="#safety">Safety</a><a href="#apps">Download</a></nav>
     <button class="iconbtn" id="theme" type="button" aria-label="Switch light or dark"><svg width="20" height="20"><use href="#i-moon"/></svg></button>
-    <a class="btn main sm h-only" href="../?install">Get the app</a>
-    <a class="btn partner sm w-only" href="../partner/?install">Get the app</a>
   </div>
 </header>
 
 <main id="top">
-  <!-- ===== Hero: choose who you are, install right here ===== -->
   <div class="hero">
     <div class="wrap">
-      <div>
-        <div class="where glass"><i></i>Now in Tinsukia, Assam · কামঘৰ · कामघर</div><br>
-        <div class="seg glass" role="group" aria-label="I am">
-          <button type="button" data-pick="homes" aria-pressed="true"><svg width="20" height="20"><use href="#i-home"/></svg>I need help</button>
-          <button type="button" data-pick="workers" aria-pressed="false"><svg width="20" height="20"><use href="#i-brief"/></svg>I want work</button>
-        </div>
-        <h1 class="h-only">Trusted help at home, <em>close by.</em></h1>
-        <h1 class="w-only">Daily work near you, <em>paid fairly.</em></h1>
-        <p class="lede h-only">Cleaners, cooks, painters and caretakers from your own area. Every number checked by SMS, rated by other homes, with the pay agreed up front.</p>
-        <p class="lede w-only">Homes in your area post jobs every day. See the daily rate before you apply, get hired in a tap, and get paid by UPI, cash or online.</p>
-        <div class="install">
-          <a class="btn main h-only" href="../?install"><img src="../icon-192.png" alt="">Install Kaamghor</a>
-          <a class="btn partner w-only" href="../partner/?install"><img src="../partner/icon-192.png" alt="">Install Kaamghor Partner</a>
-          <a class="btn ghost h-only" href="../">Open in browser</a>
-          <a class="btn ghost w-only" href="../partner/">Open in browser</a>
-        </div>
-        <div class="perks" id="heroCta">
-          <span><svg width="16" height="16"><use href="#i-check"/></svg>Free to join</span>
-          <span><svg width="16" height="16"><use href="#i-check"/></svg>No app store needed</span>
-          <span><svg width="16" height="16"><use href="#i-check"/></svg>Works on weak internet</span>
-          <span><svg width="16" height="16"><use href="#i-check"/></svg>English, অসমীয়া, हिन्दी</span>
-        </div>
-        <div class="qr glass h-only"><div class="code" data-qr="../?install"></div><div><b>On a computer?</b>Scan to install on your phone.</div></div>
-        <div class="qr glass w-only"><div class="code" data-qr="../partner/?install"></div><div><b>On a computer?</b>Scan to install on your phone.</div></div>
+      <div class="seg" role="group" aria-label="What are you looking for?">
+        <button type="button" data-pick="homes" aria-pressed="true">I need help at home</button>
+        <button type="button" data-pick="workers" aria-pressed="false">I'm looking for work</button>
       </div>
+      <h1 class="h-only">Find a cleaner, cook or painter in Tinsukia.</h1>
+      <h1 class="w-only">Find a day's work in Tinsukia.</h1>
+      <p class="lede h-only">Say what needs doing and on which day. People from your part of town who do that work apply, and you choose who comes.</p>
+      <p class="lede w-only">Homes near you post work every day, and every job shows its daily rate before you apply. You pick the ones that suit you.</p>
+      <div class="cta" id="heroCta">
+        <a class="btn main h-only" href="../?install"><img src="../icon-192.png" alt="">Install Kaamghor</a>
+        <a class="btn partner w-only" href="../partner/?install"><img src="../partner/icon-192.png" alt="">Install Kaamghor Partner</a>
+        <a class="btn plain h-only" href="../">Use it in the browser</a>
+        <a class="btn plain w-only" href="../partner/">Use it in the browser</a>
+      </div>
+      <p class="small">Free to join. It installs straight from this page, so there's no Play Store download, and it works in English, অসমীয়া and हिन्दी.</p>
+      <div class="qr h-only"><div class="code" data-qr="../?install"></div>On a computer? Point your phone's camera here to install it there.</div>
+      <div class="qr w-only"><div class="code" data-qr="../partner/?install"></div>On a computer? Point your phone's camera here to install it there.</div>
 
-      <div class="stage" aria-hidden="true">
-        <div class="phone back">
-          <div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div>
-            <div class="shots">
-              <img class="on sl h-only" src="shots/home-track-light.webp" alt="" loading="lazy"><img class="on sd h-only" src="shots/home-track-dark.webp" alt="" loading="lazy">
-              <img class="on sl w-only" src="shots/work-map-light.webp" alt="" loading="lazy"><img class="on sd w-only" src="shots/work-map-dark.webp" alt="" loading="lazy">
-            </div></div>
+      <!-- One cleaning job, as each side sees it -->
+      <div class="both">
+        <div class="label"><p><b>One job, two phones.</b> Priya in Tinsukia Town hired Ramesh to clean two rooms and the kitchen. This is what each of them sees once he has arrived.</p></div>
+        <div class="pair">
+          <figure class="side home" style="margin:0">
+            <div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div>
+              <div class="shots"><img class="on sl" src="shots/home-track-light.webp" alt="Priya's phone: the cleaning job with Ramesh hired and arrived"><img class="on sd" src="shots/home-track-dark.webp" alt="Priya's phone: the cleaning job with Ramesh hired and arrived"></div></div></div>
+            <figcaption><b>Priya's phone</b>Kaamghor, the app for homes</figcaption>
+          </figure>
+          <figure class="side work" style="margin:0">
+            <div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div>
+              <div class="shots"><img class="on sl" src="shots/work-job-light.webp" alt="Ramesh's phone: the same job, with Priya's details and the location"><img class="on sd" src="shots/work-job-dark.webp" alt="Ramesh's phone: the same job, with Priya's details and the location"></div></div></div>
+            <figcaption><b>Ramesh's phone</b>Kaamghor Partner, the app for workers</figcaption>
+          </figure>
         </div>
-        <div class="phone front" id="heroPhone">
-          <div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div>
-            <div class="shots">
-              <img class="on sl h-only" src="shots/home-hire-light.webp" alt=""><img class="on sd h-only" src="shots/home-hire-dark.webp" alt="">
-              <img class="on sl w-only" src="shots/work-find-light.webp" alt=""><img class="on sd w-only" src="shots/work-find-dark.webp" alt="">
-            </div></div>
-        </div>
-        <div class="chip glass c1 h-only"><span class="dot ok"><svg width="18" height="18"><use href="#i-check"/></svg></span><div><b>Ramesh has arrived</b><span>Confirm to start the work</span></div></div>
-        <div class="chip glass c2 h-only"><span class="dot star"><svg width="18" height="18"><use href="#i-star"/></svg></span><div><b>4.8 · 23 jobs</b><span>SMS-verified, ID checked</span></div></div>
-        <div class="chip glass c3 h-only"><span class="dot"><svg width="18" height="18"><use href="#i-brief"/></svg></span><div><b>3 people applied</b><span>Painting · Tinsukia Town</span></div></div>
-        <div class="chip glass c1 w-only"><span class="dot amber"><svg width="18" height="18"><use href="#i-brief"/></svg></span><div><b>New job near you</b><span>Cooking · Hijuguri · ₹450/day</span></div></div>
-        <div class="chip glass c2 w-only"><span class="dot ok"><svg width="18" height="18"><use href="#i-cash"/></svg></span><div><b>₹500 received</b><span>Paid by UPI</span></div></div>
-        <div class="chip glass c3 w-only"><span class="dot star"><svg width="18" height="18"><use href="#i-star"/></svg></span><div><b>Priya rated you 5★</b><span>“On time, very neat work”</span></div></div>
       </div>
     </div>
   </div>
 
-  <!-- ===== Services ===== -->
-  <section id="services">
+  <section id="rates">
     <div class="wrap">
-      <div class="kicker rv">Services</div>
-      <h2 class="rv h-only">Every kind of help around the house.</h2>
-      <h2 class="rv w-only">Work for every skill.</h2>
-      <p class="sub rv h-only">Book for a half day, a day or a few weeks, one person or a whole crew.</p>
-      <p class="sub rv w-only">Pick everything you can do. A Thikadar can bring a whole crew for bigger jobs.</p>
-      <div class="skills">
-        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#1e88e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5 11.7 8l4.5 1.7-4.5 1.7L10 16l-1.7-4.6L3.8 9.7 8.3 8z"/><path d="m18 14 .9 2.1 2.1.9-2.1.9L18 20l-.9-2.1L15 17l2.1-.9z"/><path d="M18 3v3M16.5 4.5h3"/></svg>Cleaning</div>
-        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#e5731e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16v5.5a3.5 3.5 0 0 1-3.5 3.5h-9A3.5 3.5 0 0 1 4 16.5z"/><path d="M2 11h20M9 3.5c-.8.9-.8 1.8 0 2.7s.8 1.8 0 2.7M14.5 3.5c-.8.9-.8 1.8 0 2.7s.8 1.8 0 2.7"/></svg>Cooking</div>
-        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#22a845" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 21h10M12 21v-9"/><path d="M12 12C12 8 9.5 5.5 5 5.5 5 9.5 7.5 12 12 12z"/><path d="M12 10c0-3.3 2.2-5.5 6.5-5.5 0 3.3-2.2 5.5-6.5 5.5z"/></svg>Gardening</div>
-        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#d6337a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="15" height="6" rx="2"/><path d="M18 6h2a1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1h-8v2.5"/><rect x="10" y="14" width="4" height="7.5" rx="1.2"/></svg>Painting</div>
-        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#5b3fd6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 7.5-9-4.5-9 4.5 9 4.5z"/><path d="M3 7.5v9l9 4.5 9-4.5v-9M12 12v9M7.5 5.2l9 4.5"/></svg>Helper</div>
-        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#1f9bb3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/></svg>Plumbing</div>
-        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#c9a00c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3.5 13.5H12L11 22l9.5-11.5H12z"/></svg>Electrical</div>
-        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#c42fb5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.4-9.3A5.2 5.2 0 0 1 12 6.4a5.2 5.2 0 0 1 9.4 4.8C19.5 15.9 12 20.5 12 20.5z"/></svg>Caretaker</div>
-        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#d1242f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>Healthcare</div>
-        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="#2f5bd3"><circle cx="5.5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="18.5" cy="12" r="1.8"/></svg>Others</div>
+      <h2 class="h-only">What a day's work costs.</h2>
+      <h2 class="w-only">What a day's work pays.</h2>
+      <p class="intro">These are the rates the app suggests when a job is posted. Half a day is paid half.</p>
+      <div class="rates">
+        <div class="rate"><svg viewBox="0 0 24 24" fill="none" stroke="#1e88e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5 11.7 8l4.5 1.7-4.5 1.7L10 16l-1.7-4.6L3.8 9.7 8.3 8z"/><path d="m18 14 .9 2.1 2.1.9-2.1.9L18 20l-.9-2.1L15 17l2.1-.9z"/></svg><span class="name">Cleaning</span><span class="dots"></span><span class="amt">₹450 <small>/ day</small></span></div>
+        <div class="rate"><svg viewBox="0 0 24 24" fill="none" stroke="#e5731e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16v5.5a3.5 3.5 0 0 1-3.5 3.5h-9A3.5 3.5 0 0 1 4 16.5z"/><path d="M2 11h20M9 3.5c-.8.9-.8 1.8 0 2.7s.8 1.8 0 2.7M14.5 3.5c-.8.9-.8 1.8 0 2.7s.8 1.8 0 2.7"/></svg><span class="name">Cooking</span><span class="dots"></span><span class="amt">₹500 <small>/ day</small></span></div>
+        <div class="rate"><svg viewBox="0 0 24 24" fill="none" stroke="#22a845" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 21h10M12 21v-9"/><path d="M12 12C12 8 9.5 5.5 5 5.5 5 9.5 7.5 12 12 12z"/><path d="M12 10c0-3.3 2.2-5.5 6.5-5.5 0 3.3-2.2 5.5-6.5 5.5z"/></svg><span class="name">Gardening</span><span class="dots"></span><span class="amt">₹450 <small>/ day</small></span></div>
+        <div class="rate"><svg viewBox="0 0 24 24" fill="none" stroke="#d6337a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="15" height="6" rx="2"/><path d="M18 6h2a1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1h-8v2.5"/><rect x="10" y="14" width="4" height="7.5" rx="1.2"/></svg><span class="name">Painting</span><span class="dots"></span><span class="amt">₹700 <small>/ day</small></span></div>
+        <div class="rate"><svg viewBox="0 0 24 24" fill="none" stroke="#5b3fd6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 7.5-9-4.5-9 4.5 9 4.5z"/><path d="M3 7.5v9l9 4.5 9-4.5v-9M12 12v9"/></svg><span class="name">Helper</span><span class="dots"></span><span class="amt">₹450 <small>/ day</small></span></div>
+        <div class="rate"><svg viewBox="0 0 24 24" fill="none" stroke="#1f9bb3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/></svg><span class="name">Plumbing</span><span class="dots"></span><span class="amt">₹800 <small>/ day</small></span></div>
+        <div class="rate"><svg viewBox="0 0 24 24" fill="none" stroke="#c9a00c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3.5 13.5H12L11 22l9.5-11.5H12z"/></svg><span class="name">Electrical</span><span class="dots"></span><span class="amt">₹800 <small>/ day</small></span></div>
+        <div class="rate"><svg viewBox="0 0 24 24" fill="none" stroke="#c42fb5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.4-9.3A5.2 5.2 0 0 1 12 6.4a5.2 5.2 0 0 1 9.4 4.8C19.5 15.9 12 20.5 12 20.5z"/></svg><span class="name">Caretaker</span><span class="dots"></span><span class="amt">₹600 <small>/ day</small></span></div>
+        <div class="rate"><svg viewBox="0 0 24 24" fill="none" stroke="#d1242f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg><span class="name">Healthcare</span><span class="dots"></span><span class="amt">₹900 <small>/ day</small></span></div>
+        <div class="rate"><svg viewBox="0 0 24 24" fill="#2f5bd3"><circle cx="5.5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="18.5" cy="12" r="1.8"/></svg><span class="name">Anything else</span><span class="dots"></span><span class="amt">₹500 <small>/ day</small></span></div>
       </div>
+      <p class="fine h-only">You can offer more than the suggested rate, but not less than the minimum for that kind of work. For two people, it's twice the rate.</p>
+      <p class="fine w-only">A home can offer more than this, never less than the minimum. A Thikadar bringing a crew is paid the rate for each person in it.</p>
     </div>
   </section>
 
-  <!-- ===== How it works: real screens ===== -->
   <section id="how">
     <div class="wrap">
-      <div class="kicker rv">How it works</div>
-      <h2 class="rv h-only">Post, hire, done. Three steps.</h2>
-      <h2 class="rv w-only">Find, work, get paid. Three steps.</h2>
-      <div class="how">
-        <div class="sticky">
-          <div class="phone">
-            <div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div>
-              <div class="shots" id="howShots">
-                <img class="h-only sl" data-step="0" src="shots/home-post-light.webp" alt="" loading="lazy"><img class="h-only sd" data-step="0" src="shots/home-post-dark.webp" alt="" loading="lazy">
-                <img class="h-only sl" data-step="1" src="shots/home-hire-light.webp" alt="" loading="lazy"><img class="h-only sd" data-step="1" src="shots/home-hire-dark.webp" alt="" loading="lazy">
-                <img class="h-only sl" data-step="2" src="shots/home-track-light.webp" alt="" loading="lazy"><img class="h-only sd" data-step="2" src="shots/home-track-dark.webp" alt="" loading="lazy">
-                <img class="w-only sl" data-step="0" src="shots/work-find-light.webp" alt="" loading="lazy"><img class="w-only sd" data-step="0" src="shots/work-find-dark.webp" alt="" loading="lazy">
-                <img class="w-only sl" data-step="1" src="shots/work-map-light.webp" alt="" loading="lazy"><img class="w-only sd" data-step="1" src="shots/work-map-dark.webp" alt="" loading="lazy">
-                <img class="w-only sl" data-step="2" src="shots/work-job-light.webp" alt="" loading="lazy"><img class="w-only sd" data-step="2" src="shots/work-job-dark.webp" alt="" loading="lazy">
-              </div></div>
+      <h2 class="h-only">From posting the job to paying for it.</h2>
+      <h2 class="w-only">From seeing the job to getting paid.</h2>
+      <p class="intro">Every job in the app moves along this line. Both of you see the same one.</p>
+      <div class="flow">
+        <div>
+          <div class="tracker" id="tracker" aria-hidden="true">
+            <span><i>1</i>Posted</span><span><i>2</i>Hired</span><span><i>3</i>Arrived</span><span><i>4</i>Done</span><span><i>5</i>Paid</span>
           </div>
-        </div>
-        <div class="steps">
-          <div class="step h-only" data-step="0"><span class="n">1</span><h3>Post the job.</h3><p>Pick the work, the day and how many people. The app suggests a fair daily rate and tells you how many workers nearby can do it.</p>
-            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/home-post-light.webp" alt="Post a job screen" loading="lazy"><img class="on sd" src="shots/home-post-dark.webp" alt="Post a job screen" loading="lazy"></div></div></div></div></div>
-          <div class="step h-only" data-step="1"><span class="n">2</span><h3>Choose who to hire.</h3><p>Workers nearby apply within minutes. Compare ratings, jobs done and the ID-checked badge, then hire with one tap. A Thikadar can bring a whole crew.</p>
-            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/home-hire-light.webp" alt="Applicants screen" loading="lazy"><img class="on sd" src="shots/home-hire-dark.webp" alt="Applicants screen" loading="lazy"></div></div></div></div></div>
-          <div class="step h-only" data-step="2"><span class="n">3</span><h3>Confirm, pay and rate.</h3><p>The worker marks arrival and you confirm. The same two-way check closes the job. Pay by UPI, cash or online, then rate each other.</p>
-            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/home-track-light.webp" alt="Job progress screen" loading="lazy"><img class="on sd" src="shots/home-track-dark.webp" alt="Job progress screen" loading="lazy"></div></div></div></div></div>
+          <div class="stage h-only" data-step="0" data-reach="1"><h3>You post the job</h3><p>Pick the kind of work, the day, how long, and how many people. The app fills in the suggested rate and shows how many people nearby do that work.</p>
+            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/home-post-light.webp" alt="Posting a job" loading="lazy"><img class="on sd" src="shots/home-post-dark.webp" alt="Posting a job" loading="lazy"></div></div></div></div></div>
+          <div class="stage h-only" data-step="1" data-reach="2"><h3>People apply, you hire</h3><p>Each applicant shows their rating, how many jobs they've done, and a blue tick if their ID has been checked. Their phone number appears only after you hire them.</p>
+            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/home-hire-light.webp" alt="Applicants for a painting job" loading="lazy"><img class="on sd" src="shots/home-hire-dark.webp" alt="Applicants for a painting job" loading="lazy"></div></div></div></div></div>
+          <div class="stage h-only" data-step="2" data-reach="5"><h3>Both of you confirm, then you pay</h3><p>When they arrive, they tap Arrived and you confirm it. The same happens when the work is done. Then pay by UPI, cash or online and rate each other.</p>
+            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/home-track-light.webp" alt="The job after arrival" loading="lazy"><img class="on sd" src="shots/home-track-dark.webp" alt="The job after arrival" loading="lazy"></div></div></div></div></div>
 
-          <div class="step w-only" data-step="0"><span class="n">1</span><h3>See jobs near you.</h3><p>New jobs in your area appear live, with the daily rate, the dates and the home's rating. Apply in one tap.</p>
-            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/work-find-light.webp" alt="Find jobs screen" loading="lazy"><img class="on sd" src="shots/work-find-dark.webp" alt="Find jobs screen" loading="lazy"></div></div></div></div></div>
-          <div class="step w-only" data-step="1"><span class="n">2</span><h3>Pick the ones close by.</h3><p>The map shows every job's rough area and pay, so you don't spend half the day travelling. The exact place is shared once you're hired.</p>
-            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/work-map-light.webp" alt="Map of jobs" loading="lazy"><img class="on sd" src="shots/work-map-dark.webp" alt="Map of jobs" loading="lazy"></div></div></div></div></div>
-          <div class="step w-only" data-step="2"><span class="n">3</span><h3>Do the work, get paid.</h3><p>Mark when you arrive and when you're done; the home confirms both. Get paid by UPI, cash or online, and good ratings bring you more work.</p>
-            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/work-job-light.webp" alt="Job in progress" loading="lazy"><img class="on sd" src="shots/work-job-dark.webp" alt="Job in progress" loading="lazy"></div></div></div></div></div>
+          <div class="stage w-only" data-step="0" data-reach="1"><h3>A job is posted near you</h3><p>You see it straight away, with the date, the area and the daily rate. Turn on “Only my area” to hide the far ones.</p>
+            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/work-find-light.webp" alt="Jobs near you" loading="lazy"><img class="on sd" src="shots/work-find-dark.webp" alt="Jobs near you" loading="lazy"></div></div></div></div></div>
+          <div class="stage w-only" data-step="1" data-reach="2"><h3>You apply and get hired</h3><p>The map shows roughly where each job is, so you can choose ones you can reach. The exact house is shared only when you're hired.</p>
+            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/work-map-light.webp" alt="Map of jobs with their pay" loading="lazy"><img class="on sd" src="shots/work-map-dark.webp" alt="Map of jobs with their pay" loading="lazy"></div></div></div></div></div>
+          <div class="stage w-only" data-step="2" data-reach="5"><h3>You mark arrived and done, they pay</h3><p>The home confirms each step, so nobody can say you didn't come. You're paid by UPI, cash or online, and a good rating helps you get the next job.</p>
+            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/work-job-light.webp" alt="A job in progress" loading="lazy"><img class="on sd" src="shots/work-job-dark.webp" alt="A job in progress" loading="lazy"></div></div></div></div></div>
+        </div>
+        <div class="hold">
+          <div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div>
+            <div class="shots" id="holdShots">
+              <img class="h-only sl" data-step="0" src="shots/home-post-light.webp" alt="" loading="lazy"><img class="h-only sd" data-step="0" src="shots/home-post-dark.webp" alt="" loading="lazy">
+              <img class="h-only sl" data-step="1" src="shots/home-hire-light.webp" alt="" loading="lazy"><img class="h-only sd" data-step="1" src="shots/home-hire-dark.webp" alt="" loading="lazy">
+              <img class="h-only sl" data-step="2" src="shots/home-track-light.webp" alt="" loading="lazy"><img class="h-only sd" data-step="2" src="shots/home-track-dark.webp" alt="" loading="lazy">
+              <img class="w-only sl" data-step="0" src="shots/work-find-light.webp" alt="" loading="lazy"><img class="w-only sd" data-step="0" src="shots/work-find-dark.webp" alt="" loading="lazy">
+              <img class="w-only sl" data-step="1" src="shots/work-map-light.webp" alt="" loading="lazy"><img class="w-only sd" data-step="1" src="shots/work-map-dark.webp" alt="" loading="lazy">
+              <img class="w-only sl" data-step="2" src="shots/work-job-light.webp" alt="" loading="lazy"><img class="w-only sd" data-step="2" src="shots/work-job-dark.webp" alt="" loading="lazy">
+            </div></div></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== Safety and trust ===== -->
   <section id="safety">
     <div class="wrap">
-      <div class="kicker rv">Safety</div>
-      <h2 class="rv">Built on trust, both ways.</h2>
-      <p class="sub rv">Homes and workers check each other before anyone opens a door.</p>
-      <div class="trust">
-        <div class="tile glass rv"><div class="ib"><svg width="24" height="24"><use href="#i-shield"/></svg></div><h3>Every number SMS-verified</h3><p>No fake accounts. Phone numbers are shared only after a hire, never in public.</p></div>
-        <div class="tile glass rv"><div class="ib"><svg width="24" height="24" style="color:var(--star)"><use href="#i-star"/></svg></div><h3>Ratings both ways</h3><p>Homes rate workers and workers rate homes, with tags like “on time” and “paid promptly”.</p></div>
-        <div class="tile glass rv"><div class="ib"><svg width="24" height="24"><use href="#i-check"/></svg></div><h3>Two-way check-in</h3><p>Arrival and completion are confirmed by both sides. Problems go to a real person at Kaamghor.</p></div>
-        <div class="tile glass rv"><div class="ib"><svg width="24" height="24"><use href="#i-cash"/></svg></div><h3>Fair pay, up front</h3><p>Daily rates are suggested for each kind of work and shown before anyone applies.</p></div>
-        <div class="tile glass rv"><div class="ib"><svg width="24" height="24"><use href="#i-pin"/></svg></div><h3>Exact place stays private</h3><p>Workers see only the rough area until they're hired.</p></div>
-        <div class="tile glass rv"><div class="ib"><svg width="24" height="24"><use href="#i-lang"/></svg></div><h3>Your language</h3><p>English, অসমীয়া and हिन्दी, with large buttons that work on any phone.</p></div>
+      <h2>Letting someone into your home, or walking into a stranger's.</h2>
+      <p class="intro">Both are a risk, so the app is careful about who you're dealing with and what each side can see.</p>
+      <div class="lists">
+        <div>
+          <h3>What gets checked</h3>
+          <ul>
+            <li><b>Every mobile number</b><span>Nobody can post or apply until their number is confirmed by an SMS code.</span></li>
+            <li><b>Workers' ID, if they upload it</b><span>Kaamghor looks at it and adds the blue tick. It isn't a police check, and the app says so.</span></li>
+            <li><b>Each side, after every job</b><span>Homes rate workers and workers rate homes. Ratings stay on the profile.</span></li>
+          </ul>
+        </div>
+        <div>
+          <h3>What stays private</h3>
+          <ul>
+            <li><b>Phone numbers</b><span>Shown to the other person only after a hire, never on a public profile.</span></li>
+            <li><b>The exact address</b><span>Workers see the rough area until they're hired.</span></li>
+            <li><b>ID documents</b><span>Only Kaamghor staff can open them.</span></li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== Both apps ===== -->
   <section id="apps">
     <div class="wrap">
-      <div class="kicker rv">The apps</div>
-      <h2 class="rv">Two apps. One neighbourhood.</h2>
-      <p class="sub rv">Both install straight from your browser. Free, small, and no app store needed.</p>
-      <div class="pair">
-        <div class="app glass rv">
-          <div class="head"><img src="../icon-192.png" alt=""><div><div class="for">For homes</div><h3>Kaamghor</h3></div></div>
-          <ul>
-            <li><svg width="16" height="16"><use href="#i-check"/></svg>Post a job in under a minute</li>
-            <li><svg width="16" height="16"><use href="#i-check"/></svg>Hire SMS-verified, rated people nearby</li>
-            <li><svg width="16" height="16"><use href="#i-check"/></svg>Follow every job live, from arrival to payment</li>
-          </ul>
-          <div class="row"><a class="btn main" href="../?install">Install Kaamghor</a><a class="btn ghost" href="../">Open in browser</a></div>
+      <h2>Download</h2>
+      <p class="intro">Homes and workers use separate apps, so each one only shows what you need. Install the one that's for you.</p>
+      <div class="apps">
+        <div class="listing">
+          <img src="../icon-192.png" alt="">
+          <div class="t"><b>Kaamghor</b><span>For homes that need help</span></div>
+          <div class="go"><a class="btn main sm" href="../?install">Install</a><a class="btn plain sm" href="../">Open</a></div>
         </div>
-        <div class="app p glass rv">
-          <div class="head"><img src="../partner/icon-192.png" alt=""><div><div class="for">For workers</div><h3>Kaamghor Partner</h3></div></div>
-          <ul>
-            <li><svg width="16" height="16"><use href="#i-check"/></svg>Daily work in your own area, live as it's posted</li>
-            <li><svg width="16" height="16"><use href="#i-check"/></svg>Know the pay before you apply</li>
-            <li><svg width="16" height="16"><use href="#i-check"/></svg>Ratings and an ID check bring you more work</li>
-          </ul>
-          <div class="row"><a class="btn partner" href="../partner/?install">Install Partner</a><a class="btn ghost" href="../partner/">Open in browser</a></div>
+        <div class="listing">
+          <img src="../partner/icon-192.png" alt="">
+          <div class="t"><b>Kaamghor Partner</b><span>For people looking for work, and Thikadars with a crew</span></div>
+          <div class="go"><a class="btn partner sm" href="../partner/?install">Install</a><a class="btn plain sm" href="../partner/">Open</a></div>
         </div>
       </div>
-
-      <div class="faq">
-        <details class="glass rv"><summary>Does it cost anything to join?<svg width="20" height="20"><use href="#i-plus"/></svg></summary><p>No. Signing up is free for homes and for workers. Kaamghor takes a small fee from the worker's pay for each completed job.</p></details>
-        <details class="glass rv"><summary>Why isn't it on the Play Store?<svg width="20" height="20"><use href="#i-plus"/></svg></summary><p>It doesn't need to be. Tap Install and your phone adds it to the home screen like any app. It is smaller than a store app and works on weak internet.</p></details>
-        <details class="glass rv"><summary>How do I install it on an iPhone?<svg width="20" height="20"><use href="#i-plus"/></svg></summary><p>Open the app in Safari, tap the Share button, then “Add to Home Screen”.</p></details>
-        <details class="glass rv"><summary>Which areas does it cover?<svg width="20" height="20"><use href="#i-plus"/></svg></summary><p>Tinsukia Town, Hijuguri, Borguri, Rangagora Road, Bordoloi Nagar and Chandmari, with more of Assam to follow.</p></details>
+      <div class="qa">
+        <div><h3>Does it cost anything?</h3><p>Joining is free for both. When a job is finished, Kaamghor keeps a small share of the worker's pay.</p></div>
+        <div><h3>Why isn't it on the Play Store?</h3><p>It doesn't have to be. Tap Install and your phone adds it to the home screen. It's a small download and copes with a weak signal.</p></div>
+        <div><h3>I have an iPhone</h3><p>Open the app in Safari, tap the Share button, then “Add to Home Screen”.</p></div>
+        <div><h3>Which parts of Tinsukia?</h3><p>Tinsukia Town, Hijuguri, Borguri, Rangagora Road, Bordoloi Nagar and Chandmari for now.</p></div>
       </div>
     </div>
   </section>
@@ -468,17 +407,18 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
 
 <footer>
   <div class="wrap">
-    <span>© 2026 Kaamghor · Tinsukia, Assam</span>
-    <span><a href="../terms.html">Terms and Privacy</a></span>
+    <span>© 2026 Kaamghor, Tinsukia, Assam</span>
+    <a href="../terms.html">Terms and privacy</a>
   </div>
 </footer>
 
-<!-- Sticky install bar -->
-<div class="dock glass" id="dock" aria-label="Install">
+<div class="dock" id="dock" aria-label="Install">
   <img class="h-only" src="../icon-192.png" alt=""><img class="w-only" src="../partner/icon-192.png" alt="">
-  <div class="t"><b class="h-only">Kaamghor</b><b class="w-only">Kaamghor Partner</b><span class="h-only">For homes · free</span><span class="w-only">For workers · free</span></div>
-  <button class="swap h-only" type="button" data-pick="workers">I want work</button>
-  <button class="swap w-only" type="button" data-pick="homes">I need help</button>
+  <div class="t">
+    <b class="h-only">Kaamghor</b><b class="w-only">Kaamghor Partner</b>
+    <button class="h-only" type="button" data-pick="workers">Looking for work instead?</button>
+    <button class="w-only" type="button" data-pick="homes">Need help at home instead?</button>
+  </div>
   <a class="btn main sm h-only" href="../?install">Install</a>
   <a class="btn partner sm w-only" href="../partner/?install">Install</a>
 </div>
@@ -488,20 +428,20 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
 (function () {
   const root = document.documentElement;
   const $$ = (q) => [...document.querySelectorAll(q)];
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const store = { get: (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} } };
   if (!/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent)) root.classList.add('desktop');
 
-  // ----- Who is this for: homes or workers. Everything marked h-only / w-only follows. -----
+  // Homes or workers: everything marked h-only / w-only follows.
   function pick(who, save) {
     root.dataset.for = who;
     $$('.seg button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.pick === who)));
     if (save) store.set('landing-for', who);
-    activate(current);
+    const first = document.querySelector(who === 'homes' ? '.stage.h-only' : '.stage.w-only');
+    show(first);
   }
   $$('[data-pick]').forEach((b) => b.addEventListener('click', () => pick(b.dataset.pick, true)));
 
-  // ----- Light / dark: same switch and storage as the app. -----
+  // Light / dark, shared with the app.
   const themeBtn = document.getElementById('theme');
   const dark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
   const paintTheme = () => { themeBtn.querySelector('use').setAttribute('href', dark() ? '#i-sun' : '#i-moon'); };
@@ -509,51 +449,30 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', paintTheme);
   paintTheme();
 
-  // ----- Header glass gets an edge once you scroll. -----
   const top = document.querySelector('.top');
   addEventListener('scroll', () => top.classList.toggle('scrolled', scrollY > 4), { passive: true });
 
-  // ----- Hero phone straightens as you scroll, and leans a little toward the mouse. -----
-  const front = document.querySelector('.stage .front'), back = document.querySelector('.stage .back');
-  let mx = 0, my = 0, ticking = false;
-  function tilt() {
-    ticking = false;
-    if (reduce || innerWidth <= 860) { front.style.transform = ''; return; }
-    const p = Math.min(1, scrollY / (innerHeight * 0.7));
-    front.style.transform = `rotateY(${(-16 + mx * 6) * (1 - p)}deg) rotateX(${(5 - my * 4) * (1 - p)}deg) translateY(${p * -20}px)`;
-    if (back) back.style.transform = `rotateY(-22deg) rotateX(6deg) translateZ(-120px) translateX(${18 + p * 24}%)`;
+  // How it works: the tracker fills to the stage in view, and the phone shows its screen.
+  const tracker = $$('#tracker span');
+  function show(stage) {
+    if (!stage) return;
+    const step = stage.dataset.step, reach = Number(stage.dataset.reach);
+    tracker.forEach((s, i) => s.classList.toggle('done', i < reach));
+    $$('#holdShots img').forEach((img) => img.classList.toggle('on', img.dataset.step === step));
   }
-  const ask = () => { if (!ticking) { ticking = true; requestAnimationFrame(tilt); } };
-  addEventListener('scroll', ask, { passive: true });
-  addEventListener('resize', ask);
-  addEventListener('pointermove', (e) => { mx = e.clientX / innerWidth - 0.5; my = e.clientY / innerHeight - 0.5; ask(); }, { passive: true });
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) show(e.target); }), { rootMargin: '-40% 0px -50% 0px' });
+  $$('.stage').forEach((s) => io.observe(s));
 
-  // ----- Reveal on scroll. -----
-  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
-  $$('.rv').forEach((el, i) => { el.style.transitionDelay = (i % 5) * 60 + 'ms'; io.observe(el); });
-
-  // ----- How it works: the sticky phone shows the screen for the step in view. -----
-  let current = 0;
-  function activate(i) {
-    current = i;
-    $$('.step').forEach((s) => s.classList.toggle('on', Number(s.dataset.step) === i));
-    $$('#howShots img').forEach((img) => img.classList.toggle('on', Number(img.dataset.step) === i));
-  }
-  const steps = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) activate(Number(e.target.dataset.step)); }), { rootMargin: '-45% 0px -45% 0px' });
-  $$('.step').forEach((s) => steps.observe(s));
-  activate(0);
-
-  // ----- Sticky install bar: once the hero's install buttons are out of view, until the apps section. -----
+  // Install bar: after the hero's buttons scroll away, until the Download section.
   const dock = document.getElementById('dock');
-  let heroGone = false, appsVisible = false;
-  const paintDock = () => dock.classList.toggle('show', heroGone && !appsVisible);
+  let heroGone = false, downloadsInView = false;
+  const paintDock = () => dock.classList.toggle('show', heroGone && !downloadsInView);
   new IntersectionObserver(([e]) => { heroGone = !e.isIntersecting && e.boundingClientRect.top < 0; paintDock(); }).observe(document.getElementById('heroCta'));
-  new IntersectionObserver(([e]) => { appsVisible = e.isIntersecting; paintDock(); }, { threshold: 0.25 }).observe(document.querySelector('.pair'));
+  new IntersectionObserver(([e]) => { downloadsInView = e.isIntersecting; paintDock(); }, { threshold: 0.3 }).observe(document.querySelector('.apps'));
 
-  // ----- QR codes on computers. -----
   addEventListener('DOMContentLoaded', () => {
     if (!window.QRCode || !root.classList.contains('desktop')) return;
-    $$('[data-qr]').forEach((el) => new QRCode(el, { text: new URL(el.dataset.qr, location.href).href, width: 160, height: 160, colorDark: '#1c1c1e', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }));
+    $$('[data-qr]').forEach((el) => new QRCode(el, { text: new URL(el.dataset.qr, location.href).href, width: 152, height: 152, colorDark: '#1c1c1e', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }));
   });
 
   pick(root.dataset.for || 'homes', false);
