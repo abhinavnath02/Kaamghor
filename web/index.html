@@ -5,10 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kaamghor</title>
 <meta name="description" content="Trusted daily-wage help for homes in Tinsukia, Assam.">
-<meta name="theme-color" content="#f2f2f6" id="themeColor">
+<meta name="theme-color" content="#f8f2e6" id="themeColor">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&display=swap" rel="stylesheet">
+<!-- Service icons: Phosphor (MIT), duotone. The service worker keeps a copy for offline use. -->
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css">
 <style>
 /* ---------- Tokens. Neutral graphite UI; glass sits over soft blue, peach and lavender light. ---------- */
 :root {
@@ -485,6 +490,92 @@ html.lite dialog::backdrop { -webkit-backdrop-filter: none; backdrop-filter: non
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* ===================== Gamosa =====================
+   The app wears the same cloth as the landing page: unbleached cotton, gamosa-red thread for
+   homes (gold for Partner), dark ink, a gamosa trim under the header and stitched edges.
+   These come last so they set the look over the rules above. */
+@font-face { font-family: Bowa; src: url(assets/fonts/bowa.woff2) format('woff2'); font-display: swap; }
+:root {
+  --bg: #f8f2e6; --solid: #fffaf1; --text: #2b1a12; --muted: #6f5a4a; --line: rgba(43,26,18,.12); --line-2: rgba(43,26,18,.22);
+  --brand: #b3172e; --brand-2: #c42038; --brand-ink: #fff8ee; --brand-soft: rgba(179,23,46,.09); --brand-glow: rgba(143,16,36,.35);
+  --amber: #a65a16; --accent: #a65a16; --accent-soft: rgba(200,115,38,.14);
+  --glass: rgba(255,250,241,.86); --glass-strong: #fffaf1; --glass-input: #fffdf8;
+  --hi: inset 0 0 0 1px rgba(43,26,18,.08);
+  --shadow: 0 1px 2px rgba(43,26,18,.06), 0 10px 24px -14px rgba(43,26,18,.32);
+  --shadow-lg: 0 20px 44px -16px rgba(43,26,18,.42);
+  --cloth-opacity: 1;
+  --woven: Bowa, "Tiro Bangla", system-ui, sans-serif;
+}
+:root[data-theme="dark"] {
+  --bg: #17110d; --solid: #241a14; --text: #f3ecdf; --muted: #b4a291; --line: rgba(243,236,223,.1); --line-2: rgba(243,236,223,.2);
+  --brand: #d8394f; --brand-2: #e2526a; --brand-ink: #fff8ee; --brand-soft: rgba(224,71,93,.15); --brand-glow: rgba(0,0,0,.55);
+  --amber: #e08a35; --accent: #e08a35; --accent-soft: rgba(224,138,53,.16);
+  --glass: rgba(36,26,20,.9); --glass-strong: #2c2019; --glass-input: rgba(243,236,223,.05);
+  --hi: inset 0 0 0 1px rgba(243,236,223,.07);
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 28px -14px rgba(0,0,0,.7);
+  --shadow-lg: 0 24px 50px -16px rgba(0,0,0,.8);
+  --cloth-opacity: .06;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17110d; --solid: #241a14; --text: #f3ecdf; --muted: #b4a291; --line: rgba(243,236,223,.1); --line-2: rgba(243,236,223,.2);
+    --brand: #d8394f; --brand-2: #e2526a; --brand-ink: #fff8ee; --brand-soft: rgba(224,71,93,.15); --brand-glow: rgba(0,0,0,.55);
+    --amber: #e08a35; --accent: #e08a35; --accent-soft: rgba(224,138,53,.16);
+    --glass: rgba(36,26,20,.9); --glass-strong: #2c2019; --glass-input: rgba(243,236,223,.05);
+    --hi: inset 0 0 0 1px rgba(243,236,223,.07);
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 28px -14px rgba(0,0,0,.7);
+    --shadow-lg: 0 24px 50px -16px rgba(0,0,0,.8);
+    --cloth-opacity: .06;
+  }
+}
+/* Kaamghor Partner is woven in gold thread. */
+:root.partner { --brand: #a65a16; --brand-2: #c8762a; --brand-soft: rgba(200,115,38,.12); --brand-glow: rgba(166,90,22,.4); }
+:root.partner[data-theme="dark"] { --brand: #e08a35; --brand-2: #ec9b4b; --brand-soft: rgba(224,138,53,.15); }
+@media (prefers-color-scheme: dark) { :root.partner:not([data-theme="light"]) { --brand: #e08a35; --brand-2: #ec9b4b; --brand-soft: rgba(224,138,53,.15); } }
+
+/* The cloth behind everything (very faint in dark mode). */
+body::before { inset: 0; background: url(assets/gamosa-cloth.svg) repeat 0 0 / 104px; opacity: var(--cloth-opacity); }
+
+/* Header: the logo in thread colour, with a gamosa trim along its foot. */
+.top { background: color-mix(in srgb, var(--bg) 92%, transparent); border-bottom: 0; }
+.top::after { content: ""; position: absolute; left: 0; right: 0; bottom: -10px; height: 10px; pointer-events: none;
+  background: url(assets/gamosa-trim.svg) repeat-x top / auto 22px; }
+.top.scrolled { box-shadow: none; }
+.brand .logo { color: var(--brand); }
+#brandName { font-weight: 900; letter-spacing: -.02em; }
+.ptag { background: var(--amber); }
+
+/* Page titles are woven in the thread colour. */
+main h1 { font-family: var(--woven); font-weight: 400; letter-spacing: .01em; color: var(--brand); }
+.title-row h1, main > h1 { font-size: 29px; }
+
+/* Buttons in thread colour with a stitched edge; quieter buttons get a quieter stitch. */
+.btn { border-radius: 14px; }
+.btn::before { content: ""; position: absolute; inset: 4px; border-radius: 10px; border: 1.5px dashed rgba(255,255,255,.42); pointer-events: none; }
+.btn.ghost::before, .btn.soft::before, .btn.danger::before, .btn.google::before { border-color: var(--line); }
+.btn.sm { border-radius: 12px; }
+.btn.sm::before { inset: 3px; border-radius: 9px; }
+.btn.ghost { color: var(--brand); }
+
+/* Cards: plain paper on the cloth. */
+.card { background: var(--solid); }
+.choice > span { background: var(--solid); }
+
+/* The bottom bar: paper with a stitched edge; the current tab is a patch of thread colour. */
+#tabs { background: var(--solid); }
+#tabs::after { content: ""; position: absolute; inset: 3px; border-radius: 25px; border: 1.5px dashed var(--line-2); pointer-events: none; }
+#tabs::before { background: var(--brand-soft); box-shadow: none; }
+
+/* Service icons: Phosphor duotone, in thread colour (stand-ins until our own are drawn). */
+.sk { color: var(--brand); }
+.sk i { display: block; line-height: 1; }
+.job-ic.sk { background: var(--brand-soft); }
+
+/* Login: the logo tile, the name woven, and a gamosa border at the foot. */
+.hero-logo { display: block; width: 96px; height: 96px; margin: 0 auto; border-radius: 24px; box-shadow: var(--shadow); }
+.hero h1 { font-size: 40px; margin-top: 16px; }
+.login-band { height: 92px; margin: 34px -18px 0; background: url(assets/gamosa-border.svg) repeat-x center / auto 100%; }
 </style>
 <script>
 // Decide before first paint: saved light/dark choice, and whether this phone gets blur.
@@ -886,10 +977,9 @@ const T = {
 // Must match valid_skill() and valid_area() in sql/01_schema.sql.
 const SKILLS = ['clean', 'cook', 'garden', 'paint', 'helper', 'plumb', 'elec', 'care', 'health', 'other'];
 // Line icon and tile hue for each kind of work.
-const SKILL_ICON = { clean: ['sparkles', 205], cook: ['pot', 22], garden: ['sprout', 135], paint: ['roller', 330], helper: ['package', 255], plumb: ['wrench', 190], elec: ['zap', 42], care: ['heart', 300], health: ['medical', 0], other: ['dots', 220] };
+const SKILL_ICON = { clean: 'broom', cook: 'cooking-pot', garden: 'plant', paint: 'paint-roller', helper: 'package', plumb: 'wrench', elec: 'lightning', care: 'hand-heart', health: 'first-aid-kit', other: 'toolbox' };
 function skillIcon(s, size = 24, cls = '') {
-  const [name, hue] = SKILL_ICON[s];
-  return `<span class="sk ${cls}" style="--h:${hue}">${icon(name, size)}</span>`;
+  return `<span class="sk ${cls}"><i class="ph-duotone ph-${SKILL_ICON[s]}" style="font-size:${size}px" aria-hidden="true"></i></span>`;
 }
 const AREAS = ['town', 'hijuguri', 'borguri', 'rangagora', 'bordoloi', 'chandmari'];
 const LOCALE = { en: 'en-IN', as: 'as-IN', hi: 'hi-IN' };
@@ -1093,7 +1183,7 @@ function isDark() {
 }
 function paintThemeChrome() {
   const dark = isDark();
-  $('#themeColor').content = dark ? '#0a0a0c' : '#f2f2f6';
+  $('#themeColor').content = dark ? '#17110d' : '#f8f2e6';
   const b = $('#themeBtn');
   const label = t(dark ? 'lightMode' : 'darkMode');
   b.innerHTML = icon(dark ? 'sun' : 'moon', 20);
@@ -1193,7 +1283,7 @@ function showLogin() {
   $('#tabs').hidden = true;
   const L = S.login;
   const langs = `<div class="langs">${['en', 'as', 'hi'].map((l) => `<button type="button" data-act="lang" data-lang="${l}" class="${S.lang === l ? 'on' : ''}">${{ en: 'English', as: 'অসমীয়া', hi: 'हिन्दी' }[l]}</button>`).join('')}</div>`;
-  const hero = `<div class="hero"><div class="hero-mark"><svg class="logo" aria-hidden="true"><use href="#kg-mark"/></svg></div><h1>${te('appName')}${PARTNER ? ` <span class="ptag">${te('partner')}</span>` : ''}</h1><div class="muted">${te(PARTNER ? 'taglinePartner' : 'tagline')}</div></div>`;
+  const hero = `<div class="hero"><img class="hero-logo" src="icon.svg" alt=""><h1>${te('appName')}${PARTNER ? ` <span class="ptag">${te('partner')}</span>` : ''}</h1><div class="muted">${te(PARTNER ? 'taglinePartner' : 'tagline')}</div></div>`;
   if (L.step === 'intro') {
     const slides = INTRO[ENTRY];
     main.innerHTML = `${langs}
@@ -1223,6 +1313,7 @@ function showLogin() {
         </form>
       </div>
       <div id="installSlot"></div>
+      <div class="login-band" aria-hidden="true"></div>
       ${crossLink()}`;
     updateInstallSlot();
   } else if (L.step === 'phone') {
