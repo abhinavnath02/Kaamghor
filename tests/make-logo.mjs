@@ -89,9 +89,22 @@ save('b-icon.svg', `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${S} ${
 <rect y="34" width="${S}" height="5" fill="${GOLD}"/><rect y="473" width="${S}" height="5" fill="${GOLD}"/>
 ${placeK(weave(CREAM, '#d9cdb8', 'b'))}</g></svg>\n`);
 
-// C: the solid K mark on cream, with a folded gamosa end (its red border) along the bottom.
-save('c-icon.svg', `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${S} ${S}"><defs><clipPath id="r"><rect width="${S}" height="${S}" rx="112"/></clipPath></defs>
-<g clip-path="url(#r)"><rect width="${S}" height="${S}" fill="${CREAM}"/><image href="${clothData}" width="${S}" height="${S}" preserveAspectRatio="none"/>
-<svg x="${kx + 10}" y="${ky - 22}" width="${kw - 20}" height="${(kw - 20) * 599 / 849}" viewBox="0 0 849 599"><path fill="${RED}" fill-rule="evenodd" d="${D}"/></svg>
+// C (chosen): the solid K mark on cream cotton, with a folded gamosa end (its red border) along the bottom.
+// Kaamghor's K is red; Kaamghor Partner's is gold. Rounded tiles for favicons; square, full-bleed ones
+// for the PNG app icons (phones apply their own mask).
+function cIcon(kColor, rounded) {
+  const clip = rounded ? `<defs><clipPath id="r"><rect width="${S}" height="${S}" rx="112"/></clipPath></defs>` : '';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${S} ${S}">${clip}
+<g${rounded ? ' clip-path="url(#r)"' : ''}><rect width="${S}" height="${S}" fill="${CREAM}"/><image href="${clothData}" width="${S}" height="${S}" preserveAspectRatio="none"/>
+<svg x="${kx + 10}" y="${ky - 22}" width="${kw - 20}" height="${(kw - 20) * 599 / 849}" viewBox="0 0 849 599"><path fill="${kColor}" fill-rule="evenodd" d="${D}"/></svg>
 <rect y="380" width="${S}" height="${BH}" fill="url(#band)"/></g>
-<defs><pattern id="band" width="${BH * bw / bh}" height="${BH}" patternUnits="userSpaceOnUse" y="380" x="${(S / 2) % (BH * bw / bh)}"><image href="${borderData}" width="${BH * bw / bh}" height="${BH}"/></pattern></defs></svg>\n`);
+<defs><pattern id="band" width="${BH * bw / bh}" height="${BH}" patternUnits="userSpaceOnUse" y="380" x="${(S / 2) % (BH * bw / bh)}"><image href="${borderData}" width="${BH * bw / bh}" height="${BH}"/></pattern></defs></svg>\n`;
+}
+save('c-icon.svg', cIcon(RED, true));
+save('c-icon-partner.svg', cIcon(GOLD, true));
+save('c-square.svg', cIcon(RED, false));
+save('c-square-partner.svg', cIcon(GOLD, false));
+// The chosen logo is the apps' icon: favicons for both apps. PNGs: node tests/render-icons.mjs
+writeFileSync(new URL('../web/icon.svg', import.meta.url), cIcon(RED, true));
+writeFileSync(new URL('../web/partner/icon.svg', import.meta.url), cIcon(GOLD, true));
+console.log('web/icon.svg, web/partner/icon.svg');
