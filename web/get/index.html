@@ -3,628 +3,561 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Kaamghor — Good work, close to home</title>
-<meta name="description" content="Kaamghor connects homes in Tinsukia, Assam with trusted, SMS-verified daily-wage workers. Get Kaamghor for your home, or Kaamghor Partner to find work.">
-<meta name="theme-color" content="#0b0b0d">
-<meta property="og:title" content="Kaamghor — Good work, close to home">
-<meta property="og:description" content="Trusted daily-wage help for homes in Tinsukia, and daily work for the people who do it.">
+<title>Kaamghor — Trusted help at home, daily work nearby</title>
+<meta name="description" content="Kaamghor connects homes in Tinsukia, Assam with trusted, SMS-verified daily-wage workers. Get Kaamghor for your home, or Kaamghor Partner to find work. Installs from your browser, free.">
+<meta name="theme-color" content="#f2f2f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a0a0c" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="Kaamghor — Trusted help at home, daily work nearby">
+<meta property="og:description" content="Homes find SMS-verified workers nearby. Workers find daily work and get paid fairly. Tinsukia, Assam.">
 <meta property="og:image" content="../icon-512.png">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" href="../icon-192.png">
+<link rel="preload" as="image" href="shots/home-hire-light.webp" media="(prefers-color-scheme: light)">
+<link rel="preload" as="image" href="shots/home-hire-dark.webp" media="(prefers-color-scheme: dark)">
+<script>
+  // Same theme choice as the app (it shares this site's storage); otherwise follow the phone.
+  try { const t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (_) {}
+  // Which audience: ?for=workers (for posters and QR codes), else the last choice here.
+  try {
+    const q = new URLSearchParams(location.search).get('for');
+    const f = q === 'workers' || q === 'homes' ? q : localStorage.getItem('landing-for');
+    document.documentElement.dataset.for = f === 'workers' ? 'workers' : 'homes';
+  } catch (_) { document.documentElement.dataset.for = 'homes'; }
+</script>
 <style>
+/* ---------- Tokens: the app's own, so the site and the app look like one product ---------- */
 :root {
-  --bg: #0b0b0d; --bg-2: #141417; --ink: #f3f1ec; --muted: rgba(243,241,236,.56); --faint: rgba(243,241,236,.12);
-  --amber: #ff8a1f; --amber-deep: #c25e00; --paper: #f3f1ec; --paper-ink: #111113;
-  --ease: cubic-bezier(.16, 1, .3, 1);
-  --gutter: clamp(16px, 4vw, 56px);
-  --serif: "Instrument Serif", "Times New Roman", serif;
-  --sans: "Inter Tight", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Sans Bengali", "Noto Sans Devanagari", sans-serif;
+  color-scheme: light;
+  --bg: #f2f2f6; --solid: #fbfbfd; --text: #1c1c1e; --muted: #6c6c74; --line: rgba(0,0,0,.09);
+  --brand: #1c1c1e; --brand-2: #48484a; --brand-ink: #ffffff; --brand-soft: rgba(28,28,30,.07);
+  --amber: #c25e00; --amber-2: #e0821c; --amber-soft: rgba(255,149,0,.14); --ok: #248a3d; --star: #f5a300; --info: #0a6cff;
+  --glass: rgba(255,255,255,.55); --glass-strong: rgba(255,255,255,.82);
+  --hi: inset 0 1px 0 rgba(255,255,255,.95), inset 0 0 0 1px rgba(255,255,255,.45);
+  --shadow: 0 1px 2px rgba(0,0,0,.05), 0 10px 26px -12px rgba(0,0,0,.18);
+  --shadow-lg: 0 30px 70px -24px rgba(0,0,0,.35);
+  --blur: saturate(180%) blur(22px);
+  --blob1: rgba(110,140,255,.34); --blob2: rgba(255,160,120,.32); --blob3: rgba(180,130,255,.28);
+  --status: #f4f4f8; --frame: #1c1c1e;
+  --ease: cubic-bezier(.22,1,.36,1);
+  --gutter: clamp(16px, 4vw, 40px);
 }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0a0a0c; --solid: #1a1a1e; --text: #f2f2f7; --muted: #98989f; --line: rgba(255,255,255,.10);
+  --brand: #f2f2f7; --brand-2: #ffffff; --brand-ink: #0a0a0c; --brand-soft: rgba(255,255,255,.10);
+  --amber: #ff9f0a; --amber-2: #ffb340; --amber-soft: rgba(255,159,10,.16); --ok: #30d158; --star: #ffd60a; --info: #4c9dff;
+  --glass: rgba(44,44,50,.50); --glass-strong: rgba(40,40,46,.84);
+  --hi: inset 0 1px 0 rgba(255,255,255,.12), inset 0 0 0 1px rgba(255,255,255,.06);
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 30px -12px rgba(0,0,0,.65);
+  --shadow-lg: 0 30px 80px -24px rgba(0,0,0,.9);
+  --blob1: rgba(70,100,255,.30); --blob2: rgba(255,120,80,.16); --blob3: rgba(150,90,255,.24);
+  --status: #141418; --frame: #2a2a30;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0a0a0c; --solid: #1a1a1e; --text: #f2f2f7; --muted: #98989f; --line: rgba(255,255,255,.10);
+    --brand: #f2f2f7; --brand-2: #ffffff; --brand-ink: #0a0a0c; --brand-soft: rgba(255,255,255,.10);
+    --amber: #ff9f0a; --amber-2: #ffb340; --amber-soft: rgba(255,159,10,.16); --ok: #30d158; --star: #ffd60a; --info: #4c9dff;
+    --glass: rgba(44,44,50,.50); --glass-strong: rgba(40,40,46,.84);
+    --hi: inset 0 1px 0 rgba(255,255,255,.12), inset 0 0 0 1px rgba(255,255,255,.06);
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 30px -12px rgba(0,0,0,.65);
+    --shadow-lg: 0 30px 80px -24px rgba(0,0,0,.9);
+    --blob1: rgba(70,100,255,.30); --blob2: rgba(255,120,80,.16); --blob3: rgba(150,90,255,.24);
+    --status: #141418; --frame: #2a2a30;
+  }
+}
+
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; background: var(--bg); scroll-padding-top: 80px; }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
-body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 var(--sans); overflow-x: clip; -webkit-font-smoothing: antialiased; }
+html, body { overflow-x: clip; }
+body { margin: 0; color: var(--text); font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Sans Bengali", "Noto Sans Devanagari", sans-serif;
+  -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+body::before { content: ""; position: fixed; inset: -10vmax; z-index: -1; pointer-events: none;
+  background: radial-gradient(36vmax 30vmax at 18% 18%, var(--blob1), transparent 65%), radial-gradient(30vmax 28vmax at 88% 40%, var(--blob2), transparent 65%),
+    radial-gradient(40vmax 32vmax at 35% 95%, var(--blob3), transparent 65%); }
 a { color: inherit; }
-img, svg, canvas { display: block; }
-::selection { background: var(--amber); color: var(--bg); }
+img { display: block; max-width: 100%; }
+.ic { flex: none; display: block; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter); }
+.glass { background: var(--glass); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); box-shadow: var(--hi), var(--shadow); }
+.muted { color: var(--muted); }
 
-/* Grain over everything, very faint. */
-body::after { content: ""; position: fixed; inset: -50%; z-index: 60; pointer-events: none; opacity: .05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain 1.2s steps(6) infinite; }
-@keyframes grain { 50% { transform: translate(-3%, 2%); } }
+/* Audience: each block marked for homes or workers shows only when that audience is chosen. */
+[data-for="homes"] .w-only, [data-for="workers"] .h-only { display: none !important; }
 
-/* ---------- 3D stage ---------- */
-#stage { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none; }
-.glow { position: fixed; z-index: 0; pointer-events: none; width: 70vmax; height: 70vmax; border-radius: 50%; filter: blur(80px); opacity: .22;
-  background: radial-gradient(circle, var(--amber-deep), transparent 62%); top: -20vmax; right: -25vmax; }
-.glow.b { background: radial-gradient(circle, #3a4bff, transparent 60%); opacity: .12; top: auto; bottom: -35vmax; left: -30vmax; right: auto; }
-main, header, footer { position: relative; z-index: 2; }
+/* Screenshots: a light and a dark version, the right one for the theme. */
+.sd { display: none; }
+:root[data-theme="dark"] .sl { display: none; } :root[data-theme="dark"] .sd { display: block; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .sl { display: none; } :root:not([data-theme="light"]) .sd { display: block; } }
 
-/* ---------- loader ---------- */
-#loader { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; background: var(--bg); }
-#loader .mark { width: 74px; color: var(--ink); }
-#loader .count { position: absolute; right: var(--gutter); bottom: calc(var(--gutter) + env(safe-area-inset-bottom)); font: 400 clamp(64px, 14vw, 180px)/.8 var(--serif); font-style: italic; color: var(--muted); }
-#loader .bar { position: absolute; left: 0; bottom: 0; height: 2px; width: 0; background: var(--amber); }
+/* ---------- header ---------- */
+.top { position: sticky; top: 0; z-index: 30; padding: calc(10px + env(safe-area-inset-top)) 0 10px; background: var(--glass);
+  -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); border-bottom: 1px solid transparent; transition: border-color .3s, box-shadow .3s; }
+.top.scrolled { border-bottom-color: var(--line); box-shadow: 0 8px 24px -16px rgba(0,0,0,.25); }
+.top .wrap { display: flex; align-items: center; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; margin-right: auto; font-weight: 800; font-size: 20px; letter-spacing: -.01em; text-decoration: none; }
+.brand svg { width: 34px; height: 24px; }
+.top nav { display: flex; gap: 6px; }
+.top nav a { padding: 8px 14px; border-radius: 999px; text-decoration: none; font-size: 15px; font-weight: 600; color: var(--muted); transition: background .2s, color .2s; }
+.top nav a:hover { background: var(--brand-soft); color: var(--text); }
+.iconbtn { display: grid; place-items: center; width: 40px; height: 40px; flex: none; border: 0; border-radius: 50%; cursor: pointer; color: var(--text);
+  background: var(--glass-strong); box-shadow: var(--hi), var(--shadow); }
+@media (max-width: 860px) { .top nav { display: none; } }
 
-/* ---------- cursor (mouse only) ---------- */
-.cursor { position: fixed; z-index: 90; left: 0; top: 0; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--ink);
-  pointer-events: none; mix-blend-mode: difference; transition: width .3s var(--ease), height .3s var(--ease), margin .3s var(--ease); display: none; }
-.cursor.big { width: 64px; height: 64px; margin: -32px 0 0 -32px; }
-@media (pointer: fine) { .cursor { display: block; } }
+/* ---------- buttons ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 24px; border: 0; border-radius: 16px;
+  font: 700 17px/1 inherit; font-family: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;
+  transition: transform .15s var(--ease), filter .2s, box-shadow .2s; }
+.btn:active { transform: scale(.97); }
+.btn.main { color: var(--brand-ink); background: linear-gradient(180deg, var(--brand-2), var(--brand)); box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 10px 24px -10px rgba(0,0,0,.45); }
+.btn.partner { color: #fff; background: linear-gradient(180deg, #e0821c, #c25e00); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 10px 24px -10px rgba(194,94,0,.6); }
+.btn.ghost { color: var(--text); background: var(--glass-strong); box-shadow: var(--hi), var(--shadow); }
+.btn.sm { min-height: 42px; padding: 0 16px; font-size: 15px; border-radius: 13px; }
+.btn img { width: 26px; height: 26px; border-radius: 7px; }
 
-/* ---------- nav ---------- */
-header { position: fixed; inset: 0 0 auto; z-index: 50; display: flex; align-items: center; gap: 16px; padding: calc(14px + env(safe-area-inset-top)) var(--gutter) 14px;
-  transition: background .4s, backdrop-filter .4s; }
-header.solid { background: rgba(11,11,13,.62); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); }
-.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; letter-spacing: -.02em; text-decoration: none; margin-right: auto; }
-.brand svg { width: 30px; height: 21px; }
-header nav { display: flex; gap: 28px; font-size: 14px; font-weight: 500; }
-header nav a { text-decoration: none; color: var(--muted); transition: color .2s; }
-header nav a:hover { color: var(--ink); }
-.pill { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 48px; padding: 0 22px; border-radius: 999px; border: 0;
-  font: 600 15px/1 var(--sans); text-decoration: none; cursor: pointer; white-space: nowrap; transition: transform .35s var(--ease), background .3s, color .3s; will-change: transform; }
-.pill.light { background: var(--ink); color: var(--bg); }
-.pill.amber { background: var(--amber); color: #1a0d00; }
-.pill.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--faint); }
-.pill.ghost:hover { box-shadow: inset 0 0 0 1px var(--muted); }
-.pill.sm { height: 40px; padding: 0 16px; font-size: 14px; }
-.pill .arr { transition: transform .35s var(--ease); }
-.pill:hover .arr { transform: translateX(4px); }
-@media (max-width: 820px) { header nav { display: none; } }
-
-/* ---------- type ---------- */
-.eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-.eyebrow::before { content: ""; width: 26px; height: 1px; background: currentColor; }
-.display { margin: 0; font: 700 clamp(48px, 10.5vw, 168px)/.9 var(--sans); letter-spacing: -.055em; }
-.display em, .h2 em, .big em { font: italic 400 1.04em/1 var(--serif); letter-spacing: -.02em; }
-.h2 { margin: 0; font: 700 clamp(38px, 6.4vw, 96px)/.95 var(--sans); letter-spacing: -.05em; }
-.lede { max-width: 33ch; font-size: clamp(17px, 1.6vw, 21px); line-height: 1.45; color: var(--muted); }
-.w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .08em; margin-bottom: -.08em; }
-.wi { display: inline-block; will-change: transform; }
+/* ---------- segmented switch (same as the app's) ---------- */
+.seg { display: inline-grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 5px; border-radius: 18px; }
+.seg button { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 18px; border: 0; border-radius: 14px; background: transparent;
+  font: inherit; font-weight: 700; font-size: 16px; color: var(--muted); cursor: pointer; white-space: nowrap; transition: background .3s var(--ease), color .2s, box-shadow .3s; }
+.seg button[aria-pressed="true"] { background: var(--glass-strong); color: var(--text); box-shadow: var(--hi), 0 4px 12px -4px rgba(0,0,0,.18); }
+[data-for="workers"] .seg button[aria-pressed="true"] { color: var(--amber); }
 
 /* ---------- hero ---------- */
-.hero { min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; padding: 120px var(--gutter) calc(32px + env(safe-area-inset-bottom)); }
-.hero .eyebrow { margin-bottom: 22px; }
-.hero .display { max-width: 10ch; }
-.hero-foot { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px 40px; margin-top: 34px; }
-.hero-foot .lede { margin: 0; }
-.ctas { display: flex; flex-wrap: wrap; gap: 10px; }
-.scrollcue { display: flex; align-items: center; gap: 10px; margin-top: 40px; font-size: 13px; color: var(--muted); }
-.scrollcue i { position: relative; width: 1px; height: 42px; background: var(--faint); overflow: hidden; }
-.scrollcue i::after { content: ""; position: absolute; left: 0; top: -40%; width: 1px; height: 40%; background: var(--ink); animation: cue 1.8s var(--ease) infinite; }
-@keyframes cue { to { top: 100%; } }
-@media (max-width: 720px) { .hero { padding-top: 46svh; } }
-
-/* ---------- marquee ---------- */
-.marquee { overflow: hidden; padding: 26px 0; border-block: 1px solid var(--faint); background: rgba(11,11,13,.4); backdrop-filter: blur(6px); }
-.marquee .track { display: flex; width: max-content; animation: marq 38s linear infinite; will-change: transform; }
-.marquee span { display: inline-flex; align-items: center; gap: .55em; padding-right: .55em; font: 700 clamp(34px, 6vw, 80px)/1 var(--sans); letter-spacing: -.04em; white-space: nowrap; }
-.marquee span:nth-child(3n+2) { font: italic 400 clamp(38px, 6.6vw, 88px)/1 var(--serif); color: var(--amber); }
-.marquee span:nth-child(3n) { color: transparent; -webkit-text-stroke: 1px rgba(243,241,236,.5); }
-.marquee span::after { content: "✦"; font: 400 .4em/1 var(--sans); color: var(--muted); -webkit-text-stroke: 0; }
-@keyframes marq { to { transform: translateX(-50%); } }
-
-/* ---------- statement ---------- */
-.statement { padding: clamp(110px, 18vw, 240px) var(--gutter); }
-.statement p { margin: 0; max-width: 21ch; font: 600 clamp(32px, 5.4vw, 78px)/1.06 var(--sans); letter-spacing: -.04em; }
-.statement p em { font: italic 400 1.06em/1 var(--serif); color: var(--amber); }
-.statement .sw { display: inline; }
-.statement .note { margin-top: 40px; display: flex; gap: 14px; align-items: center; color: var(--muted); font-size: 15px; }
-
-/* ---------- how it works (pinned) ---------- */
-.how { position: relative; min-height: 100svh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 40px; padding: 110px var(--gutter) 60px; }
-.how .num { font: italic 400 clamp(120px, 22vw, 320px)/.8 var(--serif); color: var(--amber); letter-spacing: -.04em; }
-.how .num small { font: 400 .22em/1 var(--sans); color: var(--muted); letter-spacing: 0; font-style: normal; vertical-align: top; margin-left: .3em; }
-.how .h2 { margin-top: 18px; }
-.cards { position: relative; height: min(440px, 62svh); }
-.step { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: clamp(24px, 3vw, 40px); border-radius: 32px; overflow: hidden;
-  background: linear-gradient(160deg, rgba(40,40,46,.55), rgba(16,16,20,.62)); box-shadow: inset 0 0 0 1px var(--faint), 0 40px 80px -40px rgba(0,0,0,.8);
-  backdrop-filter: blur(28px) saturate(1.4); -webkit-backdrop-filter: blur(28px) saturate(1.4); }
-.step .tag { position: absolute; top: clamp(24px, 3vw, 40px); left: clamp(24px, 3vw, 40px); font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-.step .ic { position: absolute; top: clamp(20px, 3vw, 34px); right: clamp(20px, 3vw, 34px); width: 64px; height: 64px; border-radius: 20px; display: grid; place-items: center; background: var(--ink); color: var(--bg); }
-.step h3 { margin: 0 0 12px; font: 700 clamp(30px, 3.6vw, 52px)/1 var(--sans); letter-spacing: -.04em; }
-.step h3 em { font: italic 400 1.06em/1 var(--serif); }
-.step p { margin: 0; max-width: 36ch; color: var(--muted); font-size: 17px; }
-.step:nth-child(n+2) { opacity: 0; }
-@media (max-width: 820px) {
-  .how { grid-template-columns: 1fr; align-content: center; gap: 22px; padding-top: 90px; }
-  .how .num { font-size: clamp(96px, 30vw, 150px); }
-  .cards { height: min(380px, 50svh); }
+.hero { padding: clamp(28px, 6vw, 72px) 0 clamp(40px, 6vw, 80px); }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); align-items: center; gap: clamp(24px, 4vw, 60px); }
+.where { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--muted); margin-bottom: 18px; }
+.where i { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 22%, transparent); }
+h1 { margin: 22px 0 14px; font-size: clamp(40px, 6.2vw, 72px); line-height: 1.02; letter-spacing: -.035em; font-weight: 800; }
+h1 em { font-style: normal; background: linear-gradient(90deg, var(--text), var(--muted)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+[data-for="workers"] h1 em { background: linear-gradient(90deg, var(--amber), var(--amber-2)); -webkit-background-clip: text; background-clip: text; }
+.lede { margin: 0 0 26px; max-width: 34ch; font-size: clamp(17px, 1.7vw, 20px); color: var(--muted); }
+.install { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.perks { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 18px; font-size: 14px; font-weight: 600; color: var(--muted); }
+.perks span { display: inline-flex; align-items: center; gap: 6px; }
+.perks svg { color: var(--ok); }
+.qr { display: none; align-items: center; gap: 14px; margin-top: 22px; padding: 12px 16px 12px 12px; border-radius: 20px; width: fit-content; font-size: 14px; font-weight: 600; color: var(--muted); }
+.qr .code { width: 92px; height: 92px; padding: 6px; border-radius: 12px; background: #fff; }
+.qr .code img, .qr .code canvas { width: 80px !important; height: 80px !important; }
+.qr b { display: block; color: var(--text); font-size: 15px; }
+.desktop .qr { display: flex; }
+@media (max-width: 860px) {
+  .hero .wrap { grid-template-columns: 1fr; }
+  .hero .stage { order: 2; }
+  h1 { margin-top: 18px; }
+  .install .btn { flex: 1 1 auto; }
 }
-.rm .how { min-height: 0; }
-.rm .cards { height: auto; display: grid; gap: 14px; }
-.rm .step { position: relative; min-height: 260px; opacity: 1 !important; }
 
-/* ---------- two apps ---------- */
-.apps { padding: clamp(100px, 14vw, 200px) var(--gutter) 40px; }
-.apps-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 40px; margin-bottom: clamp(40px, 6vw, 80px); }
-.apps-head .lede { margin: 0; }
-.pair { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(14px, 2vw, 24px); perspective: 1400px; }
-@media (max-width: 820px) { .pair { grid-template-columns: 1fr; } .app { min-height: 0; } }
-.app { --rx: 0deg; --ry: 0deg; position: relative; display: flex; flex-direction: column; min-height: 640px; padding: clamp(26px, 3.4vw, 48px); border-radius: 36px; overflow: hidden;
-  transform: rotateX(var(--rx)) rotateY(var(--ry)); transform-style: preserve-3d; transition: transform .6s var(--ease); }
-.app.home { background: var(--paper); color: var(--paper-ink); }
-.app.partner { background: linear-gradient(165deg, #ff9a35, var(--amber-deep) 70%); color: #170b00; }
-.app .icon { width: 84px; height: 84px; border-radius: 22px; display: grid; place-items: center; transform: translateZ(40px); }
-.app.home .icon { background: #1c1c1e; color: #fff; }
-.app.partner .icon { background: #1a0d00; color: #ffb25e; }
-.app .icon svg { width: 50px; height: 35px; }
-.app .for { margin-top: 26px; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .6; }
-.app h3 { margin: 8px 0 0; font: 700 clamp(40px, 5vw, 72px)/.92 var(--sans); letter-spacing: -.05em; transform: translateZ(30px); }
-.app h3 em { font: italic 400 1.04em/1 var(--serif); }
-.app ul { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 12px; font-size: 17px; }
-.app li { display: flex; gap: 12px; align-items: flex-start; }
-.app li::before { content: ""; flex: none; width: 18px; height: 18px; margin-top: 3px; border-radius: 50%; background: currentColor;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/12px no-repeat, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor; mask-composite: exclude; opacity: .85; }
-.app .get { margin-top: auto; padding-top: 34px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 18px; justify-content: space-between; }
-.app .btns { display: grid; gap: 10px; }
-.app.home .pill.main { background: #111113; color: #fff; }
-.app.partner .pill.main { background: #170b00; color: #ffb25e; }
-.app .pill.open { background: transparent; color: inherit; box-shadow: inset 0 0 0 1px currentColor; opacity: .75; }
-.app .qr { display: none; flex-direction: column; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; opacity: .75; }
-.app .qr div { padding: 10px; border-radius: 16px; background: #fff; }
-.app .qr img, .app .qr canvas { width: 116px !important; height: 116px !important; }
-.desktop .app .qr { display: flex; }
-.app .hint { width: 100%; margin: 0; font-size: 13px; opacity: .7; }
-.app .big-k { position: absolute; right: -60px; top: 40px; width: 340px; opacity: .07; transform: translateZ(-20px) rotate(-8deg); pointer-events: none; }
+/* ---------- phone mockups ---------- */
+.stage { position: relative; display: grid; place-items: center; min-height: 560px; perspective: 1600px; }
+.phone { --w: 290px; position: relative; width: var(--w); padding: 9px; border-radius: 50px; background: var(--frame);
+  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.12), 0 0 0 1px rgba(0,0,0,.25), var(--shadow-lg); transform-style: preserve-3d; will-change: transform; }
+.phone .screen { position: relative; aspect-ratio: 390 / 884; border-radius: 41px; overflow: hidden; background: var(--bg); container-type: inline-size; }
+.phone .status { position: absolute; inset: 0 0 auto; z-index: 2; height: 10.3cqw; display: flex; align-items: center; justify-content: space-between; padding: 0 8.5cqw;
+  background: var(--status); font-size: 3.9cqw; font-weight: 700; }
+.phone .status::after { content: ""; position: absolute; left: 50%; top: 2.4cqw; width: 26cqw; height: 6.6cqw; transform: translateX(-50%); border-radius: 99px; background: #000; }
+.phone .status svg { width: 15cqw; height: 3.6cqw; }
+.phone .shots { position: absolute; inset: 10.3cqw 0 0; }
+.phone .shots img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; transition: opacity .5s var(--ease); }
+.phone .shots img.on { opacity: 1; }
+.stage .front { z-index: 2; transform: rotateY(-16deg) rotateX(5deg) rotateZ(1deg); }
+.stage .back { position: absolute; --w: 250px; z-index: 1; right: 0; top: 9%; opacity: .92; transform: rotateY(-22deg) rotateX(6deg) translateZ(-120px) translateX(18%); filter: saturate(.9); }
+@media (max-width: 1080px) { .stage .back { display: none; } }
+@media (max-width: 860px) { .stage { min-height: 0; padding: 12px 0 30px; } .stage .front { transform: none; } }
 
-/* ---------- trust ---------- */
-.trust { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin: clamp(80px, 10vw, 140px) var(--gutter) 0; border-radius: 28px; overflow: hidden; background: var(--faint); }
-.trust div { padding: clamp(22px, 3vw, 40px); background: rgba(11,11,13,.82); backdrop-filter: blur(12px); }
-.trust b { display: block; font: italic 400 clamp(52px, 6vw, 92px)/.9 var(--serif); color: var(--ink); }
-.trust span { display: block; margin-top: 12px; color: var(--muted); font-size: 15px; max-width: 22ch; }
-@media (max-width: 820px) { .trust { grid-template-columns: 1fr 1fr; } }
+/* Notification bubbles, styled like the app's toasts. */
+.chip { position: absolute; z-index: 3; display: flex; align-items: center; gap: 10px; padding: 10px 14px 10px 10px; border-radius: 18px; font-size: 14px; line-height: 1.25; max-width: 250px;
+  animation: float 6s ease-in-out infinite; }
+.chip b { display: block; font-size: 14px; }
+.chip span { color: var(--muted); font-size: 13px; }
+.chip .dot { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 11px; color: #fff; background: var(--brand); }
+.chip .dot.ok { background: var(--ok); } .chip .dot.amber { background: var(--amber); } .chip .dot.star { background: var(--star); color: #1c1c1e; }
+.chip.c1 { left: -4%; top: 16%; } .chip.c2 { right: -6%; top: 52%; animation-delay: -2s; } .chip.c3 { left: 2%; bottom: 10%; animation-delay: -4s; }
+@keyframes float { 50% { transform: translateY(-10px); } }
+@media (max-width: 860px) { .chip.c1 { left: 0; top: 8%; } .chip.c2 { right: 0; top: 46%; } .chip.c3 { left: 4%; bottom: 14%; } .chip { max-width: 210px; padding: 8px 12px 8px 8px; } .chip .dot { width: 30px; height: 30px; } }
+@media (max-width: 400px) { .chip.c3 { display: none; } }
 
-/* ---------- final ---------- */
-.final { padding: clamp(120px, 18vw, 260px) var(--gutter) clamp(60px, 8vw, 100px); text-align: center; }
-.final .big { margin: 0 auto; max-width: 12ch; font: 700 clamp(56px, 12vw, 200px)/.88 var(--sans); letter-spacing: -.06em; }
-.final .ctas { justify-content: center; margin-top: 44px; }
-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px 30px; padding: 30px var(--gutter) calc(30px + env(safe-area-inset-bottom)); border-top: 1px solid var(--faint); color: var(--muted); font-size: 14px; }
-footer a { text-decoration: none; }
-footer a:hover { color: var(--ink); }
-footer .scripts { font-size: 15px; }
+/* ---------- sections ---------- */
+section { padding: clamp(60px, 9vw, 120px) 0; }
+.kicker { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+h2 { margin: 12px 0 14px; font-size: clamp(32px, 4.6vw, 52px); line-height: 1.05; letter-spacing: -.03em; font-weight: 800; }
+.sub { margin: 0; max-width: 52ch; color: var(--muted); font-size: 18px; }
 
-/* ---------- motion helpers: only when the animation library loaded ---------- */
-.anim [data-reveal] { opacity: 0; transform: translateY(40px); }
+/* Services, as tiles like the app's "Work needed" picker. */
+.skills { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 36px; }
+.skill { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 120px; padding: 16px 8px; border-radius: 22px; text-align: center; font-weight: 700; font-size: 16px; }
+.skill svg { width: 32px; height: 32px; }
+@media (max-width: 860px) { .skills { grid-template-columns: repeat(2, 1fr); } .skill { flex-direction: row; justify-content: flex-start; min-height: 64px; padding: 12px 16px; } .skill svg { width: 26px; height: 26px; } }
+
+/* How it works: the phone stays while the steps scroll past; its screen follows the step. */
+.how { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(30px, 6vw, 90px); margin-top: 30px; }
+.how .sticky { position: sticky; top: 90px; align-self: start; display: grid; place-items: center; padding: 10px 0; }
+.how .sticky .phone { --w: 300px; }
+.steps { display: grid; }
+.step { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; padding: 20px 0; opacity: .3; transition: opacity .5s var(--ease); }
+.step.on { opacity: 1; }
+.step .n { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; font-weight: 800; color: var(--brand-ink); background: var(--brand); margin-bottom: 18px; }
+[data-for="workers"] .step .n { background: var(--amber); color: #fff; }
+.step h3 { margin: 0 0 10px; font-size: clamp(26px, 3.2vw, 38px); letter-spacing: -.025em; line-height: 1.1; }
+.step p { margin: 0; max-width: 42ch; color: var(--muted); font-size: 18px; }
+.step .mini { display: none; }
+@media (max-width: 860px) {
+  .how { grid-template-columns: 1fr; }
+  .how .sticky { display: none; }
+  .step { min-height: 0; opacity: 1; padding: 0 0 50px; }
+  .step .mini { display: block; margin-top: 22px; }
+  .step .mini .phone { --w: min(270px, 78vw); margin: 0 auto; }
+}
+
+/* Trust */
+.trust { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 36px; }
+.tile { padding: 26px; border-radius: 24px; }
+.tile .ib { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 15px; margin-bottom: 16px; background: var(--brand-soft); }
+.tile h3 { margin: 0 0 6px; font-size: 20px; letter-spacing: -.01em; }
+.tile p { margin: 0; color: var(--muted); font-size: 16px; }
+@media (max-width: 860px) { .trust { grid-template-columns: 1fr; } }
+
+/* Both apps */
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 36px; }
+.app { display: flex; flex-direction: column; gap: 14px; padding: clamp(24px, 3vw, 36px); border-radius: 28px; }
+.app .head { display: flex; align-items: center; gap: 14px; }
+.app .head img { width: 64px; height: 64px; border-radius: 16px; box-shadow: var(--shadow); }
+.app h3 { margin: 0; font-size: 26px; letter-spacing: -.02em; }
+.app .for { font-size: 14px; font-weight: 700; color: var(--muted); }
+.app ul { margin: 4px 0 8px; padding: 0; list-style: none; display: grid; gap: 10px; color: var(--muted); }
+.app li { display: flex; gap: 10px; }
+.app li svg { margin-top: 3px; color: var(--ok); }
+.app .row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto; }
+.app.p { box-shadow: var(--hi), var(--shadow), inset 0 0 0 2px color-mix(in srgb, var(--amber) 35%, transparent); }
+@media (max-width: 860px) { .pair { grid-template-columns: 1fr; } .app .row .btn { flex: 1 1 auto; } }
+
+/* FAQ */
+.faq { margin-top: 30px; display: grid; gap: 10px; max-width: 820px; }
+.faq details { border-radius: 20px; padding: 0 20px; }
+.faq summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 0; cursor: pointer; font-weight: 700; font-size: 18px; list-style: none; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary svg { transition: transform .3s var(--ease); color: var(--muted); }
+.faq details[open] summary svg { transform: rotate(45deg); }
+.faq details p { margin: 0 0 18px; color: var(--muted); }
+
+footer { padding: 30px 0 calc(110px + env(safe-area-inset-bottom)); color: var(--muted); font-size: 15px; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; border-top: 1px solid var(--line); padding-top: 26px; }
+footer a { text-decoration: none; } footer a:hover { color: var(--text); }
+
+/* Sticky install bar, like the app's dock. Shows once the hero's buttons scroll away. */
+.dock { position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 40; display: flex; align-items: center; gap: 12px; width: min(560px, calc(100% - 24px));
+  padding: 8px 8px 8px 10px; border-radius: 24px; transform: translate(-50%, 140%); transition: transform .45s var(--ease); background: var(--glass-strong); }
+.dock.show { transform: translate(-50%, 0); }
+.dock img { width: 42px; height: 42px; border-radius: 11px; }
+.dock .t { flex: 1; min-width: 0; line-height: 1.2; }
+.dock .t b { display: block; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dock .t span { font-size: 13px; color: var(--muted); }
+.dock .swap { flex: none; border: 0; background: none; color: var(--muted); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; padding: 6px; text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 420px) { .dock .swap { display: none; } }
+
+/* Reveal on scroll */
+.rv { opacity: 0; transform: translateY(24px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+.rv.in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
-  body::after, .marquee .track, .scrollcue i::after { animation: none; }
-  .anim [data-reveal] { opacity: 1; transform: none; }
+  .rv { opacity: 1; transform: none; transition: none; }
+  .chip { animation: none; }
+  .stage .front, .stage .back { transition: none; }
 }
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="kg" viewBox="0 0 849 599"><path fill="currentColor" fill-rule="evenodd" d="M340 0 135 279 105 325 101 324 101 18 0 18 0 598 101 598 101 452 215 301 219 302 222 309 340 597 454 598 292 210 294 204 379 87 553 123 741 596 849 596 633 59Z M395 119 333 202 329 212 487 595 711 596 525 150Z"/></symbol></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="kg" viewBox="0 0 849 599"><path fill="currentColor" fill-rule="evenodd" d="M340 0 135 279 105 325 101 324 101 18 0 18 0 598 101 598 101 452 215 301 219 302 222 309 340 597 454 598 292 210 294 204 379 87 553 123 741 596 849 596 633 59Z M395 119 333 202 329 212 487 595 711 596 525 150Z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v12h14V9"/><path d="M10 21v-6h4v6"/></g></symbol>
+  <symbol id="i-brief" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8 7V5.5A2.5 2.5 0 0 1 10.5 3h3A2.5 2.5 0 0 1 16 5.5V7M3 13h18"/></g></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></g></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9z"/></symbol>
+  <symbol id="i-cash" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></g></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.1 7-12a7 7 0 0 0-14 0c0 5.9 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></g></symbol>
+  <symbol id="i-lang" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></g></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1" fill="currentColor"/></g></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20.5 13.5A8.5 8.5 0 1 1 10.5 3.5a6.6 6.6 0 0 0 10 10z"/></symbol>
+  <symbol id="i-status" viewBox="0 0 60 14"><g fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0.5" width="3" height="12.5" rx="1"/><rect x="34" y="1.5" width="22" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="36" y="3.5" width="15" height="7" rx="1.5"/><rect x="57.5" y="5" width="2" height="4" rx="1"/></g></symbol>
+</svg>
 
-<div id="loader" aria-hidden="true"><svg class="mark" viewBox="0 0 849 599"><use href="#kg"/></svg><div class="count">0</div><div class="bar"></div></div>
-<div class="cursor" aria-hidden="true"></div>
-<div class="glow"></div><div class="glow b"></div>
-<canvas id="stage" aria-hidden="true"></canvas>
-
-<header>
-  <a class="brand" href="#top" data-cursor><svg viewBox="0 0 849 599" aria-hidden="true"><use href="#kg"/></svg>Kaamghor</a>
-  <nav aria-label="Sections"><a href="#how" data-cursor>How it works</a><a href="#app-home" data-cursor>For homes</a><a href="#app-partner" data-cursor>For workers</a></nav>
-  <a class="pill light sm magnetic" href="#apps" data-cursor>Get the app</a>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Kaamghor"><svg aria-hidden="true"><use href="#kg"/></svg>Kaamghor</a>
+    <nav aria-label="Sections"><a href="#how">How it works</a><a href="#services">Services</a><a href="#safety">Safety</a><a href="#apps">The apps</a></nav>
+    <button class="iconbtn" id="theme" type="button" aria-label="Switch light or dark"><svg width="20" height="20"><use href="#i-moon"/></svg></button>
+    <a class="btn main sm h-only" href="../?install">Get the app</a>
+    <a class="btn partner sm w-only" href="../partner/?install">Get the app</a>
+  </div>
 </header>
 
 <main id="top">
-  <section class="hero" data-scene="hero">
-    <div class="eyebrow" data-reveal>Tinsukia, Assam · কামঘৰ · कामघर</div>
-    <h1 class="display split">Good work, <em>close to home.</em></h1>
-    <div class="hero-foot">
-      <p class="lede" data-reveal>Kaamghor connects homes with trusted, SMS-verified daily-wage workers nearby, and gives the people who do the work a fair way to find it.</p>
-      <div class="ctas" data-reveal>
-        <a class="pill light magnetic" href="#apps" data-cursor data-pick="home">I need help at home <span class="arr">→</span></a>
-        <a class="pill amber magnetic" href="#apps" data-cursor data-pick="partner">I'm looking for work <span class="arr">→</span></a>
+  <!-- ===== Hero: choose who you are, install right here ===== -->
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <div class="where glass"><i></i>Now in Tinsukia, Assam · কামঘৰ · कामघर</div><br>
+        <div class="seg glass" role="group" aria-label="I am">
+          <button type="button" data-pick="homes" aria-pressed="true"><svg width="20" height="20"><use href="#i-home"/></svg>I need help</button>
+          <button type="button" data-pick="workers" aria-pressed="false"><svg width="20" height="20"><use href="#i-brief"/></svg>I want work</button>
+        </div>
+        <h1 class="h-only">Trusted help at home, <em>close by.</em></h1>
+        <h1 class="w-only">Daily work near you, <em>paid fairly.</em></h1>
+        <p class="lede h-only">Cleaners, cooks, painters and caretakers from your own area. Every number checked by SMS, rated by other homes, with the pay agreed up front.</p>
+        <p class="lede w-only">Homes in your area post jobs every day. See the daily rate before you apply, get hired in a tap, and get paid by UPI, cash or online.</p>
+        <div class="install">
+          <a class="btn main h-only" href="../?install"><img src="../icon-192.png" alt="">Install Kaamghor</a>
+          <a class="btn partner w-only" href="../partner/?install"><img src="../partner/icon-192.png" alt="">Install Kaamghor Partner</a>
+          <a class="btn ghost h-only" href="../">Open in browser</a>
+          <a class="btn ghost w-only" href="../partner/">Open in browser</a>
+        </div>
+        <div class="perks" id="heroCta">
+          <span><svg width="16" height="16"><use href="#i-check"/></svg>Free to join</span>
+          <span><svg width="16" height="16"><use href="#i-check"/></svg>No app store needed</span>
+          <span><svg width="16" height="16"><use href="#i-check"/></svg>Works on weak internet</span>
+          <span><svg width="16" height="16"><use href="#i-check"/></svg>English, অসমীয়া, हिन्दी</span>
+        </div>
+        <div class="qr glass h-only"><div class="code" data-qr="../?install"></div><div><b>On a computer?</b>Scan to install on your phone.</div></div>
+        <div class="qr glass w-only"><div class="code" data-qr="../partner/?install"></div><div><b>On a computer?</b>Scan to install on your phone.</div></div>
+      </div>
+
+      <div class="stage" aria-hidden="true">
+        <div class="phone back">
+          <div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div>
+            <div class="shots">
+              <img class="on sl h-only" src="shots/home-track-light.webp" alt="" loading="lazy"><img class="on sd h-only" src="shots/home-track-dark.webp" alt="" loading="lazy">
+              <img class="on sl w-only" src="shots/work-map-light.webp" alt="" loading="lazy"><img class="on sd w-only" src="shots/work-map-dark.webp" alt="" loading="lazy">
+            </div></div>
+        </div>
+        <div class="phone front" id="heroPhone">
+          <div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div>
+            <div class="shots">
+              <img class="on sl h-only" src="shots/home-hire-light.webp" alt=""><img class="on sd h-only" src="shots/home-hire-dark.webp" alt="">
+              <img class="on sl w-only" src="shots/work-find-light.webp" alt=""><img class="on sd w-only" src="shots/work-find-dark.webp" alt="">
+            </div></div>
+        </div>
+        <div class="chip glass c1 h-only"><span class="dot ok"><svg width="18" height="18"><use href="#i-check"/></svg></span><div><b>Ramesh has arrived</b><span>Confirm to start the work</span></div></div>
+        <div class="chip glass c2 h-only"><span class="dot star"><svg width="18" height="18"><use href="#i-star"/></svg></span><div><b>4.8 · 23 jobs</b><span>SMS-verified, ID checked</span></div></div>
+        <div class="chip glass c3 h-only"><span class="dot"><svg width="18" height="18"><use href="#i-brief"/></svg></span><div><b>3 people applied</b><span>Painting · Tinsukia Town</span></div></div>
+        <div class="chip glass c1 w-only"><span class="dot amber"><svg width="18" height="18"><use href="#i-brief"/></svg></span><div><b>New job near you</b><span>Cooking · Hijuguri · ₹450/day</span></div></div>
+        <div class="chip glass c2 w-only"><span class="dot ok"><svg width="18" height="18"><use href="#i-cash"/></svg></span><div><b>₹500 received</b><span>Paid by UPI</span></div></div>
+        <div class="chip glass c3 w-only"><span class="dot star"><svg width="18" height="18"><use href="#i-star"/></svg></span><div><b>Priya rated you 5★</b><span>“On time, very neat work”</span></div></div>
       </div>
     </div>
-    <div class="scrollcue" data-reveal><i></i>Scroll</div>
-  </section>
+  </div>
 
-  <div class="marquee" aria-hidden="true"><div class="track">
-    <span>Cleaning</span><span>ৰান্ধনী</span><span>Gardening</span><span>पेंटिंग</span><span>Caretaker</span><span>প্লাম্বিং</span><span>Helper</span><span>बिजली</span><span>Cooking</span>
-    <span>Cleaning</span><span>ৰান্ধনী</span><span>Gardening</span><span>पेंटिंग</span><span>Caretaker</span><span>প্লাম্বিং</span><span>Helper</span><span>बिजली</span><span>Cooking</span>
-  </div></div>
-
-  <section class="statement" data-scene="statement">
-    <p class="scrub">Every morning, skilled hands across Tinsukia wait for work, and homes nearby need help. Kaamghor puts them <em>one tap apart</em>: verified, rated both ways, and paid fairly.</p>
-    <div class="note" data-reveal><span class="eyebrow">Why Kaamghor</span></div>
-  </section>
-
-  <section class="how" id="how" data-scene="how">
-    <div>
-      <div class="num"><span id="stepNum">01</span><small>/ 04</small></div>
-      <h2 class="h2">How it <em>works.</em></h2>
-    </div>
-    <div class="cards">
-      <article class="step"><span class="tag">Step one</span><span class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
-        <h3>Post the <em>job.</em></h3><p>A home picks the work, the day and how many people. The daily rate is suggested up front, so everyone sees the pay before anyone applies.</p></article>
-      <article class="step"><span class="tag">Step two</span><span class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6.5 6.5 0 0 1 3.5 6"/></svg></span>
-        <h3>Hire <em>nearby.</em></h3><p>Workers close by get it live and apply in a tap. The home picks from SMS-verified people with ID checks and real ratings. A Thikadar can bring a crew.</p></article>
-      <article class="step"><span class="tag">Step three</span><span class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-        <h3>Both <em>confirm.</em></h3><p>The worker marks arrival and the home confirms. The same two-way handshake closes the job, so there are no arguments about who showed up or finished.</p></article>
-      <article class="step"><span class="tag">Step four</span><span class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg></span>
-        <h3>Paid and <em>rated.</em></h3><p>Pay by UPI, cash or online. Then both sides rate each other, and good work becomes more work.</p></article>
+  <!-- ===== Services ===== -->
+  <section id="services">
+    <div class="wrap">
+      <div class="kicker rv">Services</div>
+      <h2 class="rv h-only">Every kind of help around the house.</h2>
+      <h2 class="rv w-only">Work for every skill.</h2>
+      <p class="sub rv h-only">Book for a half day, a day or a few weeks, one person or a whole crew.</p>
+      <p class="sub rv w-only">Pick everything you can do. A Thikadar can bring a whole crew for bigger jobs.</p>
+      <div class="skills">
+        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#1e88e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5 11.7 8l4.5 1.7-4.5 1.7L10 16l-1.7-4.6L3.8 9.7 8.3 8z"/><path d="m18 14 .9 2.1 2.1.9-2.1.9L18 20l-.9-2.1L15 17l2.1-.9z"/><path d="M18 3v3M16.5 4.5h3"/></svg>Cleaning</div>
+        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#e5731e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16v5.5a3.5 3.5 0 0 1-3.5 3.5h-9A3.5 3.5 0 0 1 4 16.5z"/><path d="M2 11h20M9 3.5c-.8.9-.8 1.8 0 2.7s.8 1.8 0 2.7M14.5 3.5c-.8.9-.8 1.8 0 2.7s.8 1.8 0 2.7"/></svg>Cooking</div>
+        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#22a845" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 21h10M12 21v-9"/><path d="M12 12C12 8 9.5 5.5 5 5.5 5 9.5 7.5 12 12 12z"/><path d="M12 10c0-3.3 2.2-5.5 6.5-5.5 0 3.3-2.2 5.5-6.5 5.5z"/></svg>Gardening</div>
+        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#d6337a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="15" height="6" rx="2"/><path d="M18 6h2a1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1h-8v2.5"/><rect x="10" y="14" width="4" height="7.5" rx="1.2"/></svg>Painting</div>
+        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#5b3fd6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 7.5-9-4.5-9 4.5 9 4.5z"/><path d="M3 7.5v9l9 4.5 9-4.5v-9M12 12v9M7.5 5.2l9 4.5"/></svg>Helper</div>
+        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#1f9bb3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/></svg>Plumbing</div>
+        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#c9a00c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3.5 13.5H12L11 22l9.5-11.5H12z"/></svg>Electrical</div>
+        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#c42fb5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.4-9.3A5.2 5.2 0 0 1 12 6.4a5.2 5.2 0 0 1 9.4 4.8C19.5 15.9 12 20.5 12 20.5z"/></svg>Caretaker</div>
+        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="none" stroke="#d1242f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>Healthcare</div>
+        <div class="skill glass rv"><svg viewBox="0 0 24 24" fill="#2f5bd3"><circle cx="5.5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="18.5" cy="12" r="1.8"/></svg>Others</div>
+      </div>
     </div>
   </section>
 
-  <section class="apps" id="apps" data-scene="apps">
-    <div class="apps-head">
-      <h2 class="h2" data-reveal>Two apps.<br><em>One neighbourhood.</em></h2>
-      <p class="lede" data-reveal>Pick yours. It installs straight from the browser: no app store, small download, works on weak internet.</p>
-    </div>
-    <div class="pair">
-      <article class="app home tilt" data-reveal id="app-home">
-        <svg class="big-k" viewBox="0 0 849 599" aria-hidden="true"><use href="#kg"/></svg>
-        <div class="icon"><svg viewBox="0 0 849 599" aria-hidden="true"><use href="#kg"/></svg></div>
-        <div class="for">For homes</div>
-        <h3>Kaamghor</h3>
-        <ul><li>Cleaners, cooks, gardeners, painters, caretakers</li><li>Every number SMS-verified, ID-checked badges</li><li>Fair daily rates shown before you post</li><li>Live updates from arrival to payment</li></ul>
-        <div class="get">
-          <div class="btns">
-            <a class="pill main magnetic" href="../?install" data-cursor>Install Kaamghor <span class="arr">→</span></a>
-            <a class="pill open sm" href="../" data-cursor>Open in browser</a>
+  <!-- ===== How it works: real screens ===== -->
+  <section id="how">
+    <div class="wrap">
+      <div class="kicker rv">How it works</div>
+      <h2 class="rv h-only">Post, hire, done. Three steps.</h2>
+      <h2 class="rv w-only">Find, work, get paid. Three steps.</h2>
+      <div class="how">
+        <div class="sticky">
+          <div class="phone">
+            <div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div>
+              <div class="shots" id="howShots">
+                <img class="h-only sl" data-step="0" src="shots/home-post-light.webp" alt="" loading="lazy"><img class="h-only sd" data-step="0" src="shots/home-post-dark.webp" alt="" loading="lazy">
+                <img class="h-only sl" data-step="1" src="shots/home-hire-light.webp" alt="" loading="lazy"><img class="h-only sd" data-step="1" src="shots/home-hire-dark.webp" alt="" loading="lazy">
+                <img class="h-only sl" data-step="2" src="shots/home-track-light.webp" alt="" loading="lazy"><img class="h-only sd" data-step="2" src="shots/home-track-dark.webp" alt="" loading="lazy">
+                <img class="w-only sl" data-step="0" src="shots/work-find-light.webp" alt="" loading="lazy"><img class="w-only sd" data-step="0" src="shots/work-find-dark.webp" alt="" loading="lazy">
+                <img class="w-only sl" data-step="1" src="shots/work-map-light.webp" alt="" loading="lazy"><img class="w-only sd" data-step="1" src="shots/work-map-dark.webp" alt="" loading="lazy">
+                <img class="w-only sl" data-step="2" src="shots/work-job-light.webp" alt="" loading="lazy"><img class="w-only sd" data-step="2" src="shots/work-job-dark.webp" alt="" loading="lazy">
+              </div></div>
           </div>
-          <div class="qr"><div data-qr="../?install"></div>Scan with your phone</div>
-          <p class="hint" data-ios>On iPhone: after it opens, tap Share, then “Add to Home Screen”.</p>
         </div>
-      </article>
-      <article class="app partner tilt" data-reveal id="app-partner">
-        <svg class="big-k" viewBox="0 0 849 599" aria-hidden="true"><use href="#kg"/></svg>
-        <div class="icon"><svg viewBox="0 0 849 599" aria-hidden="true"><use href="#kg"/></svg></div>
-        <div class="for">For workers</div>
-        <h3>Kaamghor <em>Partner</em></h3>
-        <ul><li>Daily work in your own area, live as it's posted</li><li>Know the pay before you apply</li><li>Get paid by UPI, cash or online</li><li>Ratings and an ID check bring more work</li></ul>
-        <div class="get">
-          <div class="btns">
-            <a class="pill main magnetic" href="../partner/?install" data-cursor>Install Partner <span class="arr">→</span></a>
-            <a class="pill open sm" href="../partner/" data-cursor>Open in browser</a>
-          </div>
-          <div class="qr"><div data-qr="../partner/?install"></div>Scan with your phone</div>
-          <p class="hint" data-ios>On iPhone: after it opens, tap Share, then “Add to Home Screen”.</p>
-        </div>
-      </article>
-    </div>
+        <div class="steps">
+          <div class="step h-only" data-step="0"><span class="n">1</span><h3>Post the job.</h3><p>Pick the work, the day and how many people. The app suggests a fair daily rate and tells you how many workers nearby can do it.</p>
+            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/home-post-light.webp" alt="Post a job screen" loading="lazy"><img class="on sd" src="shots/home-post-dark.webp" alt="Post a job screen" loading="lazy"></div></div></div></div></div>
+          <div class="step h-only" data-step="1"><span class="n">2</span><h3>Choose who to hire.</h3><p>Workers nearby apply within minutes. Compare ratings, jobs done and the ID-checked badge, then hire with one tap. A Thikadar can bring a whole crew.</p>
+            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/home-hire-light.webp" alt="Applicants screen" loading="lazy"><img class="on sd" src="shots/home-hire-dark.webp" alt="Applicants screen" loading="lazy"></div></div></div></div></div>
+          <div class="step h-only" data-step="2"><span class="n">3</span><h3>Confirm, pay and rate.</h3><p>The worker marks arrival and you confirm. The same two-way check closes the job. Pay by UPI, cash or online, then rate each other.</p>
+            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/home-track-light.webp" alt="Job progress screen" loading="lazy"><img class="on sd" src="shots/home-track-dark.webp" alt="Job progress screen" loading="lazy"></div></div></div></div></div>
 
-    <div class="trust">
-      <div data-reveal><b data-count="100">0</b><span>% of mobile numbers checked by SMS code</span></div>
-      <div data-reveal><b>2-way</b><span>ratings: homes rate workers, workers rate homes</span></div>
-      <div data-reveal><b data-count="3">0</b><span>languages: English, অসমীয়া, हिन्दी</span></div>
-      <div data-reveal><b>₹0</b><span>to sign up, for homes and for workers</span></div>
+          <div class="step w-only" data-step="0"><span class="n">1</span><h3>See jobs near you.</h3><p>New jobs in your area appear live, with the daily rate, the dates and the home's rating. Apply in one tap.</p>
+            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/work-find-light.webp" alt="Find jobs screen" loading="lazy"><img class="on sd" src="shots/work-find-dark.webp" alt="Find jobs screen" loading="lazy"></div></div></div></div></div>
+          <div class="step w-only" data-step="1"><span class="n">2</span><h3>Pick the ones close by.</h3><p>The map shows every job's rough area and pay, so you don't spend half the day travelling. The exact place is shared once you're hired.</p>
+            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/work-map-light.webp" alt="Map of jobs" loading="lazy"><img class="on sd" src="shots/work-map-dark.webp" alt="Map of jobs" loading="lazy"></div></div></div></div></div>
+          <div class="step w-only" data-step="2"><span class="n">3</span><h3>Do the work, get paid.</h3><p>Mark when you arrive and when you're done; the home confirms both. Get paid by UPI, cash or online, and good ratings bring you more work.</p>
+            <div class="mini"><div class="phone"><div class="screen"><div class="status"><span>9:41</span><svg><use href="#i-status"/></svg></div><div class="shots"><img class="on sl" src="shots/work-job-light.webp" alt="Job in progress" loading="lazy"><img class="on sd" src="shots/work-job-dark.webp" alt="Job in progress" loading="lazy"></div></div></div></div></div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="final" data-scene="final">
-    <h2 class="big split">Choose your <em>app.</em></h2>
-    <div class="ctas" data-reveal>
-      <a class="pill light magnetic" href="../?install" data-cursor>Kaamghor, for homes <span class="arr">→</span></a>
-      <a class="pill amber magnetic" href="../partner/?install" data-cursor>Partner, for workers <span class="arr">→</span></a>
+  <!-- ===== Safety and trust ===== -->
+  <section id="safety">
+    <div class="wrap">
+      <div class="kicker rv">Safety</div>
+      <h2 class="rv">Built on trust, both ways.</h2>
+      <p class="sub rv">Homes and workers check each other before anyone opens a door.</p>
+      <div class="trust">
+        <div class="tile glass rv"><div class="ib"><svg width="24" height="24"><use href="#i-shield"/></svg></div><h3>Every number SMS-verified</h3><p>No fake accounts. Phone numbers are shared only after a hire, never in public.</p></div>
+        <div class="tile glass rv"><div class="ib"><svg width="24" height="24" style="color:var(--star)"><use href="#i-star"/></svg></div><h3>Ratings both ways</h3><p>Homes rate workers and workers rate homes, with tags like “on time” and “paid promptly”.</p></div>
+        <div class="tile glass rv"><div class="ib"><svg width="24" height="24"><use href="#i-check"/></svg></div><h3>Two-way check-in</h3><p>Arrival and completion are confirmed by both sides. Problems go to a real person at Kaamghor.</p></div>
+        <div class="tile glass rv"><div class="ib"><svg width="24" height="24"><use href="#i-cash"/></svg></div><h3>Fair pay, up front</h3><p>Daily rates are suggested for each kind of work and shown before anyone applies.</p></div>
+        <div class="tile glass rv"><div class="ib"><svg width="24" height="24"><use href="#i-pin"/></svg></div><h3>Exact place stays private</h3><p>Workers see only the rough area until they're hired.</p></div>
+        <div class="tile glass rv"><div class="ib"><svg width="24" height="24"><use href="#i-lang"/></svg></div><h3>Your language</h3><p>English, অসমীয়া and हिन्दी, with large buttons that work on any phone.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Both apps ===== -->
+  <section id="apps">
+    <div class="wrap">
+      <div class="kicker rv">The apps</div>
+      <h2 class="rv">Two apps. One neighbourhood.</h2>
+      <p class="sub rv">Both install straight from your browser. Free, small, and no app store needed.</p>
+      <div class="pair">
+        <div class="app glass rv">
+          <div class="head"><img src="../icon-192.png" alt=""><div><div class="for">For homes</div><h3>Kaamghor</h3></div></div>
+          <ul>
+            <li><svg width="16" height="16"><use href="#i-check"/></svg>Post a job in under a minute</li>
+            <li><svg width="16" height="16"><use href="#i-check"/></svg>Hire SMS-verified, rated people nearby</li>
+            <li><svg width="16" height="16"><use href="#i-check"/></svg>Follow every job live, from arrival to payment</li>
+          </ul>
+          <div class="row"><a class="btn main" href="../?install">Install Kaamghor</a><a class="btn ghost" href="../">Open in browser</a></div>
+        </div>
+        <div class="app p glass rv">
+          <div class="head"><img src="../partner/icon-192.png" alt=""><div><div class="for">For workers</div><h3>Kaamghor Partner</h3></div></div>
+          <ul>
+            <li><svg width="16" height="16"><use href="#i-check"/></svg>Daily work in your own area, live as it's posted</li>
+            <li><svg width="16" height="16"><use href="#i-check"/></svg>Know the pay before you apply</li>
+            <li><svg width="16" height="16"><use href="#i-check"/></svg>Ratings and an ID check bring you more work</li>
+          </ul>
+          <div class="row"><a class="btn partner" href="../partner/?install">Install Partner</a><a class="btn ghost" href="../partner/">Open in browser</a></div>
+        </div>
+      </div>
+
+      <div class="faq">
+        <details class="glass rv"><summary>Does it cost anything to join?<svg width="20" height="20"><use href="#i-plus"/></svg></summary><p>No. Signing up is free for homes and for workers. Kaamghor takes a small fee from the worker's pay for each completed job.</p></details>
+        <details class="glass rv"><summary>Why isn't it on the Play Store?<svg width="20" height="20"><use href="#i-plus"/></svg></summary><p>It doesn't need to be. Tap Install and your phone adds it to the home screen like any app. It is smaller than a store app and works on weak internet.</p></details>
+        <details class="glass rv"><summary>How do I install it on an iPhone?<svg width="20" height="20"><use href="#i-plus"/></svg></summary><p>Open the app in Safari, tap the Share button, then “Add to Home Screen”.</p></details>
+        <details class="glass rv"><summary>Which areas does it cover?<svg width="20" height="20"><use href="#i-plus"/></svg></summary><p>Tinsukia Town, Hijuguri, Borguri, Rangagora Road, Bordoloi Nagar and Chandmari, with more of Assam to follow.</p></details>
+      </div>
     </div>
   </section>
 </main>
 
 <footer>
-  <span>© 2026 Kaamghor · Tinsukia, Assam</span>
-  <span class="scripts">কামঘৰ · कामघर</span>
-  <a href="../terms.html" data-cursor>Terms and Privacy</a>
+  <div class="wrap">
+    <span>© 2026 Kaamghor · Tinsukia, Assam</span>
+    <span><a href="../terms.html">Terms and Privacy</a></span>
+  </div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<!-- Sticky install bar -->
+<div class="dock glass" id="dock" aria-label="Install">
+  <img class="h-only" src="../icon-192.png" alt=""><img class="w-only" src="../partner/icon-192.png" alt="">
+  <div class="t"><b class="h-only">Kaamghor</b><b class="w-only">Kaamghor Partner</b><span class="h-only">For homes · free</span><span class="w-only">For workers · free</span></div>
+  <button class="swap h-only" type="button" data-pick="workers">I want work</button>
+  <button class="swap w-only" type="button" data-pick="homes">I need help</button>
+  <a class="btn main sm h-only" href="../?install">Install</a>
+  <a class="btn partner sm w-only" href="../partner/?install">Install</a>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
-<script defer>
-// Page motion: GSAP + ScrollTrigger. Without them (blocked CDN) the page still works, just without motion.
-// window.KG.scene is read by the 3D stage below; sections tween it as you scroll.
-window.KG = { scene: { x: 0, y: 0, z: 0, rx: 0, ry: 0, s: 1, spread: 1, tint: 0, bits: 1 }, mouse: { x: 0, y: 0 }, ready: false };
+<script>
 (function () {
+  const root = document.documentElement;
+  const $$ = (q) => [...document.querySelectorAll(q)];
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const fine = matchMedia('(pointer: fine)').matches;
-  const mobile = () => innerWidth < 820;
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const $$ = (q, el = document) => [...el.querySelectorAll(q)];
-  if (reduce) document.documentElement.classList.add('rm');
-  // Always start at the top (unless a link points to a section), so the opening plays in order.
-  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-  if (!location.hash) scrollTo(0, 0);
-  if (!/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent)) document.documentElement.classList.add('desktop');
-  $$('[data-ios]').forEach((el) => { el.hidden = !isIOS; });
+  const store = { get: (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} } };
+  if (!/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent)) root.classList.add('desktop');
 
-  // Buttons in the hero go to the app section and point at the right card.
-  $$('[data-pick]').forEach((a) => a.addEventListener('click', () => {
-    const card = document.getElementById('app-' + a.dataset.pick);
-    setTimeout(() => card.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.025)' }, { transform: 'scale(1)' }], { duration: 700, easing: 'cubic-bezier(.16,1,.3,1)' }), 900);
-  }));
-
-  // QR codes so people on a computer can install on their phone.
-  function qrs() {
-    if (!window.QRCode || !document.documentElement.classList.contains('desktop')) return;
-    $$('[data-qr]').forEach((el) => new QRCode(el, { text: new URL(el.dataset.qr, location.href).href, width: 232, height: 232, colorDark: '#0b0b0d', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }));
+  // ----- Who is this for: homes or workers. Everything marked h-only / w-only follows. -----
+  function pick(who, save) {
+    root.dataset.for = who;
+    $$('.seg button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.pick === who)));
+    if (save) store.set('landing-for', who);
+    activate(current);
   }
+  $$('[data-pick]').forEach((b) => b.addEventListener('click', () => pick(b.dataset.pick, true)));
 
-  // Split headings into words for the rise-in.
-  $$('.split').forEach((h) => {
-    const walk = (node) => [...node.childNodes].forEach((n) => {
-      if (n.nodeType === 3) {
-        const frag = document.createDocumentFragment();
-        n.textContent.split(/(\s+)/).forEach((part) => {
-          if (!part) return;
-          if (/^\s+$/.test(part)) { frag.append(' '); return; }
-          const w = document.createElement('span'); w.className = 'w';
-          const i = document.createElement('span'); i.className = 'wi'; i.textContent = part;
-          w.append(i); frag.append(w);
-        });
-        n.replaceWith(frag);
-      } else if (n.nodeType === 1) walk(n);
-    });
-    walk(h);
+  // ----- Light / dark: same switch and storage as the app. -----
+  const themeBtn = document.getElementById('theme');
+  const dark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  const paintTheme = () => { themeBtn.querySelector('use').setAttribute('href', dark() ? '#i-sun' : '#i-moon'); };
+  themeBtn.addEventListener('click', () => { root.dataset.theme = dark() ? 'light' : 'dark'; store.set('theme', root.dataset.theme); paintTheme(); });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', paintTheme);
+  paintTheme();
+
+  // ----- Header glass gets an edge once you scroll. -----
+  const top = document.querySelector('.top');
+  addEventListener('scroll', () => top.classList.toggle('scrolled', scrollY > 4), { passive: true });
+
+  // ----- Hero phone straightens as you scroll, and leans a little toward the mouse. -----
+  const front = document.querySelector('.stage .front'), back = document.querySelector('.stage .back');
+  let mx = 0, my = 0, ticking = false;
+  function tilt() {
+    ticking = false;
+    if (reduce || innerWidth <= 860) { front.style.transform = ''; return; }
+    const p = Math.min(1, scrollY / (innerHeight * 0.7));
+    front.style.transform = `rotateY(${(-16 + mx * 6) * (1 - p)}deg) rotateX(${(5 - my * 4) * (1 - p)}deg) translateY(${p * -20}px)`;
+    if (back) back.style.transform = `rotateY(-22deg) rotateX(6deg) translateZ(-120px) translateX(${18 + p * 24}%)`;
+  }
+  const ask = () => { if (!ticking) { ticking = true; requestAnimationFrame(tilt); } };
+  addEventListener('scroll', ask, { passive: true });
+  addEventListener('resize', ask);
+  addEventListener('pointermove', (e) => { mx = e.clientX / innerWidth - 0.5; my = e.clientY / innerHeight - 0.5; ask(); }, { passive: true });
+
+  // ----- Reveal on scroll. -----
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+  $$('.rv').forEach((el, i) => { el.style.transitionDelay = (i % 5) * 60 + 'ms'; io.observe(el); });
+
+  // ----- How it works: the sticky phone shows the screen for the step in view. -----
+  let current = 0;
+  function activate(i) {
+    current = i;
+    $$('.step').forEach((s) => s.classList.toggle('on', Number(s.dataset.step) === i));
+    $$('#howShots img').forEach((img) => img.classList.toggle('on', Number(img.dataset.step) === i));
+  }
+  const steps = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) activate(Number(e.target.dataset.step)); }), { rootMargin: '-45% 0px -45% 0px' });
+  $$('.step').forEach((s) => steps.observe(s));
+  activate(0);
+
+  // ----- Sticky install bar: once the hero's install buttons are out of view, until the apps section. -----
+  const dock = document.getElementById('dock');
+  let heroGone = false, appsVisible = false;
+  const paintDock = () => dock.classList.toggle('show', heroGone && !appsVisible);
+  new IntersectionObserver(([e]) => { heroGone = !e.isIntersecting && e.boundingClientRect.top < 0; paintDock(); }).observe(document.getElementById('heroCta'));
+  new IntersectionObserver(([e]) => { appsVisible = e.isIntersecting; paintDock(); }, { threshold: 0.25 }).observe(document.querySelector('.pair'));
+
+  // ----- QR codes on computers. -----
+  addEventListener('DOMContentLoaded', () => {
+    if (!window.QRCode || !root.classList.contains('desktop')) return;
+    $$('[data-qr]').forEach((el) => new QRCode(el, { text: new URL(el.dataset.qr, location.href).href, width: 160, height: 160, colorDark: '#1c1c1e', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }));
   });
-  // The statement fills in word by word.
-  $$('.scrub').forEach((p) => {
-    const walk = (node) => [...node.childNodes].forEach((n) => {
-      if (n.nodeType === 3) {
-        const frag = document.createDocumentFragment();
-        n.textContent.split(/(\s+)/).forEach((part) => {
-          if (!part) return;
-          if (/^\s+$/.test(part)) { frag.append(part); return; }
-          const s = document.createElement('span'); s.className = 'sw'; s.textContent = part; frag.append(s);
-        });
-        n.replaceWith(frag);
-      } else if (n.nodeType === 1) walk(n);
-    });
-    walk(p);
-  });
 
-  // Header turns to glass once you scroll.
-  const header = document.querySelector('header');
-  addEventListener('scroll', () => header.classList.toggle('solid', scrollY > 30), { passive: true });
-
-  // Mouse: custom cursor, 3D parallax, magnetic buttons, tilting cards.
-  const cursor = document.querySelector('.cursor');
-  addEventListener('pointermove', (e) => {
-    KG.mouse.x = (e.clientX / innerWidth) * 2 - 1; KG.mouse.y = (e.clientY / innerHeight) * 2 - 1;
-    if (fine) cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-  }, { passive: true });
-  if (fine) {
-    $$('[data-cursor]').forEach((el) => {
-      el.addEventListener('pointerenter', () => cursor.classList.add('big'));
-      el.addEventListener('pointerleave', () => cursor.classList.remove('big'));
-    });
-    if (!reduce) {
-      $$('.magnetic').forEach((el) => {
-        el.addEventListener('pointermove', (e) => {
-          const r = el.getBoundingClientRect();
-          el.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.22}px, ${(e.clientY - r.top - r.height / 2) * 0.3}px)`;
-        });
-        el.addEventListener('pointerleave', () => { el.style.transform = ''; });
-      });
-      $$('.tilt').forEach((el) => {
-        el.addEventListener('pointermove', (e) => {
-          const r = el.getBoundingClientRect();
-          el.style.setProperty('--ry', ((e.clientX - r.left) / r.width - 0.5) * 10 + 'deg');
-          el.style.setProperty('--rx', -((e.clientY - r.top) / r.height - 0.5) * 8 + 'deg');
-        });
-        el.addEventListener('pointerleave', () => { el.style.setProperty('--rx', '0deg'); el.style.setProperty('--ry', '0deg'); });
-      });
-    }
-  }
-
-  // Loader: count up while things load, then lift away.
-  const loader = document.getElementById('loader');
-  const count = loader.querySelector('.count'), bar = loader.querySelector('.bar');
-  let shown = 0, target = 30;
-  const tick = setInterval(() => {
-    shown += Math.max(1, (target - shown) * 0.18);
-    if (shown > target) shown = target;
-    count.textContent = Math.round(shown); bar.style.width = shown + '%';
-  }, 30);
-  let lifted = false;
-  function liftLoader(then) {
-    if (lifted) return;
-    lifted = true;
-    target = 100;
-    const wait = setInterval(() => {
-      if (shown < 99.5) return;
-      clearInterval(wait); clearInterval(tick);
-      if (window.gsap && !reduce) {
-        gsap.to(loader, { yPercent: -100, duration: 1, ease: 'expo.inOut', onComplete: () => loader.remove() });
-        setTimeout(then, 450);
-      } else { loader.remove(); then(); }
-    }, 30);
-  }
-
-  function motion() {
-    const G = window.gsap, ST = window.ScrollTrigger;
-    if (!G || !ST) return liftLoader(() => {});
-    G.registerPlugin(ST);
-    document.documentElement.classList.add('anim');
-    const S = KG.scene;
-
-    // Hero words rise in once the loader lifts.
-    if (!reduce) G.set('.hero .wi', { yPercent: 115 });
-    liftLoader(() => {
-      if (reduce) return;
-      G.to('.hero .wi', { yPercent: 0, duration: 1.25, ease: 'expo.out', stagger: 0.07 });
-      G.to('.hero [data-reveal]', { opacity: 1, y: 0, duration: 1, ease: 'expo.out', stagger: 0.08, delay: 0.35 });
-    });
-
-    if (reduce) { G.set('[data-reveal]', { opacity: 1, y: 0 }); return; }
-
-    // Everything else fades up as it arrives.
-    ST.batch($$('[data-reveal]').filter((el) => !el.closest('.hero')), {
-      start: 'top 88%',
-      onEnter: (els) => G.to(els, { opacity: 1, y: 0, duration: 1.1, ease: 'expo.out', stagger: 0.09, overwrite: true }),
-    });
-    $$('.final .wi').forEach((w) => G.set(w, { yPercent: 115 }));
-    G.to('.final .wi', { yPercent: 0, duration: 1.2, ease: 'expo.out', stagger: 0.08, scrollTrigger: { trigger: '.final', start: 'top 70%' } });
-
-    // Statement: words light up as you read.
-    G.fromTo('.statement .sw', { opacity: 0.14 }, { opacity: 1, stagger: 0.06, ease: 'none',
-      scrollTrigger: { trigger: '.statement', start: 'top 70%', end: 'bottom 55%', scrub: true } });
-
-    // Marquee leans with scroll speed.
-    const track = document.querySelector('.marquee .track');
-    let skew = 0;
-    ST.create({ onUpdate: (self) => { skew = G.utils.clamp(-12, 12, self.getVelocity() / -220); } });
-    G.ticker.add(() => { skew *= 0.9; track.parentElement.style.transform = `skewX(${skew.toFixed(2)}deg)`; });
-
-    // How it works: pinned while the four steps play.
-    const steps = $$('.step'), num = document.getElementById('stepNum');
-    const tl = G.timeline({ scrollTrigger: { trigger: '.how', start: 'top top', end: () => '+=' + innerHeight * 2.6, pin: true, scrub: 0.8,
-      onUpdate: (self) => { num.textContent = '0' + (Math.round(self.progress * 3) + 1); S.ry = 0.6 + self.progress * Math.PI * 2; } } });
-    steps.forEach((st, i) => {
-      if (!i) return;
-      tl.to(steps[i - 1], { yPercent: -18, scale: 0.92, opacity: 0, duration: 1, ease: 'power2.inOut' })
-        .fromTo(st, { yPercent: 24, scale: 1.04, opacity: 0 }, { yPercent: 0, scale: 1, opacity: 1, duration: 1, ease: 'power2.inOut' }, '<0.15');
-    });
-
-    // Counters.
-    $$('[data-count]').forEach((el) => {
-      const to = Number(el.dataset.count), o = { v: 0 };
-      ST.create({ trigger: el, start: 'top 90%', once: true, onEnter: () => G.to(o, { v: to, duration: 1.6, ease: 'expo.out', onUpdate: () => { el.textContent = Math.round(o.v); } }) });
-    });
-
-    // The 3D mark moves through the page: a pose per section, blended by scroll.
-    // x and y are fractions of the visible half-width and half-height, so poses fit any screen.
-    // In "How it works" the mark sits behind the frosted step cards. bits = how many floating pieces show.
-    const poses = () => mobile()
-      ? { hero: { x: 0, y: 0.42, z: 0, rx: 0.25, s: 1, spread: 1, tint: 0, bits: 1 }, statement: { x: 0.35, y: -0.62, z: -3.5, rx: -0.2, s: 0.7, spread: 0.8, tint: 0.4, bits: 0.4 },
-          how: { x: 0, y: -0.32, z: -1, rx: 0.1, s: 0.85, spread: 0.7, tint: 0.2, bits: 0.4 }, apps: { x: 0, y: 0, z: -3, rx: 0.4, s: 0.7, spread: 1.8, tint: 1, bits: 1 }, final: { x: 0, y: 0.08, z: -0.6, rx: 0.2, s: 1, spread: 1.2, tint: 0.5, bits: 1 } }
-      : { hero: { x: 0.5, y: 0.06, z: 0, rx: 0.25, s: 1, spread: 1, tint: 0, bits: 1 }, statement: { x: 0.82, y: -0.35, z: -3.5, rx: -0.25, s: 0.75, spread: 0.75, tint: 0.4, bits: 0.4 },
-          how: { x: 0.5, y: 0, z: -1, rx: 0.1, s: 0.9, spread: 0.7, tint: 0.2, bits: 0.4 }, apps: { x: 0, y: 0.15, z: -3.2, rx: 0.4, s: 0.7, spread: 1.8, tint: 1, bits: 1 }, final: { x: 0, y: 0.08, z: -0.6, rx: 0.2, s: 1, spread: 1.2, tint: 0.5, bits: 1 } };
-    function wirePoses() {
-      ST.getAll().filter((t) => t.vars.id === 'pose').forEach((t) => { t.animation && t.animation.kill(); t.kill(); });
-      const P = poses();
-      Object.assign(S, P.hero, { ry: -0.5 });
-      ['statement', 'how', 'apps', 'final'].forEach((name) => {
-        const sec = document.querySelector(`[data-scene="${name}"]`);
-        G.to(S, { ...P[name], ease: 'none', scrollTrigger: { id: 'pose', trigger: sec, start: 'top bottom', end: name === 'how' ? 'top top' : 'top 30%', scrub: 1.2 } });
-      });
-      G.to(S, { ry: '+=1.4', ease: 'none', scrollTrigger: { id: 'pose', trigger: '.statement', start: 'top bottom', end: 'bottom top', scrub: 1.2 } });
-    }
-    wirePoses();
-    let wasMobile = mobile();
-    addEventListener('resize', () => { if (mobile() !== wasMobile) { wasMobile = mobile(); wirePoses(); ST.refresh(); } });
-    KG.ready = true;
-  }
-
-  addEventListener('DOMContentLoaded', () => { qrs(); motion(); });
-  setTimeout(() => { if (document.getElementById('loader')) liftLoader(() => {}); }, 4000); // never stuck behind the loader
+  pick(root.dataset.for || 'homes', false);
 })();
-</script>
-
-<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
-<script type="module">
-// The 3D stage: the Kaamghor mark, extruded and glossy, with floating pieces around it.
-// It follows window.KG.scene (set by scroll) and the mouse. No WebGL: the page simply has no 3D.
-import * as THREE from 'three';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
-
-const canvas = document.getElementById('stage');
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const small = innerWidth < 820;
-let renderer;
-try {
-  renderer = new THREE.WebGLRenderer({ canvas, antialias: !small, alpha: true, powerPreference: 'high-performance' });
-} catch (_) { canvas.remove(); throw new Error('No WebGL'); }
-renderer.setPixelRatio(Math.min(devicePixelRatio, small ? 1.5 : 1.75));
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
-
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-camera.position.set(0, 0, 9);
-const pmrem = new THREE.PMREMGenerator(renderer);
-scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
-
-const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(3, 4, 5); scene.add(key);
-const rim = new THREE.PointLight(0xff8a1f, 30, 20); rim.position.set(-3, -1, 2); scene.add(rim);
-
-// The mark: two straight-edged loops from the logo, extruded with a soft bevel.
-const D = 'M340 0 135 279 105 325 101 324 101 18 0 18 0 598 101 598 101 452 215 301 219 302 222 309 340 597 454 598 292 210 294 204 379 87 553 123 741 596 849 596 633 59Z M395 119 333 202 329 212 487 595 711 596 525 150Z';
-const shapes = D.split('M').slice(1).map((part) => {
-  const n = part.replace('Z', '').trim().split(/\s+/).map(Number);
-  const sh = new THREE.Shape();
-  for (let i = 0; i < n.length; i += 2) (i ? sh.lineTo : sh.moveTo).call(sh, n[i], -n[i + 1]);
-  sh.closePath();
-  return sh;
-});
-const geo = new THREE.ExtrudeGeometry(shapes, { depth: 110, bevelEnabled: true, bevelThickness: 22, bevelSize: 12, bevelSegments: 8, curveSegments: 1 });
-geo.center();
-geo.computeVertexNormals();
-const markMat = new THREE.MeshPhysicalMaterial({ color: 0x141417, metalness: 0.55, roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.06 });
-const mark = new THREE.Mesh(geo, markMat);
-mark.scale.setScalar(2.7 / 849);
-const rig = new THREE.Group(); rig.add(mark); scene.add(rig);
-
-// Floating pieces: tools of the trade, abstracted.
-const mats = [
-  new THREE.MeshPhysicalMaterial({ color: 0xff8a1f, roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.1 }),
-  new THREE.MeshPhysicalMaterial({ color: 0xf3f1ec, roughness: 0.45, clearcoat: 0.6 }),
-  new THREE.MeshPhysicalMaterial({ color: 0x2a2a30, roughness: 0.12, metalness: 0.6, clearcoat: 1 }),
-];
-const geos = [new RoundedBoxGeometry(0.42, 0.42, 0.42, 4, 0.1), new THREE.TorusGeometry(0.22, 0.085, 24, 48), new THREE.SphereGeometry(0.2, 32, 32),
-  new THREE.CapsuleGeometry(0.11, 0.34, 8, 16), new THREE.TorusKnotGeometry(0.16, 0.05, 80, 12)];
-const bits = [];
-const N = small ? 9 : 14;
-for (let i = 0; i < N; i++) {
-  const m = new THREE.Mesh(geos[i % geos.length], mats[i % mats.length]);
-  const a = (i / N) * Math.PI * 2;
-  const r = 1.55 + (i % 3) * 0.35;
-  m.userData = { a, r, y: Math.sin(i * 1.7) * 0.9, z: Math.cos(i * 2.3) * 0.6 - 1.2, sp: 0.15 + (i % 5) * 0.05, ph: i * 0.9, s: 0.55 + (i % 4) * 0.12 };
-  m.rotation.set(i, i * 2, 0);
-  scene.add(m); bits.push(m);
-}
-
-function size() {
-  const w = innerWidth, h = innerHeight;
-  renderer.setSize(w, h, false);
-  camera.aspect = w / h; camera.updateProjectionMatrix();
-}
-size(); addEventListener('resize', size);
-
-const S = window.KG.scene, M = window.KG.mouse;
-const cur = { x: S.x, y: S.y, z: S.z, rx: S.rx, ry: S.ry, s: S.s, spread: S.spread, tint: S.tint, bits: S.bits };
-const amberDark = new THREE.Color(0x141417), amberHot = new THREE.Color(0x6b3208);
-const clock = new THREE.Clock();
-let intro = 0;
-renderer.setAnimationLoop(() => {
-  const t = clock.getElapsedTime();
-  intro = Math.min(1, intro + 0.012);
-  const k = reduce ? 1 : 0.08;
-  for (const p in cur) cur[p] += (S[p] - cur[p]) * k;
-  const e = 1 - Math.pow(1 - intro, 3); // ease-out for the entrance
-
-  // Poses are in screen fractions: turn them into world units for this window.
-  const halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z, halfW = halfH * camera.aspect;
-  const fit = Math.min(1.15, halfW / 2.4);
-  const depth = (camera.position.z - cur.z) / camera.position.z; // further back needs a wider spread to land at the same screen spot
-  const px = cur.x * halfW * depth, py = cur.y * halfH * depth;
-  rig.position.set(px, py + Math.sin(t * 0.8) * 0.06, cur.z);
-  rig.scale.setScalar(cur.s * fit * (0.6 + 0.4 * e));
-  rig.rotation.x = cur.rx + M.y * 0.18;
-  rig.rotation.y = cur.ry + (reduce ? 0 : t * 0.12) + M.x * 0.35 + (1 - e) * -2.4;
-  markMat.color.copy(amberDark).lerp(amberHot, cur.tint * 0.5);
-  rim.intensity = 10 + cur.tint * 30;
-
-  // The pieces orbit the mark, a little behind it.
-  bits.forEach((b, i) => {
-    const u = b.userData, a = u.a + (reduce ? 0 : t * u.sp * 0.4);
-    const r = u.r * cur.spread * fit;
-    b.position.set(px + Math.cos(a) * r, py + u.y * fit + Math.sin(t * u.sp + u.ph) * 0.2, cur.z + u.z + Math.sin(a) * r * 0.45);
-    b.rotation.x += reduce ? 0 : 0.004 + i * 0.0003; b.rotation.y += reduce ? 0 : 0.006;
-    // Fewer pieces where there is a lot to read: the later ones shrink away first.
-    const show = THREE.MathUtils.clamp(cur.bits * N - i, 0, 1);
-    b.scale.setScalar(u.s * fit * e * show + 1e-4);
-  });
-  camera.position.x += (M.x * 0.25 - camera.position.x) * 0.04;
-  camera.position.y += (-M.y * 0.18 - camera.position.y) * 0.04;
-  camera.lookAt(0, 0, 0);
-  renderer.render(scene, camera);
-});
 </script>
 </body>
 </html>
