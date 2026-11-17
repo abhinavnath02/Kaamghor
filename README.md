@@ -13,6 +13,8 @@ web/                         The app (upload this folder to any static host)
   logo.svg                   The Kaamghor mark (vector). Also embedded in index.html for the header and login screen
   icon.svg, icon-192.png, icon-512.png   App icon: the mark in white on graphite. Rebuild PNGs with: node tests/make-icons.mjs
   terms.html                 Terms and privacy page (fill in the [FILL IN] parts)
+  partner/                   Kaamghor Partner (the worker app): only its manifest and amber icons; the rest is the same app (see netlify.toml)
+  get/index.html             Landing page (3D + scroll animation). Its buttons open each app with ?install, which offers to install it
 sql/                         Run every file in name order in the Supabase SQL editor
   01_schema.sql              Tables and constraints
   02_security.sql            Row-level security, column privileges, public_workers view, protective trigger
