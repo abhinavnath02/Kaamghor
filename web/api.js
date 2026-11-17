@@ -42,6 +42,10 @@ const api = {
   confirmPhoneChange: (phone, token) => q(sb.auth.verifyOtp({ phone, token, type: 'phone_change' })),
   // Copies the verified Auth phone onto the profile (the browser can't write it).
   syncPhone: () => q(sb.rpc('sync_my_phone')),
+  // Developer mode: give this account a test number without SMS (only emails listed in dev_testers).
+  devSkipPhone: () => q(sb.rpc('dev_skip_phone')),
+  // Re-reads the signed-in user (e.g. after the phone changed on the server).
+  refreshUser: async () => (await q(sb.auth.refreshSession())).user,
   signOut: () => sb.auth.signOut(),
   session: async () => (await sb.auth.getSession()).data.session,
 

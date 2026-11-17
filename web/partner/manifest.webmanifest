@@ -1,0 +1,66 @@
+{
+  "id": "./",
+  "name": "Kaamghor Partner",
+  "short_name": "KG Partner",
+  "description": "Daily work near you in Tinsukia, Assam: find jobs, get hired, get paid.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f2f2f6",
+  "theme_color": "#f2f2f6",
+  "lang": "en-IN",
+  "categories": [
+    "lifestyle",
+    "business"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Find jobs",
+      "short_name": "Find jobs",
+      "url": "./#find",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "My work",
+      "short_name": "My work",
+      "url": "./#work",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

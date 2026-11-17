@@ -9,5 +9,11 @@
 /sw.js
   Cache-Control: no-cache
 
+/partner/sw.js
+  Cache-Control: no-cache
+
 /manifest.webmanifest
+  Content-Type: application/manifest+json
+
+/partner/manifest.webmanifest
   Content-Type: application/manifest+json

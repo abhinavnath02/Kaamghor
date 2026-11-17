@@ -1,3 +1,16 @@
 # Netlify: publish the web/ folder as it is. No build step.
 [build]
   publish = "web"
+
+# Kaamghor Partner (the worker app) is the same app served under /partner/.
+# Files that really exist in web/partner/ (its manifest and icons) are served as they are;
+# everything else falls through to the shared file at the root.
+[[redirects]]
+  from = "/partner"
+  to = "/partner/"
+  status = 301
+
+[[redirects]]
+  from = "/partner/*"
+  to = "/:splat"
+  status = 200

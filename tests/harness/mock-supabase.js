@@ -230,6 +230,13 @@
             return { data: {}, error: null };
           },
           getSession: async () => { await ready; return { data: { session } }; },
+          // Re-reads the user's phone from auth.users (e.g. after dev_skip_phone).
+          refreshSession: async () => {
+            const db = await ready;
+            const { rows: [r] } = await db.query('select phone, phone_confirmed_at from auth.users where id = $1', [session.user.id]);
+            save({ ...session, user: { ...session.user, phone: r.phone, phone_confirmed_at: r.phone_confirmed_at && new Date(r.phone_confirmed_at).toISOString() } });
+            return { data: { session, user: session.user }, error: null };
+          },
           signOut: async () => { save(null); return { error: null }; },
           onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
         },
