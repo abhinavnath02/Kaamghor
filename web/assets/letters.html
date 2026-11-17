@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Woven or stitched</title>
+<meta name="robots" content="noindex">
+<style>
+  @font-face { font-family: Bowa; src: url(fonts/bowa.woff2) format('woff2'); font-display: swap; }
+  @font-face { font-family: Siloi; src: url(fonts/siloi.woff2) format('woff2'); font-display: swap; }
+  :root { --cream: #f3ecdf; --ink: #2b1a12; --muted: #7a6656; --red: #b3172e; --gold: #c87326; --line: rgba(43,26,18,.14); }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px 24px 80px; background: var(--cream); color: var(--ink); font: 16px/1.55 system-ui, sans-serif; }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  h1 { font-size: 30px; margin: 0 0 8px; } h2 { font-size: 20px; margin: 56px 0 14px; }
+  p { color: var(--muted); max-width: 72ch; margin: 0 0 12px; }
+  a { color: var(--red); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 860px) { .two { grid-template-columns: 1fr; } }
+  .panel { position: relative; padding: 46px 28px 40px; border-radius: 18px; overflow: hidden; background: #fbf6ec; box-shadow: inset 0 0 0 1px var(--line); }
+  .panel .tag { position: absolute; top: 14px; left: 18px; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  /* the woven one sits on a gamosa, between its borders */
+  .panel.bowa::before, .panel.bowa::after { content: ""; position: absolute; left: 0; right: 0; height: 26px; background: url(gamosa-trim.svg) repeat-x center / auto 26px; }
+  .panel.bowa::before { top: 0; } .panel.bowa::after { bottom: 0; }
+  /* the stitched one sits on cloth with a running-stitch hem */
+  .panel.siloi { background: #f6efe2 radial-gradient(rgba(43,26,18,.05) 1px, transparent 1.2px) 0 0 / 6px 6px; }
+  .panel.siloi::after { content: ""; position: absolute; inset: 9px; border: 3px dashed rgba(179,23,46,.55); border-radius: 12px; pointer-events: none; }
+  .bowa .t { font-family: Bowa; } .siloi .t { font-family: Siloi; }
+  .t { color: var(--red); line-height: 1.25; letter-spacing: .02em; }
+  .xl { font-size: clamp(54px, 7.4vw, 96px); margin-top: 10px; }
+  .l { font-size: clamp(26px, 3.2vw, 40px); margin-top: 14px; color: var(--ink); }
+  .m { font-size: 26px; margin-top: 10px; color: var(--ink); }
+  .s { font-size: 15px; margin-top: 16px; color: var(--ink); }
+  .dark .panel { background: #2b1a12; }
+  .dark .panel .t.l, .dark .panel .t.m { color: #f3ecdf; }
+  .dark .panel.siloi { background: #24304a radial-gradient(rgba(255,255,255,.06) 1px, transparent 1.2px) 0 0 / 6px 6px; }
+  .dark .panel.siloi::after { border-color: rgba(243,236,223,.55); }
+  .dark .panel .tag { color: #c9b9a6; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 15px; }
+  th, td { text-align: left; vertical-align: top; padding: 12px 10px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; width: 18%; }
+  td { width: 41%; }
+  thead th { color: var(--ink); font-size: 16px; }
+  .refs { columns: 2; column-gap: 40px; } .refs li { margin-bottom: 8px; break-inside: avoid; }
+  @media (max-width: 760px) { .refs { columns: 1; } th { width: 26%; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Woven or stitched?</h1>
+<p>The same alphabet, drawn once on a thread grid with strokes two threads wide, then made two ways. <b>Bowa</b> (বোৱা, woven) lays each row as a float of weft, like the motifs in a gamosa border. <b>Siloi</b> (চিলাই, stitched) makes every cell a cross-stitch, like a name embroidered on a shirt or a cushion.</p>
+<p>There's an Assamese precedent for both: the <i>Vrindavani Vastra</i>, the cloths woven in Assam under Sankardev, carry verses in Assamese script woven into the fabric, and verses are sometimes embroidered onto gamosas too.</p>
+
+<h2>Side by side</h2>
+<div class="two">
+  <div class="panel bowa"><span class="tag">Woven · Bowa</span>
+    <div class="t xl">Kaamghor</div>
+    <div class="t l">Find a day's work in Tinsukia.</div>
+    <div class="t m">Cleaning ₹450 / day</div>
+    <div class="t s">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789</div>
+  </div>
+  <div class="panel siloi"><span class="tag">Stitched · Siloi</span>
+    <div class="t xl">Kaamghor</div>
+    <div class="t l">Find a day's work in Tinsukia.</div>
+    <div class="t m">Cleaning ₹450 / day</div>
+    <div class="t s">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789</div>
+  </div>
+</div>
+
+<h2>On a dark background</h2>
+<div class="two dark">
+  <div class="panel bowa"><span class="tag">Woven · Bowa</span><div class="t xl">Kaamghor</div><div class="t l">Help at home, close by.</div></div>
+  <div class="panel siloi"><span class="tag">Stitched · Siloi</span><div class="t xl">Kaamghor</div><div class="t l">Help at home, close by.</div></div>
+</div>
+
+<h2>How they compare</h2>
+<table>
+  <thead><tr><th></th><th>Woven (Bowa)</th><th>Stitched (Siloi)</th></tr></thead>
+  <tbody>
+    <tr><th>From across a room</th><td>Solid and bold. Reads like a woven label or a gamosa border.</td><td>Lighter and airier. The letters shimmer, like embroidery.</td></tr>
+    <tr><th>Up close</th><td>You see the floats of thread, row by row.</td><td>You see every little X. Charming, handmade.</td></tr>
+    <tr><th>Small sizes</th><td>Holds up better: rows merge into solid strokes.</td><td>The crosses turn to grey texture; keep it large.</td></tr>
+    <tr><th>Ties to the brand</th><td>Directly: same grid, red and cream as the gamosa border.</td><td>Through craft: home, care, something made by hand.</td></tr>
+    <tr><th>Risk</th><td>Can look like a pixel font if set too small or in the wrong colours.</td><td>Can look like a craft-shop font; needs restraint around it.</td></tr>
+    <tr><th>Best for</th><td>The logo, hero headlines, the rate board.</td><td>Warm accents: a name, a badge, “Made in Tinsukia”.</td></tr>
+  </tbody>
+</table>
+<p style="margin-top:14px">They also work together: woven for the brand and headlines, stitched for small human touches, the way a gamosa can be woven and then embroidered.</p>
+
+<h2>Similar work by others</h2>
+<ul class="refs">
+  <li><b>Woven letters</b></li>
+  <li><a href="https://www.zuzanalicko.com/WeavingMusings">Zuzana Licko, Weaving Musings</a>: letters treated as bitmaps and woven into textile.</li>
+  <li><a href="https://www.myfonts.com/fonts/ingrimayne/woven">Woven (Ingrimayne Type)</a>: a geometric face built from a woven tiling.</li>
+  <li><a href="https://www.alphabettes.org/shippo-weaving-traditional-japanese-pattern-into-type/">Shippo</a>: a grid typeface from a traditional Japanese textile pattern.</li>
+  <li><a href="https://www.printmag.com/type-tuesday/hardanger-typeface-agathe-millet/">Hardanger (Agathe Millet)</a>: a pixel-grid face from Norwegian embroidery.</li>
+  <li><a href="https://atypi.org/presentation/weaving-a-letterform-workshop/">Amy Copeland, Woven language (ATypI)</a>: letterforms woven on a tapestry loom.</li>
+  <li><b>Stitched letters</b></li>
+  <li><a href="https://www.fonttoolbox.com/fonts/embroid">Embroid (Jaap Nauta)</a>: letters made of small X stitches.</li>
+  <li><a href="https://www.fonttoolbox.com/fonts/cross-stitch">Cross Stitch (SpideRaYsfoNtS)</a>: cross-stitch capitals on a fabric grid.</li>
+  <li><a href="https://www.fonttoolbox.com/fonts/acsf-chic">ACSF Chic</a>: cursive handwriting in cross-stitch.</li>
+  <li><a href="https://www.freeforfonts.com/fonts/cross-stitch-delicate">Cross Stitch Delicate</a>: a family in several weights.</li>
+  <li><b>In Assam</b></li>
+  <li><a href="https://wovensouls.org/2015/10/29/a-journey-to-assam-along-a-vrindavani-vastra/">The Vrindavani Vastra</a>: verses in Assamese script woven into cloth.</li>
+  <li><a href="https://en.wikipedia.org/wiki/Gamosa">Gamosa</a>: the cloth the woven version comes from.</li>
+</ul>
+</div>
+</body>
+</html>
