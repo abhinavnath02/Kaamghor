@@ -101,4 +101,31 @@ writeFileSync(new URL('gamosa-flower.svg', OUT), svg(T, T, `<path fill="${RED}" 
 <defs>${weave}</defs><rect width="${W}" height="${s.h}" fill="url(#w)"/><g shape-rendering="crispEdges">${s.body}</g>${fringe}</svg>\n`);
 }
 
-console.log('web/assets/gamosa-border.svg, gamosa-trim.svg, gamosa-motif.svg, gamosa-flower.svg, gamosa-end.svg');
+// 6. The cloth itself: handloom cotton in a plain weave, seamless, to use as a background.
+//    Over-under threads, a few thicker uneven threads (slubs) and faint fibre grain.
+{
+  const N = 48, S = 4, W = N * S;            // 48 threads each way, 4 units per thread
+  let seed = 7;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const warpTone = Array.from({ length: N }, () => 0.6 + rnd() * 0.4);   // each thread dyed a touch differently
+  const weftTone = Array.from({ length: N }, () => 0.6 + rnd() * 0.4);
+  const slubRows = new Set(Array.from({ length: 5 }, () => Math.floor(rnd() * N)));
+  const slubCols = new Set(Array.from({ length: 3 }, () => Math.floor(rnd() * N)));
+  // The over-under weave repeats every two threads: one small pattern tile.
+  const weave = `<pattern id="pw" width="${2 * S}" height="${2 * S}" patternUnits="userSpaceOnUse">
+<rect x=".5" y="0" width="${S - 1}" height="${S}" rx="1.4" fill="#7a5a32" fill-opacity=".065"/><rect x=".7" y=".4" width=".9" height="${S - .8}" fill="#fff" fill-opacity=".35"/>
+<rect x="${S + .5}" y="${S}" width="${S - 1}" height="${S}" rx="1.4" fill="#7a5a32" fill-opacity=".065"/><rect x="${S + .7}" y="${S + .4}" width=".9" height="${S - .8}" fill="#fff" fill-opacity=".35"/>
+<rect x="${S}" y=".5" width="${S}" height="${S - 1}" ry="1.4" fill="#7a5a32" fill-opacity=".045"/><rect x="${S + .4}" y=".7" width="${S - .8}" height=".9" fill="#fff" fill-opacity=".35"/>
+<rect x="0" y="${S + .5}" width="${S}" height="${S - 1}" ry="1.4" fill="#7a5a32" fill-opacity=".045"/><rect x=".4" y="${S + .7}" width="${S - .8}" height=".9" fill="#fff" fill-opacity=".35"/></pattern>`;
+  // Each thread is dyed a touch differently, and a few are thick and uneven (slubs).
+  let threads = '';
+  for (let i = 0; i < N; i++) {
+    threads += `<rect x="${i * S}" width="${S}" height="${W}" fill="#7a5a32" fill-opacity="${(0.018 * warpTone[i] + (slubCols.has(i) ? 0.028 : 0)).toFixed(3)}"/>`;
+    threads += `<rect y="${i * S}" width="${W}" height="${S}" fill="#7a5a32" fill-opacity="${(0.015 * weftTone[i] + (slubRows.has(i) ? 0.03 : 0)).toFixed(3)}"/>`;
+  }
+  const grain = `<filter id="g" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9 .25" numOctaves="2" seed="3" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 .45  0 0 0 0 .33  0 0 0 0 .2  0 0 0 .14 0"/></filter>`;
+  writeFileSync(new URL('gamosa-cloth.svg', OUT), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${W}" width="${W}" height="${W}">
+<defs>${grain}${weave}</defs><rect width="${W}" height="${W}" fill="#f8f2e6"/>${threads}<rect width="${W}" height="${W}" fill="url(#pw)"/><rect width="${W}" height="${W}" filter="url(#g)"/></svg>\n`);
+}
+
+console.log('web/assets/gamosa-border.svg, gamosa-trim.svg, gamosa-motif.svg, gamosa-flower.svg, gamosa-end.svg, gamosa-cloth.svg');
