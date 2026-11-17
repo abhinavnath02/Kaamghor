@@ -20,7 +20,8 @@ createServer(async (req, res) => {
     const own = path.length > 9 && await readFile(join(root, 'web', path)).then(() => true, () => false);
     if (!own) path = path.slice(8);
   }
-  if (path === '/') path = '/index.html';
+  if (path === '/get') { res.writeHead(301, { Location: '/get/' }).end(); return; }
+  if (path.endsWith('/')) path += 'index.html'; // e.g. the landing page at /get/
   // The harness asks which SQL files exist, so new migrations are applied automatically.
   if (!real && path === '/__mock/sql-list') {
     const names = (await readdir(join(root, 'sql'))).filter((n) => n.endsWith('.sql')).sort();

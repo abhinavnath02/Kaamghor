@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kaamghor type</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Noto+Serif+Bengali:wght@400;700;900&family=Noto+Sans+Bengali:wght@400;600;800&family=Baloo+Da+2:wght@500;700;800&family=Galada&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family: Akhor; src: url(fonts/akhor.woff2) format('woff2'), url(fonts/akhor.ttf) format('truetype'); font-display: swap; }
+  :root { --bg: #f3ecdf; --ink: #2b1a12; --muted: #7a6656; --red: #b3172e; --line: rgba(43,26,18,.14); }
+  body { margin: 0; padding: 32px 24px 80px; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
+  h1 { font-size: 28px; margin: 0 0 6px; } h2 { font-size: 18px; margin: 48px 0 12px; }
+  p { color: var(--muted); margin: 0 0 12px; max-width: 70ch; }
+  .akhor { font-family: Akhor, system-ui; }
+  .big { font-size: clamp(56px, 11vw, 150px); line-height: 1.1; color: var(--red); margin: 10px 0; }
+  .mid { font-size: clamp(32px, 5vw, 64px); line-height: 1.2; margin: 6px 0; }
+  .set { font-size: 40px; line-height: 1.35; letter-spacing: 0; word-break: break-all; }
+  .card { margin-top: 14px; padding: 22px; border-radius: 18px; background: #fff8ee; box-shadow: inset 0 0 0 1px var(--line); }
+  .card.dark { background: #2b1a12; color: #f3ecdf; }
+  .as { display: grid; grid-template-columns: 220px 1fr; gap: 6px 20px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .as b { font-size: 15px; } .as small { display: block; color: var(--muted); font-size: 13px; font-weight: 400; }
+  .as .w { font-size: 54px; line-height: 1.25; }
+  .as .t { grid-column: 2; font-size: 19px; }
+  .pair { display: grid; gap: 4px; }
+  @media (max-width: 700px) { .as { grid-template-columns: 1fr; } .as .t { grid-column: 1; } }
+</style>
+</head>
+<body>
+<h1>Kaamghor type</h1>
+<p><b>Akhor</b> (আখৰ, “letter”): a heavy, soft display face for headlines and the brand, written with the habits of Assamese script. Lowercase hangs from a thick headline bar like the matra; the tall letters b, d, h and k rise through it and curl over like the vowel sign ি; descenders end in curls like ু; letters open at the top stop just short of the bar so they stay readable. Capitals and numbers stand free. Rebuild with <code>python tests/make-font.py</code>.</p>
+
+<div class="akhor big">Kaamghor</div>
+<div class="akhor mid">Find a day's work in Tinsukia.</div>
+<div class="akhor mid">Cleaning ₹450 / day</div>
+
+<h2>Character set</h2>
+<div class="card"><div class="akhor set">abcdefghijklmnopqrstuvwxyz<br>ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>0123456789 .,:;!?'’-–/()&amp;₹</div></div>
+<div class="card dark"><div class="akhor mid">Help at home, close by</div><div class="akhor mid" style="color:#ff9f0a">Kaamghor Partner</div></div>
+
+<h2>Assamese companions</h2>
+<p>Open fonts that cover Assamese, including ৰ and ৱ. Each shows the name, then a line of text.</p>
+<div class="as"><b>Tiro Bangla<small>Traditional, calligraphic. For headlines.</small></b><div class="w" style="font-family:'Tiro Bangla'">কামঘৰ</div><div class="t" style="font-family:'Tiro Bangla'">তিনিচুকীয়াত ঘৰৰ কামৰ বাবে বিশ্বাসী মানুহ। ৰং, ৰন্ধা, ৱাৰ্ড</div></div>
+<div class="as"><b>Noto Serif Bengali<small>Sturdy book serif, many weights.</small></b><div class="w" style="font-family:'Noto Serif Bengali';font-weight:900">কামঘৰ</div><div class="t" style="font-family:'Noto Serif Bengali'">তিনিচুকীয়াত ঘৰৰ কামৰ বাবে বিশ্বাসী মানুহ। ৰং, ৰন্ধা, ৱাৰ্ড</div></div>
+<div class="as"><b>Baloo Da 2<small>Round and friendly. For buttons and labels.</small></b><div class="w" style="font-family:'Baloo Da 2';font-weight:800">কামঘৰ</div><div class="t" style="font-family:'Baloo Da 2';font-weight:500">তিনিচুকীয়াত ঘৰৰ কামৰ বাবে বিশ্বাসী মানুহ। ৰং, ৰন্ধা, ৱাৰ্ড</div></div>
+<div class="as"><b>Galada<small>Brush lettering, like a painted sign.</small></b><div class="w" style="font-family:'Galada'">কামঘৰ</div><div class="t" style="font-family:'Galada'">তিনিচুকীয়াত ঘৰৰ কামৰ বাবে বিশ্বাসী মানুহ। ৰং, ৰন্ধা, ৱাৰ্ড</div></div>
+<div class="as"><b>Noto Sans Bengali<small>Plain, very readable. For app text.</small></b><div class="w" style="font-family:'Noto Sans Bengali';font-weight:800">কামঘৰ</div><div class="t" style="font-family:'Noto Sans Bengali'">তিনিচুকীয়াত ঘৰৰ কামৰ বাবে বিশ্বাসী মানুহ। ৰং, ৰন্ধা, ৱাৰ্ড</div></div>
+
+<h2>Together</h2>
+<div class="card">
+  <div class="pair">
+    <div style="font-family:'Tiro Bangla';font-size:64px;line-height:1.1;color:var(--red)">কামঘৰ</div>
+    <div class="akhor" style="font-size:44px;line-height:1.2">Kaamghor</div>
+    <div style="font-family:'Noto Sans Bengali';font-size:18px;color:var(--muted)">ঘৰৰ কামৰ বাবে বিশ্বাসী মানুহ · Trusted help at home</div>
+  </div>
+</div>
+</body>
+</html>

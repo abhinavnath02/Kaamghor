@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kaamghor assets</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { --bg: #f3ecdf; --ink: #2b1a12; --muted: #7a6656; }
+  body { margin: 0; padding: 32px 24px 80px; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
+  h1 { font-size: 28px; margin: 0 0 6px; } h2 { font-size: 18px; margin: 40px 0 12px; }
+  p { color: var(--muted); margin: 0 0 12px; max-width: 70ch; }
+  code { font-size: 14px; }
+  .band { height: 200px; background: url(gamosa-border.svg) repeat-x center / auto 200px; }
+  .trim { height: 26px; background: url(gamosa-trim.svg) repeat-x center / auto 26px; }
+  .fill { height: 200px; background: url(gamosa-motif.svg) repeat 0 0 / 96px; }
+  .row { display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-end; }
+  .row figure { margin: 0; display: grid; gap: 8px; justify-items: center; font-size: 14px; color: var(--muted); }
+  .tile { display: grid; place-items: center; width: 150px; height: 150px; border-radius: 18px; background: #fff8ee; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
+  .tile img { width: 104px; height: 104px; }
+  .dark { background: #2b1a12; }
+</style>
+</head>
+<body>
+<h1>Kaamghor assets</h1>
+<p><a href="logo.html">Logo concepts →</a> · <a href="letters.html">Woven or stitched: the two thread typefaces →</a> · <a href="type.html">Akhor and the Assamese fonts →</a></p>
+<p>Drawn from photographs of Assamese gamosas, on a weaving grid. Rebuild the gamosa files with <code>node tests/make-gamosa.mjs</code>.</p>
+
+<h2>Gamosa border <code>gamosa-border.svg</code></h2>
+<p>One motif wide; repeat sideways.</p>
+<div class="band"></div>
+
+<h2>Trim <code>gamosa-trim.svg</code></h2>
+<div class="trim"></div>
+
+<h2>Motif fill <code>gamosa-motif.svg</code></h2>
+<div class="fill"></div>
+
+<h2>Cloth <code>gamosa-cloth.svg</code></h2>
+<p>Handloom cotton in a plain weave, seamless. Repeat it as a background.</p>
+<div style="height:160px;border-radius:14px;background:url(gamosa-cloth.svg) repeat 0 0 / 104px"></div>
+
+<h2>The end of a gamosa <code>gamosa-end.svg</code></h2>
+<img src="gamosa-end.svg" alt="" style="width:min(720px,100%)">
+
+<h2>Single motifs</h2>
+<div class="row">
+  <figure><div class="tile"><img src="gamosa-flower.svg" alt=""></div>gamosa-flower.svg</figure>
+  <figure><div class="tile"><img src="japi.svg" alt=""></div>japi.svg</figure>
+</div>
+
+<h2>Service icons <code>tools/*.svg</code></h2>
+<div class="row" id="tools"></div>
+<script>
+  for (const n of ['clean', 'cook', 'garden', 'paint', 'helper', 'plumb', 'elec', 'care', 'health', 'other'])
+    document.getElementById('tools').insertAdjacentHTML('beforeend', `<figure><div class="tile"><img src="tools/${n}.svg" alt=""></div>${n}.svg</figure>`);
+</script>
+</body>
+</html>
