@@ -75,6 +75,8 @@ writeFileSync(new URL('gamosa-border.svg', OUT), svg(T * 2, full.h, `<rect width
 // 2. A thin trim: gold threads and the ladder only, for dividers and edges of small things.
 const trim = stack(8, [line(GOLD), gap(1), ladder, gap(1), line(GOLD)]);
 writeFileSync(new URL('gamosa-trim.svg', OUT), svg(8, trim.h, `<rect width="8" height="${trim.h}" fill="${CREAM}"/>${trim.body}`));
+// The app's header trim: the same threads with no cloth behind them, so dark mode shows through the gaps.
+writeFileSync(new URL('gamosa-trim-clear.svg', OUT), svg(8, trim.h, trim.body));
 
 // 3. The motif on its own, to fill any area (CSS background repeat).
 writeFileSync(new URL('gamosa-motif.svg', OUT), svg(T, T, `<rect width="${T}" height="${T}" fill="${CREAM}"/><path fill="${RED}" d="${cells(T, T, motif)}"/>`));
