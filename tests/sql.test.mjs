@@ -490,4 +490,20 @@ await test('16: everything both sides act on is in the realtime publication', as
   assert.deepEqual(r.rows.map((x) => x.tablename).sort(), ['applications', 'assignments', 'jobs', 'payments', 'ratings']);
 });
 
+await test('17: developer mode skips SMS only for listed test emails', async () => {
+  ids.dev = '00000000-0000-0000-0000-000000000010'; // signed in with email, no phone yet
+  await db.query(`insert into auth.users (id, email) values ($1, 'Dev@Example.com')`, [ids.dev]);
+  await fails('dev', `select dev_skip_phone()`, /not on for this account/);
+  await fails('other', `select * from dev_testers`, /permission denied/);
+  await fails('other', `insert into dev_testers (email) values ('x@example.com')`, /permission denied/);
+  await db.query(`insert into dev_testers (email) values ('dev@example.com')`);
+  const [{ p }] = await as('dev', `select dev_skip_phone() as p`);
+  assert.match(p, /^9100000\d{5}$/); // +91 0… can't be a real mobile
+  const [{ p: again }] = await as('dev', `select dev_skip_phone() as p`);
+  assert.equal(again, p); // the same number on a second call
+  await as('dev', `insert into profiles (id, role, full_name, area) values ('${ids.dev}', 'worker', 'Dev', 'town')`);
+  const { rows: [prof] } = await db.query(`select phone, phone_verified from profiles where id = $1`, [ids.dev]);
+  assert.deepEqual({ ...prof }, { phone: p, phone_verified: true });
+});
+
 console.log(`\n${passed} tests passed`);

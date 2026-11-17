@@ -15,7 +15,7 @@
   color-scheme: light;
   --bg: #f2f2f6; --solid: #fbfbfd; --text: #1c1c1e; --muted: #6c6c74; --line: rgba(0,0,0,.09);
   --brand: #1c1c1e; --brand-2: #48484a; --brand-ink: #ffffff; --brand-soft: rgba(28,28,30,.07); --brand-glow: rgba(0,0,0,.28);
-  --accent: #c25e00; --accent-soft: rgba(255,149,0,.15); --danger: #d70015; --danger-soft: rgba(255,59,48,.12);
+  --amber: #c25e00; --accent: #c25e00; --accent-soft: rgba(255,149,0,.15); --danger: #d70015; --danger-soft: rgba(255,59,48,.12);
   --ok: #248a3d; --ok-soft: rgba(52,199,89,.14); --info: #0a6cff; --star: #f5a300;
   --glass: rgba(255,255,255,.55); --glass-strong: rgba(255,255,255,.80); --glass-input: rgba(255,255,255,.7);
   --hi: inset 0 1px 0 rgba(255,255,255,.95), inset 0 0 0 1px rgba(255,255,255,.45);
@@ -228,6 +228,42 @@ textarea { min-height: 81px; resize: vertical; }
 .nearbtn { flex: 0 1 auto; min-width: 0; padding: 0 14px; border-radius: 16px; background: var(--glass); box-shadow: var(--hi), var(--shadow); color: var(--text); }
 .nearbtn.on { background: var(--brand-soft); color: var(--brand); box-shadow: inset 0 0 0 2px var(--brand); }
 .viewseg button:active, .nearbtn:active { transform: scale(.97); }
+.ptag { display: inline-block; vertical-align: 2px; margin-left: 2px; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 800; letter-spacing: .02em; color: #fff; background: var(--amber); }
+.hero h1 .ptag { font-size: 14px; vertical-align: 5px; }
+/* Room for the Partner tag in the header on phones: the language pill drops its globe. */
+@media (max-width: 420px) { .partner .lang .ic { display: none; } }
+.partner .hero-mark, .partner .slide-art { color: #fff; background: linear-gradient(180deg, #e0821c, var(--amber)); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 18px 40px -12px rgba(194,94,0,.55); }
+.intro { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 8px -18px 0; }
+.intro::-webkit-scrollbar { display: none; }
+.slide { flex: 0 0 100%; scroll-snap-align: center; padding: 26px 30px 6px; text-align: center; box-sizing: border-box; }
+.slide-art { display: grid; place-items: center; width: 104px; height: 104px; margin: 0 auto 22px; border-radius: 32px; color: var(--brand-ink);
+  background: linear-gradient(180deg, var(--brand-2), var(--brand)); box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 18px 40px -12px var(--brand-glow); }
+.slide h1 { margin: 0 0 10px; font-size: 25px; }
+.slide p { margin: 0 auto; max-width: 340px; line-height: 1.5; }
+.dots { display: flex; justify-content: center; gap: 7px; margin: 18px 0 22px; }
+.dots i { width: 7px; height: 7px; border-radius: 4px; background: var(--line); transition: width .3s var(--ease), background .3s; }
+.dots i.on { width: 22px; background: var(--text); }
+.crosslink { display: flex; align-items: center; gap: 10px; margin: 18px 0 8px; padding: 14px 16px; border-radius: 18px; color: var(--text); text-decoration: none; font-weight: 650;
+  background: var(--glass); box-shadow: var(--hi), var(--shadow); }
+.crosslink span { flex: 1; }
+.crosslink svg:last-child { transform: rotate(180deg); color: var(--muted); }
+.ob { min-height: calc(100dvh - 160px); display: flex; flex-direction: column; }
+.ob form { flex: 1; display: flex; flex-direction: column; }
+.ob h1 { margin: 22px 0 6px; font-size: 25px; }
+.ob h1 + p { margin: 0 0 20px; }
+.obtop { display: flex; align-items: center; justify-content: space-between; min-height: 40px; }
+.obbar { height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; margin-top: 6px; }
+.obbar i { display: block; height: 100%; border-radius: 3px; background: var(--brand); transition: width .35s var(--ease); }
+.partner .obbar i { background: var(--amber); }
+.obnext { margin-top: auto; padding-top: 24px; }
+.choices.areas { grid-template-columns: 1fr 1fr; }
+.choices.areas .choice > span { min-height: 58px; flex-direction: row; justify-content: flex-start; gap: 10px; padding: 12px 14px; text-align: left; }
+.obsum { display: grid; gap: 12px; padding: 16px 18px; margin: 0 0 6px; }
+.obsum .row { gap: 12px; align-items: flex-start; }
+.obsum svg { color: var(--muted); flex: none; margin-top: 2px; }
+button.back { border: 0; background: none; cursor: pointer; font: inherit; }
+.devbtn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin-top: 12px; padding: 8px; border: 1px dashed var(--line); border-radius: 12px;
+  background: none; color: var(--muted); font: inherit; font-size: 13px; cursor: pointer; }
 .langs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 5px; margin: 14px 0 18px; border-radius: 18px; background: var(--glass); box-shadow: var(--hi), var(--shadow); }
 .langs button { min-height: 42px; border: 0; border-radius: 14px; background: transparent; font-weight: 700; cursor: pointer; color: var(--muted); transition: background .3s var(--ease), color .2s, box-shadow .3s; }
 .langs button.on { background: var(--glass-strong); color: var(--brand); box-shadow: var(--hi), 0 4px 12px -4px rgba(0,0,0,.18); }
@@ -495,6 +531,21 @@ try {
 const T = {
   en: {
     appName: 'Kaamghor', tagline: 'Trusted help for homes in Tinsukia',
+    partner: 'Partner', taglinePartner: 'Daily work near you in Tinsukia',
+    introH1: 'Help at home, close by', introH1b: 'Cleaners, cooks, gardeners, painters and caretakers from your own area of Tinsukia.',
+    introH2: 'Verified people, honest ratings', introH2b: 'Every number is checked by SMS. See ID-checked badges and reviews from other homes before you hire.',
+    introH3: 'Fair daily rates, pay your way', introH3b: 'See the pay before you post. Pay by UPI, cash or online once the work is done.',
+    introW1: 'Daily work near you', introW1b: 'Homes in your area post cleaning, cooking, painting, caretaking and more. Apply in one tap.',
+    introW2: 'Know your pay first', introW2b: 'Every job shows the daily rate up front. Get paid by UPI, cash or online.',
+    introW3: 'Build your name', introW3b: 'Good ratings and an ID check bring you more work. A Thikadar can bring a whole crew.',
+    next: 'Next', getStarted: 'Get started', haveAccount: 'I already have an account',
+    crossPartner: 'Looking for work? Open Kaamghor Partner', crossHome: 'Need help at home? Open Kaamghor',
+    stepOf: 'Step {n} of {m}', obNameQ: 'What is your name?', obNameHintH: 'Workers see this when you hire them.', obNameHintW: 'Homes see this when you apply. Use your real name.',
+    obAreaQH: 'Where is your home?', obAreaQW: 'Where do you live?', obAreaHint: 'We show nearby jobs and people first.',
+    obSkillsQ: 'What work can you do?', obSkillsHint: 'Pick all that you do. You can change this later.',
+    obUpiQ: 'Where should we send your pay?', obUpiHint: 'Your UPI ID, like name@okaxis. Only a home you finished a job for sees it.', obLater: 'Add it later',
+    obReadyQ: 'All set', obReadyH: 'Check your details, then start posting jobs.', obReadyW: 'Check your details, then start finding work.', createAccount: 'Create my account',
+    devSkip: 'Developer: skip phone check', devOn: 'Developer mode on', devSkipped: 'Phone check skipped (developer)',
     google: 'Continue with Google', or: 'or', emailLabel: 'Email', sendCode: 'Email me a code',
     codeLabel: 'Enter the code we emailed to {email}', checkSpam: 'Can’t find it? Check your spam folder.',
     verify: 'Verify', resendIn: 'Resend in {s}s', resend: 'Send code again', changeEmail: 'Change email',
@@ -605,6 +656,21 @@ const T = {
   },
   as: {
     appName: 'কামঘৰ', tagline: 'তিনিচুকীয়াৰ ঘৰৰ বাবে বিশ্বাসী সহায়',
+    partner: 'পাৰ্টনাৰ', taglinePartner: 'তিনিচুকীয়াত ওচৰতে দৈনিক কাম',
+    introH1: 'ঘৰৰ সহায়, ওচৰতে', introH1b: 'আপোনাৰ নিজৰ অঞ্চলৰ পৰিষ্কাৰকৰ্মী, ৰান্ধনী, মালী, ৰং কৰোঁতা আৰু যত্নকাৰী।',
+    introH2: 'নিশ্চিত মানুহ, সঁচা ৰেটিং', introH2b: 'প্ৰতিটো নম্বৰ SMS-ৰে পৰীক্ষা কৰা। কাম দিয়াৰ আগতে ID পৰীক্ষাৰ চিন আৰু আন ঘৰৰ মতামত চাওক।',
+    introH3: 'ন্যায্য দৈনিক মজুৰি, নিজৰ ধৰণে পইচা', introH3b: 'পোষ্ট কৰাৰ আগতে মজুৰি চাওক। কাম শেষ হ’লে UPI, নগদ বা অনলাইনত দিয়ক।',
+    introW1: 'ওচৰতে দৈনিক কাম', introW1b: 'আপোনাৰ অঞ্চলৰ ঘৰবোৰে পৰিষ্কাৰ, ৰন্ধা, ৰং, যত্ন আদিৰ কাম দিয়ে। এটা টিপতে আবেদন কৰক।',
+    introW2: 'আগতেই মজুৰি জানক', introW2b: 'প্ৰতিটো কামত দৈনিক মজুৰি আগতেই দেখুওৱা হয়। UPI, নগদ বা অনলাইনত পইচা পাওক।',
+    introW3: 'নিজৰ নাম গঢ়ক', introW3b: 'ভাল ৰেটিং আৰু ID পৰীক্ষাই অধিক কাম আনে। ঠিকাদাৰে গোটেই দল আনিব পাৰে।',
+    next: 'পৰৱৰ্তী', getStarted: 'আৰম্ভ কৰক', haveAccount: 'মোৰ ইতিমধ্যে একাউণ্ট আছে',
+    crossPartner: 'কাম বিচাৰিছে? কামঘৰ পাৰ্টনাৰ খোলক', crossHome: 'ঘৰৰ বাবে সহায় লাগে? কামঘৰ খোলক',
+    stepOf: '{m}ৰ ভিতৰত {n} নং পদক্ষেপ', obNameQ: 'আপোনাৰ নাম কি?', obNameHintH: 'কাম দিলে কৰ্মীসকলে এই নাম দেখিব।', obNameHintW: 'আবেদন কৰিলে ঘৰবোৰে এই নাম দেখিব। আচল নাম দিয়ক।',
+    obAreaQH: 'আপোনাৰ ঘৰ ক’ত?', obAreaQW: 'আপুনি ক’ত থাকে?', obAreaHint: 'ওচৰৰ কাম আৰু মানুহ আগতে দেখুওৱা হ’ব।',
+    obSkillsQ: 'আপুনি কি কাম কৰিব পাৰে?', obSkillsHint: 'যিবোৰ কৰে সকলো বাছক। পিছত সলনি কৰিব পাৰিব।',
+    obUpiQ: 'আপোনাৰ পইচা ক’লৈ পঠিয়াম?', obUpiHint: 'আপোনাৰ UPI ID, যেনে name@okaxis। কাম শেষ কৰা ঘৰেহে ইয়াক দেখে।', obLater: 'পিছত দিম',
+    obReadyQ: 'সাজু', obReadyH: 'তথ্যবোৰ চাই লওক, তাৰ পিছত কাম পোষ্ট কৰক।', obReadyW: 'তথ্যবোৰ চাই লওক, তাৰ পিছত কাম বিচাৰক।', createAccount: 'মোৰ একাউণ্ট খোলক',
+    devSkip: 'ডেভেলপাৰ: ফোন পৰীক্ষা এৰক', devOn: 'ডেভেলপাৰ ম’ড অন', devSkipped: 'ফোন পৰীক্ষা এৰা হ’ল (ডেভেলপাৰ)',
     google: 'Google-ৰে আগবাঢ়ক', or: 'নতুবা', emailLabel: 'ইমেইল', sendCode: 'ইমেইলত ক’ড পঠিয়াওক',
     codeLabel: '{email}লৈ পঠোৱা ক’ডটো দিয়ক', checkSpam: 'পোৱা নাই নেকি? স্পাম ফ’ল্ডাৰ চাওক।',
     verify: 'নিশ্চিত কৰক', resendIn: '{s} ছেকেণ্ডত পুনৰ পঠিয়াব পাৰিব', resend: 'ক’ড পুনৰ পঠিয়াওক', changeEmail: 'ইমেইল সলনি কৰক',
@@ -702,6 +768,21 @@ const T = {
   },
   hi: {
     appName: 'कामघर', tagline: 'तिनसुकिया में घरों के लिए भरोसेमंद मदद',
+    partner: 'पार्टनर', taglinePartner: 'तिनसुकिया में पास में रोज़ का काम',
+    introH1: 'घर की मदद, पास में', introH1b: 'आपके ही इलाके के सफ़ाई वाले, रसोइए, माली, पेंटर और देखभाल करने वाले।',
+    introH2: 'सत्यापित लोग, सच्ची रेटिंग', introH2b: 'हर नंबर SMS से जाँचा गया। काम देने से पहले ID जाँच का बैज और दूसरे घरों की राय देखें।',
+    introH3: 'सही दिहाड़ी, अपने तरीके से भुगतान', introH3b: 'पोस्ट करने से पहले मज़दूरी देखें। काम पूरा होने पर UPI, नकद या ऑनलाइन दें।',
+    introW1: 'पास में रोज़ का काम', introW1b: 'आपके इलाके के घर सफ़ाई, खाना, पेंट, देखभाल जैसे काम डालते हैं। एक टैप में आवेदन करें।',
+    introW2: 'पहले जानें कितना मिलेगा', introW2b: 'हर काम में दिहाड़ी पहले से दिखती है। UPI, नकद या ऑनलाइन भुगतान पाएँ।',
+    introW3: 'अपनी पहचान बनाएँ', introW3b: 'अच्छी रेटिंग और ID जाँच से ज़्यादा काम मिलता है। ठेकेदार पूरी टीम ला सकता है।',
+    next: 'आगे', getStarted: 'शुरू करें', haveAccount: 'मेरा खाता पहले से है',
+    crossPartner: 'काम ढूँढ रहे हैं? कामघर पार्टनर खोलें', crossHome: 'घर के लिए मदद चाहिए? कामघर खोलें',
+    stepOf: '{m} में से चरण {n}', obNameQ: 'आपका नाम क्या है?', obNameHintH: 'काम देने पर कर्मचारी यह नाम देखेंगे।', obNameHintW: 'आवेदन करने पर घर यह नाम देखेंगे। असली नाम डालें।',
+    obAreaQH: 'आपका घर कहाँ है?', obAreaQW: 'आप कहाँ रहते हैं?', obAreaHint: 'पास के काम और लोग पहले दिखेंगे।',
+    obSkillsQ: 'आप कौन-सा काम कर सकते हैं?', obSkillsHint: 'जो भी करते हैं सब चुनें। बाद में बदल सकते हैं।',
+    obUpiQ: 'आपका भुगतान कहाँ भेजें?', obUpiHint: 'आपकी UPI ID, जैसे name@okaxis। सिर्फ़ वही घर देखेगा जिसका काम आपने पूरा किया।', obLater: 'बाद में जोड़ूँगा',
+    obReadyQ: 'सब तैयार', obReadyH: 'अपनी जानकारी देख लें, फिर काम पोस्ट करें।', obReadyW: 'अपनी जानकारी देख लें, फिर काम ढूँढें।', createAccount: 'मेरा खाता बनाएँ',
+    devSkip: 'डेवलपर: फ़ोन जाँच छोड़ें', devOn: 'डेवलपर मोड चालू', devSkipped: 'फ़ोन जाँच छोड़ी गई (डेवलपर)',
     google: 'Google से जारी रखें', or: 'या', emailLabel: 'ईमेल', sendCode: 'ईमेल पर कोड भेजें',
     codeLabel: '{email} पर भेजा गया कोड डालें', checkSpam: 'नहीं मिला? स्पैम फ़ोल्डर देखें।',
     verify: 'पुष्टि करें', resendIn: '{s} सेकंड में दोबारा भेज सकेंगे', resend: 'कोड दोबारा भेजें', changeEmail: 'ईमेल बदलें',
@@ -870,11 +951,19 @@ const store = {
 const $ = (sel) => document.querySelector(sel);
 const main = $('#main');
 
+// Two apps from one code base: Kaamghor (households) at /, Kaamghor Partner (workers) at /partner/.
+// The entry decides who signs up, so sign-up never asks "household or worker?".
+const PARTNER = /\/partner\//.test(location.pathname);
+const ENTRY = PARTNER ? 'worker' : 'household';
+const HOME_URL = location.pathname.replace(/partner\/.*$/, '').replace(/[^/]*$/, '');
+const PARTNER_URL = HOME_URL + 'partner/';
+if (PARTNER) document.documentElement.classList.add('partner');
+
 const S = {
   lang: store.get('lang') || ({ as: 'as', hi: 'hi' }[(navigator.language || '').slice(0, 2)] || 'en'),
   user: null, profile: null, worker: null,
   onlyMyArea: store.get('onlyMyArea') !== '0',
-  login: { email: '', step: 'start', until: 0 },
+  login: { email: '', step: store.get('intro-' + ENTRY) ? 'start' : 'intro', until: 0 },
   routeId: 0,
 };
 
@@ -986,7 +1075,7 @@ function loadScript(src) {
 function applyChrome() {
   document.documentElement.lang = S.lang;
   $('#langSel').value = S.lang;
-  $('#brandName').textContent = t('appName');
+  $('#brandName').innerHTML = te('appName') + (PARTNER ? ` <span class="ptag">${te('partner')}</span>` : '');
   $('#offline').textContent = t('offline');
   paintThemeChrome();
 }
@@ -1088,24 +1177,49 @@ function backLink(href) { return `<a class="back" href="#${href}">${icon('back',
 function empty(ic, text, action = '') { return `<div class="empty"><b>${icon(ic, 38)}</b>${esc(text)}${action}</div>`; }
 
 // ===================== Login =====================
+// Welcome slides, shown once per app before sign-in.
+const INTRO = {
+  household: [['home', 'introH1', 'introH1b'], ['shield', 'introH2', 'introH2b'], ['cash', 'introH3', 'introH3b']],
+  worker: [['briefcase', 'introW1', 'introW1b'], ['cash', 'introW2', 'introW2b'], ['star', 'introW3', 'introW3b']],
+};
+function crossLink() {
+  return `<a class="crosslink" href="${PARTNER ? HOME_URL : PARTNER_URL}">${icon(PARTNER ? 'home' : 'briefcase', 20)}<span>${te(PARTNER ? 'crossHome' : 'crossPartner')}</span>${icon('back', 18)}</a>`;
+}
 function showLogin() {
   $('#tabs').hidden = true;
   const L = S.login;
   const langs = `<div class="langs">${['en', 'as', 'hi'].map((l) => `<button type="button" data-act="lang" data-lang="${l}" class="${S.lang === l ? 'on' : ''}">${{ en: 'English', as: 'অসমীয়া', hi: 'हिन्दी' }[l]}</button>`).join('')}</div>`;
-  const hero = `<div class="hero"><div class="hero-mark"><svg class="logo" aria-hidden="true"><use href="#kg-mark"/></svg></div><h1>${te('appName')}</h1><div class="muted">${te('tagline')}</div></div>`;
-  if (L.step === 'start') {
+  const hero = `<div class="hero"><div class="hero-mark"><svg class="logo" aria-hidden="true"><use href="#kg-mark"/></svg></div><h1>${te('appName')}${PARTNER ? ` <span class="ptag">${te('partner')}</span>` : ''}</h1><div class="muted">${te(PARTNER ? 'taglinePartner' : 'tagline')}</div></div>`;
+  if (L.step === 'intro') {
+    const slides = INTRO[ENTRY];
+    main.innerHTML = `${langs}
+      <div class="intro" id="intro">${slides.map(([ic, h, b]) => `<section class="slide">
+        <div class="slide-art">${icon(ic, 46)}</div><h1>${te(h)}</h1><p class="muted">${te(b)}</p></section>`).join('')}</div>
+      <div class="dots" id="introDots">${slides.map((_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('')}</div>
+      <button type="button" class="btn block" data-act="introNext" id="introNext">${te('next')}</button>
+      <button type="button" class="btn ghost block" data-act="introDone" style="margin-top:10px">${te('haveAccount')}</button>`;
+    const box = $('#intro');
+    box.addEventListener('scroll', () => {
+      const i = Math.round(box.scrollLeft / box.clientWidth);
+      $('#introDots').querySelectorAll('i').forEach((d, k) => d.classList.toggle('on', k === i));
+      $('#introNext').textContent = t(i === slides.length - 1 ? 'getStarted' : 'next');
+    }, { passive: true });
+  } else if (L.step === 'start') {
+    // Workers mostly have a phone and no email: mobile first. Households: Google first.
+    const google = `<button type="button" class="btn google block" data-act="google">${GOOGLE_G}${te('google')}</button>`;
+    const phone = `<button type="button" class="btn ${PARTNER ? '' : 'ghost '}block" data-act="loginPhone">${icon('mobile', 20)}${te('loginPhone')}</button>`;
     main.innerHTML = `${hero}${langs}
       <div class="card">
-        <button type="button" class="btn google block" data-act="google">${GOOGLE_G}${te('google')}</button>
-        <button type="button" class="btn ghost block" data-act="loginPhone" style="margin-top:10px">${icon('mobile', 20)}${te('loginPhone')}</button>
+        <div class="stack" style="gap:10px">${PARTNER ? phone + google : google + phone}</div>
         <div class="or"><span>${te('or')}</span></div>
         <form data-form="sendCode">
           <label class="f" for="em" style="margin-top:0">${te('emailLabel')}</label>
           <input id="em" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" value="${esc(L.email)}" required>
-          <div style="margin-top:14px"><button class="btn block">${te('sendCode')}</button></div>
+          <div style="margin-top:14px"><button class="btn ghost block">${te('sendCode')}</button></div>
         </form>
       </div>
-      <div id="installSlot"></div>`;
+      <div id="installSlot"></div>
+      ${crossLink()}`;
     updateInstallSlot();
   } else if (L.step === 'phone') {
     main.innerHTML = `${hero}${langs}
@@ -1165,13 +1279,15 @@ function tickResend() {
 function showVerifyPhone() {
   $('#tabs').hidden = true;
   const V = S.verify || (S.verify = { step: 'phone', phone: '' });
-  const head = `<div class="hero"><div class="hero-mark">${icon('mobile', 40)}</div><h1 style="font-size:26px">${te('verifyTitle')}</h1>
+  // Developer mode: tap the phone tile 5 times. The database only honours it for emails in dev_testers.
+  const head = `<div class="hero"><div class="hero-mark" data-act="devTap">${icon('mobile', 40)}</div><h1 style="font-size:26px">${te('verifyTitle')}</h1>
     <div class="muted" style="max-width:420px;margin:0 auto">${te('verifyBody')}</div></div>`;
   main.innerHTML = V.step === 'phone'
     ? `${head}<form data-form="vpSend" class="card">
         <label class="f" for="vph" style="margin-top:0">${te('phoneLabel')}</label>
         ${phoneInput('vph', V.phone)}
         <div style="margin-top:14px"><button class="btn block">${te('sendSms')}</button></div>
+        ${V.dev && !S.profile ? `<button type="button" class="devbtn" data-act="devSkip">${icon('zap', 16)}${te('devSkip')}</button>` : ''}
         ${S.profile ? `<div style="margin-top:10px"><button type="button" class="btn ghost sm block" data-act="cancelVerify">${te('back')}</button></div>`
           : `<div style="margin-top:10px"><button type="button" class="btn ghost sm block" data-act="logout">${icon('logout', 18)}${te('logout')}</button></div>`}
       </form>`
@@ -1185,31 +1301,49 @@ function showVerifyPhone() {
 }
 
 // ===================== Sign-up (first login) =====================
+// One question per screen. The app (household or Partner) decides the role.
+const OB_STEPS = { household: ['name', 'area', 'agree'], worker: ['name', 'area', 'skills', 'upi', 'agree'] };
 function showOnboard() {
   $('#tabs').hidden = true;
-  main.innerHTML = `<h1>${te('whatDo')}</h1>
-    <form data-form="onboard">
-      <div class="choices">
-        <label class="choice"><input type="radio" name="role" value="household" required><span>${icon('home', 30)}${te('roleHousehold')}</span></label>
-        <label class="choice"><input type="radio" name="role" value="worker"><span>${icon('briefcase', 30)}${te('roleWorker')}</span></label>
-      </div>
-      <label class="f" for="nm">${te('fullName')}</label>
-      <input id="nm" name="full_name" type="text" maxlength="80" autocomplete="name" value="${esc(S.user?.user_metadata?.full_name || '')}" required>
-      <div class="note" style="margin-top:14px">${icon('shield', 20)}<span>${te('phoneVerifiedAs', { phone: '+' + S.user.phone })}</span></div>
-      <label class="f" for="ar">${te('area')}</label>
-      <select id="ar" name="area" class="in" required><option value=""></option>${areaOptions('')}</select>
-      <div id="workerFields" hidden>
-        <label class="f">${te('skills')}</label>
-        ${skillChips('skills', 'checkbox', [])}
-        <label class="f" for="upi">${te('upiId')}</label>
-        <input id="upi" name="upi_id" type="text" autocomplete="off" autocapitalize="off" placeholder="name@okaxis">
-      </div>
-      <label class="check"><input type="checkbox" name="agree" required><span>${te('agreeTerms').replace('{link}', `<a href="terms.html" target="_blank">${te('termsLink')}</a>`)}</span></label>
-      <button class="btn block">${te('continue')}</button>
-    </form>`;
-  main.querySelectorAll('input[name=role]').forEach((r) => r.addEventListener('change', () => {
-    $('#workerFields').hidden = r.value !== 'worker';
-  }));
+  const steps = OB_STEPS[ENTRY];
+  const O = S.ob || (S.ob = { i: 0, full_name: S.user?.user_metadata?.full_name || '', area: '', skills: [], upi_id: '' });
+  const step = steps[O.i], last = O.i === steps.length - 1;
+  let body = '';
+  if (step === 'name') {
+    body = `<h1>${te('obNameQ')}</h1><p class="muted">${te(PARTNER ? 'obNameHintW' : 'obNameHintH')}</p>
+      <input id="nm" name="full_name" type="text" maxlength="80" autocomplete="name" value="${esc(O.full_name)}" required>
+      <div class="note">${icon('shield', 20)}<span>${te('phoneVerifiedAs', { phone: '+' + S.user.phone })}</span></div>`;
+  } else if (step === 'area') {
+    body = `<h1>${te(PARTNER ? 'obAreaQW' : 'obAreaQH')}</h1><p class="muted">${te('obAreaHint')}</p>
+      <div class="choices areas">${AREAS.map((a) => `<label class="choice"><input type="radio" name="area" value="${a}" ${O.area === a ? 'checked' : ''} required><span>${icon('pin', 22)}${esc(areaName(a))}</span></label>`).join('')}</div>`;
+  } else if (step === 'skills') {
+    body = `<h1>${te('obSkillsQ')}</h1><p class="muted">${te('obSkillsHint')}</p>${skillChips('skills', 'checkbox', O.skills)}`;
+  } else if (step === 'upi') {
+    body = `<h1>${te('obUpiQ')}</h1><p class="muted">${te('obUpiHint')}</p>
+      <input id="upi" name="upi_id" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="name@okaxis" value="${esc(O.upi_id)}">`;
+  } else {
+    const rows = [[icon('user', 18), esc(O.full_name)], [icon('pin', 18), esc(areaName(O.area))]];
+    if (PARTNER) rows.push([icon('briefcase', 18), O.skills.map((k) => te('skill_' + k)).join(', ')]);
+    body = `<h1>${te('obReadyQ')}</h1><p class="muted">${te(PARTNER ? 'obReadyW' : 'obReadyH')}</p>
+      <div class="card obsum">${rows.map(([ic, v]) => `<div class="row nowrap">${ic}<span>${v}</span></div>`).join('')}</div>
+      <label class="check"><input type="checkbox" name="agree" required><span>${te('agreeTerms').replace('{link}', `<a href="terms.html" target="_blank">${te('termsLink')}</a>`)}</span></label>`;
+  }
+  main.classList.remove('enter');
+  main.innerHTML = `<div class="ob">
+      <div class="obtop">${O.i ? `<button type="button" class="back" data-act="obBack">${icon('back', 20)}${te('back')}</button>` : '<span></span>'}
+        <span class="muted small">${te('stepOf', { n: O.i + 1, m: steps.length })}</span></div>
+      <div class="obbar"><i style="width:${((O.i + 1) / steps.length) * 100}%"></i></div>
+      <form data-form="obStep">${body}
+        <div class="obnext"><button class="btn block">${te(last ? 'createAccount' : 'continue')}</button>
+        ${step === 'upi' ? `<button type="button" class="btn ghost block" data-act="obSkip" style="margin-top:10px">${te('obLater')}</button>` : ''}</div>
+      </form></div>`;
+  void main.offsetWidth;
+  main.classList.add('enter');
+  window.scrollTo(0, 0);
+  // Picking an area moves on by itself.
+  main.querySelectorAll('input[name=area]').forEach((r) => r.addEventListener('change', () => setTimeout(() => main.querySelector('form').requestSubmit(), 180)));
+  const first = main.querySelector('input[type=text]');
+  if (first) first.focus();
 }
 const UPI_RE = /^[A-Za-z0-9._-]{2,128}@[A-Za-z]{2,64}$/;
 
@@ -1431,6 +1565,10 @@ async function loadMe(user) {
   // Older profiles typed their number in: replace it with the verified one.
   if (S.profile && !S.profile.phone_verified) { await api.syncPhone(); S.profile = await api.myProfile(user.id); }
   if (!S.profile) return showOnboard();
+  if (S.profile.role !== 'admin' && S.profile.role !== ENTRY) {
+    location.replace(S.profile.role === 'worker' ? PARTNER_URL : HOME_URL);
+    return;
+  }
   S.worker = S.profile.role === 'worker' ? await api.myWorker(user.id) : null;
   if (S.profile.role === 'worker' && !S.worker) {
     await api.createWorker({ user_id: user.id, skills: [] });
@@ -2150,6 +2288,31 @@ const ACTIONS = {
   reload() { refresh(); },
   changeEmail() { S.login.step = 'start'; showLogin(); },
   loginPhone() { S.login.step = 'phone'; showLogin(); },
+  introNext() {
+    const box = $('#intro'), i = Math.round(box.scrollLeft / box.clientWidth);
+    if (i >= INTRO[ENTRY].length - 1) return ACTIONS.introDone();
+    const left = (i + 1) * box.clientWidth;
+    box.scrollTo({ left, behavior: 'smooth' });
+    // Some browsers ignore smooth scrolling on a snapping strip: make sure it arrives.
+    setTimeout(() => { if (Math.abs(box.scrollLeft - left) > 2) box.scrollTo({ left }); }, 450);
+  },
+  introDone() { store.set('intro-' + ENTRY, '1'); S.login.step = 'start'; showLogin(); },
+  obBack() { S.ob.i = Math.max(0, S.ob.i - 1); showOnboard(); },
+  obSkip() { S.ob.upi_id = ''; S.ob.i++; showOnboard(); },
+  devTap() {
+    const now = Date.now();
+    S.devTaps = (S.devTaps || []).filter((x) => now - x < 2500).concat(now);
+    if (S.devTaps.length >= 5 && S.verify && !S.verify.dev) { S.verify.dev = true; showVerifyPhone(); toast(t('devOn')); }
+  },
+  async devSkip(el) {
+    await busy(el, async () => {
+      await api.devSkipPhone();
+      const user = await api.refreshUser();
+      S.verify = null;
+      toast(t('devSkipped'));
+      await loadMe(user);
+    });
+  },
   async useMyLoc(el) {
     toast(t('locating'));
     await busy(el, async () => {
@@ -2386,19 +2549,28 @@ const FORMS = {
       await loadMe(user);
     });
   },
-  async onboard(f, btn) {
-    const role = f.role.value;
-    const full_name = f.full_name.value.trim();
-    const area = f.area.value;
-    if (!role || !full_name || !area) return toast(t('fillAll'), 'err');
-    const skills = [...f.querySelectorAll('input[name=skills]:checked')].map((i) => i.value);
-    const upi_id = f.upi_id.value.trim() || null;
-    if (role === 'worker' && !skills.length) return toast(t('pickSkill'), 'err');
-    if (role === 'worker' && upi_id && !UPI_RE.test(upi_id)) return toast(t('badUpi'), 'err');
+  // One sign-up step: keep the answer, check it, then the next step or create the account.
+  async obStep(f, btn) {
+    const O = S.ob, step = OB_STEPS[ENTRY][O.i];
+    if (step === 'name') {
+      O.full_name = f.full_name.value.trim();
+      if (!O.full_name) { f.full_name.focus(); return toast(t('fillAll'), 'err'); }
+    } else if (step === 'area') {
+      O.area = (f.querySelector('input[name=area]:checked') || {}).value || '';
+      if (!O.area) return toast(t('fillAll'), 'err');
+    } else if (step === 'skills') {
+      O.skills = [...f.querySelectorAll('input[name=skills]:checked')].map((i) => i.value);
+      if (!O.skills.length) return toast(t('pickSkill'), 'err');
+    } else if (step === 'upi') {
+      O.upi_id = f.upi_id.value.trim();
+      if (O.upi_id && !UPI_RE.test(O.upi_id)) { f.upi_id.focus(); return toast(t('badUpi'), 'err'); }
+    }
+    if (step !== 'agree') { O.i++; return showOnboard(); }
     if (!f.agree.checked) return toast(t('mustAgree'), 'err');
     await busy(btn, async () => {
-      await api.createProfile({ id: S.user.id, role, full_name, area });
-      if (role === 'worker') await api.createWorker({ user_id: S.user.id, skills, upi_id });
+      await api.createProfile({ id: S.user.id, role: ENTRY, full_name: O.full_name, area: O.area });
+      if (ENTRY === 'worker') await api.createWorker({ user_id: S.user.id, skills: O.skills, upi_id: O.upi_id || null });
+      S.ob = null;
       history.replaceState(null, '', location.pathname);
       await loadMe(S.user);
     });

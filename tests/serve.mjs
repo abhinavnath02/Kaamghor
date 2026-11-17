@@ -14,6 +14,12 @@ const CDN = '<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.4
 
 createServer(async (req, res) => {
   let path = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+  // Same rules as netlify.toml: /partner/ is the worker app; real files in web/partner/ win.
+  if (path === '/partner') { res.writeHead(301, { Location: '/partner/' }).end(); return; }
+  if (path.startsWith('/partner/')) {
+    const own = path.length > 9 && await readFile(join(root, 'web', path)).then(() => true, () => false);
+    if (!own) path = path.slice(8);
+  }
   if (path === '/') path = '/index.html';
   // The harness asks which SQL files exist, so new migrations are applied automatically.
   if (!real && path === '/__mock/sql-list') {

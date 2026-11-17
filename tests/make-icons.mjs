@@ -1,10 +1,11 @@
-// Renders web/icon-192.png and web/icon-512.png: the logo mark from web/logo.svg in white on graphite.
+// Renders web/icon-192.png and web/icon-512.png: the logo mark from web/logo.svg in white on graphite,
+// and web/partner/icon-*.png for the worker app (Kaamghor Partner): the same mark on amber.
 // Full-bleed background, mark inside the central safe zone, so the 512 icon also works as a maskable icon.
 // Usage: node make-icons.mjs
 import { readFileSync, writeFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 
-const BG = [28, 28, 30], FG = [255, 255, 255];
+const GRAPHITE = [28, 28, 30], AMBER = [194, 94, 0], FG = [255, 255, 255];
 const svg = readFileSync(new URL('../web/logo.svg', import.meta.url), 'utf8');
 const [, vw, vh] = svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/).map(Number);
 const d = svg.match(/ d="([^"]+)"/)[1];
@@ -44,7 +45,7 @@ const chunk = (type, data) => {
   return Buffer.concat([len, td, crc]);
 };
 
-function png(size) {
+function png(size, BG) {
   const ss = 4;
   const markW = size * (300 / 512), scale = markW / vw;          // same proportions as web/icon.svg
   const ox = (size - markW) / 2, oy = (size - vh * scale) / 2;
@@ -67,7 +68,9 @@ function png(size) {
   return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', ihdr), chunk('IDAT', deflateSync(raw, { level: 9 })), chunk('IEND', Buffer.alloc(0))]);
 }
 
-for (const size of [192, 512]) {
-  writeFileSync(new URL(`../web/icon-${size}.png`, import.meta.url), png(size));
-  console.log(`web/icon-${size}.png`);
+for (const [dir, bg] of [['', GRAPHITE], ['partner/', AMBER]]) {
+  for (const size of [192, 512]) {
+    writeFileSync(new URL(`../web/${dir}icon-${size}.png`, import.meta.url), png(size, bg));
+    console.log(`web/${dir}icon-${size}.png`);
+  }
 }
