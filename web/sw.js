@@ -2,7 +2,7 @@
 // App files: network first (always the latest when online), saved copy if offline or the network
 // takes longer than 4 s. The pinned supabase-js file never changes, so it is served from the cache.
 // Change CACHE only to throw away old copies (for example after renaming files).
-const CACHE = 'kaamghor-v17';
+const CACHE = 'kaamghor-v16';
 const SUPABASE_JS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
 const SHELL = ['./', './index.html', './api.js', './manifest.webmanifest', './icon.svg', './logo.svg', './icon-192.png', './icon-512.png', './terms.html', SUPABASE_JS];
 const SLOW_MS = 4000;
@@ -23,11 +23,9 @@ self.addEventListener('fetch', (e) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
 
-  // Fixed files from CDNs (supabase-js, the icon font, the Assamese typeface): saved once, served from the copy.
-  if (req.url === SUPABASE_JS || /^https:\/\/(unpkg\.com\/@phosphor-icons\/web@2\.1\.1\/|fonts\.googleapis\.com\/|fonts\.gstatic\.com\/)/.test(req.url)) {
+  if (req.url === SUPABASE_JS) {
     e.respondWith(caches.match(req).then((hit) => hit || fetch(req).then((res) => {
-      // Stylesheets from other sites come back opaque; they are still fine to keep.
-      if (res.ok || res.type === 'opaque') caches.open(CACHE).then((c) => c.put(req, res.clone()));
+      if (res.ok) caches.open(CACHE).then((c) => c.put(req, res.clone()));
       return res;
     })));
     return;
